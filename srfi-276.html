@@ -132,7 +132,7 @@ SPDX-License-Identifier: MIT
   <li>
     Should there be an interface that allows one to inspect the
     floating point interface of a compile target at expand time,
-    if the expand time and run time floating point semantics differ?
+    if the expand-time and run-time floating point semantics differ?
   </li>
   <li>
     Should this include conversion to/from f32 and f64 vectors,
@@ -213,7 +213,7 @@ SPDX-License-Identifier: MIT
   point calculations to <em>work well</em> above blazing speeds
   or bit-for-bit reproducibility across architectures. Basically,
   floating-point should do “what they want.” A type-flexible
-  system is more likely to do what the non-numerically-inclined programmer
+  system is more likely to do what the non-numerically inclined programmer
   wants: see <a href="#kahan1997">Kahan 1997</a> p. 29 and
   <a href="#kahan1998">Kahan and Darcy 1998</a> pp. 60ff.
 </p>
@@ -232,7 +232,7 @@ SPDX-License-Identifier: MIT
 <h2 id="specification"><a href="#specification">&para;</a> Specification</h2>
 
 <p>
-  This SRFI is organized into multiple parts:
+  This SRFI is organized into these parts:
 </p>
 
 <ol>
@@ -258,7 +258,7 @@ SPDX-License-Identifier: MIT
 
 <p>
   An operation is <dfn>correctly rounded</dfn> if the returned value is
-  the same as if the operation was calculated to infinite precision, and
+  the same as if the operation were calculated to infinite precision, and
   then rounded to fit in the resulting representation according to the
   current rounding mode.
 </p>
@@ -272,7 +272,7 @@ SPDX-License-Identifier: MIT
 <p>
    Square brackets [] are used to denote a group of arguments that are
    optional, but all arguments must be present or absent. If one pair
-   of square brackets are nested in another pair, then the nested pair
+   of square brackets is nested in another pair, then the nested pair
    is optional even when the other arguments are supplied.
 </p>
 
@@ -297,23 +297,23 @@ SPDX-License-Identifier: MIT
 
 <dl>
 <dt><code>(srfi 276 binary16)</code></dt>
-<dd> Operates on IEEE 754 binary16 (aka half precision floating point)
+<dd> Operates on IEEE 754 binary16 (AKA half-precision floating-point)
      values.
 </dd>
 <dt><code>(srfi 276 binary32)</code></dt>
-<dd> Operates on IEEE 754 binary32 (aka single precision floating point)
+<dd> Operates on IEEE 754 binary32 (AKA single-precision floating-point)
      values.
 </dd>
 <dt><code>(srfi 276 binary64)</code></dt>
-<dd> Operates on IEEE 754 binary64 (aka double precision floating point)
+<dd> Operates on IEEE 754 binary64 (AKA double-precision floating-point)
      values.
 </dd>
 <dt><code>(srfi 276 binary128)</code></dt>
-<dd> Operates on IEEE 754 binary128 (aka quadruple precision floating point)
+<dd> Operates on IEEE 754 binary128 (AKA quadruple-precision floating-point)
      values.
 </dd>
 <dt><code>(srfi 276 binary256)</code></dt>
-<dd> Operates on IEEE 754 binary256 (aka octuple precision floating point)
+<dd> Operates on IEEE 754 binary256 (AKA octuple-precision floating-point)
      values.
 </dd>
 </dl>
@@ -351,10 +351,10 @@ SPDX-License-Identifier: MIT
   not be exported.
 </p>
 
-<h4 id="library-desc"><a href="#library-desc">&para;</a> IEEE binary floating point library</h3>
+<h4 id="library-desc"><a href="#library-desc">&para;</a> IEEE binary floating-point library</h3>
 
 <p>
-  The binary floating point libraries exports the identifiers of
+  The binary floating-point libraries exports the identifiers of
   <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a>, with the following
   modifications:
 </p>
@@ -382,7 +382,7 @@ SPDX-License-Identifier: MIT
   The implementation <strong>must</strong> supply a mode such that
   the two-argument versions of
   <code>:+</code>, <code>:-</code>, <code>:*</code>,
-  <code>:/</code>, <code>:+*</code> (aka fused multiply-add), <code>:sqrt</code>,
+  <code>:/</code>, <code>:+*</code> (AKA fused multiply-add), <code>:sqrt</code>,
   <code>:abs</code>, <code>:absdiff</code>, <code>:posdiff</code>,
   <code>:floor</code>, <code>:ceiling</code>, <code>:round</code>,
   <code>:truncate</code> and <code>:remainder</code>
@@ -629,7 +629,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  Returns a list containing information about the floating point operations
+  Returns a list containing information about the floating-point operations
   in this library. The following symbols have defined meanings. An implementation
   <strong>may</strong> add other features, which <strong>should</strong> be symbols. 
 </p>
@@ -651,9 +651,9 @@ SPDX-License-Identifier: MIT
 <dd>Arithmetic is non-stop (see above).</dd>
 <dt><code>fast-fma</code></dt>
 <dd>The function <code>(:+* x y z)</code> is at least as fast as or faster
-    than <code>(:+ (:* x y) z)</code>. (Fused multiply add must be rounded
+    than <code>(:+ (:* x y) z)</code>. (Fused multiply-add must be rounded
     correctly when IEEE 754 compliance mode is on, regardless of
-    <code>fast-fma</code> being available or not.)</dd>
+    whether <code>fast-fma</code> is available.)</dd>
 <dt><code>⟨name⟩-correctly-rounded</code> where ⟨name⟩ is a procedure from the
     library without <code>:</code> prefixed</dt>
 <dd>The function ⟨name⟩ is always correctly rounded.
@@ -696,7 +696,7 @@ SPDX-License-Identifier: MIT
 
 <div class="boxed">
 <p>
-  <span class="boxed-tag">Rationale</span>: Floating point random number
+  <span class="boxed-tag">Rationale</span>: floating-point random number
   generators may take a variable number of bytes to return an answer:
   see for example <a href="campbell2014">Campbell 2014</a>. Because of
   this, this procedure cannot take a bytevector. This procedure could
@@ -995,7 +995,7 @@ SPDX-License-Identifier: MIT
 <h2 id="implementation"><a href="#implementation">&para;</a> Implementation</h2>
 
 <p>
-  An implementation should use the floating point operations available in hardware
+  An implementation should use the floating-point operations available in hardware
   as much as possible.
   Most implementations only have one floating-point type (binary64), and those
   implementations can copy most of their
@@ -1022,7 +1022,7 @@ SPDX-License-Identifier: MIT
 
 <p>
   A sample implementation will be provided that wraps MIT Scheme’s
-  floating point environment API.
+  floating-point environment API.
 </p>
 
 <h2 id="bibliography"><a href="#bibliography">&para;</a> Bibliography</h2>
