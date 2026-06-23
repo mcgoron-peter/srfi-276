@@ -162,7 +162,7 @@ SPDX-License-Identifier: MIT
   </li>
   <li>
     Should this include more procedures, like the recommended procedures
-    from IEEE 754-2019, and the latest C stanard?
+    from IEEE 754-2019, and the latest C standard?
   </li>
 </ul>
 
@@ -226,7 +226,7 @@ SPDX-License-Identifier: MIT
   arithmetic. An implementation is free to do things like widen operands
   or optimize expressions (for example, using the SSE2 instruction
   <code>RSQRTPS</code> for <code>(/ 1 (sqrt x))</code>) without worrying
-  about strict reproducability or the absolute fastest speed.
+  about strict reproducibility or the absolute fastest speed.
 </p>
 
 <h2 id="specification"><a href="#specification">&para;</a> Specification</h2>
@@ -397,7 +397,7 @@ SPDX-License-Identifier: MIT
   arithmetic is non-stop. (Most implementation already satisfy this requirement.)
 </li>
 <li>
-  The identifiers in the <a href="#new-identifiers">new identifers</a>
+  The identifiers in the <a href="#new-identifiers">new identifiers</a>
   section are exported.
 </li>
 </ul>
@@ -560,7 +560,7 @@ SPDX-License-Identifier: MIT
 
 <p>The examples assume  use the <a href="#reader-syntax">optional
    reader syntax suggestions</a> to denote values of different
-   repersentation.
+   representation.
 </p>
 
 <div class="feature" id="rounding-mode">
@@ -676,7 +676,7 @@ SPDX-License-Identifier: MIT
   procedure in the <span class="report-name">R<sup>7</sup>RS</span>.
   This is a run-time procedure that reports on the run-time environment,
   and the flags may change over the runtime of the program.
-  These flags are not accessable through <code>cond-expand</code>.
+  These flags are not accessible through <code>cond-expand</code>.
 </p>
 </div>
 
@@ -824,7 +824,7 @@ SPDX-License-Identifier: MIT
 
 <p>
   This procedure and
-  <a href="#bytevetor-flonum-ref"><code>:bytevector-flonum-ref</code></a>
+  <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
   <strong>must</strong> to round-trip on all non-NaNs. That is, given a non-NaN flonum <var>fl</var>,
 </p>
 
