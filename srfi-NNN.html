@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+SPDX-FileCopyrightText: 2026 Peter McGoron
+SPDX-License-Identifier: MIT
+-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+    <title>SRFI ###: Type-specific Flonum Libraries</title>
+    <style>
+            @media (prefers-color-scheme: light) {
+              :root {
+                --background-color: white;
+                --link-color: blue;
+                --text-color: black;
+                --visited-link-color: purple;
+              }
+              code {
+                  background-color: #f0f0f0;
+              }
+            }
+
+            @media (prefers-color-scheme: dark) {
+              :root {
+                --background-color: #161616;
+                --link-color: SkyBlue;
+                --text-color: #e0e0e0;
+                --visited-link-color: Orchid;
+              }
+              code {
+                background-color: #2b2b2b;
+              }
+            }
+
+    .never-break-inside > a {
+      white-space: nowrap;
+    }
+    .never-break-inside > code {
+      white-space: nowrap;
+    }
+
+            .normal-font {
+              font-family: sans-serif;
+            }
+            .no-bg {
+              background-color: var(--background-color);
+            }
+
+            .feature {
+              overflow: hidden;
+            }
+
+            .category {
+              float: right;
+              font-family: monospace;
+              font-size: 12pt;
+            }
+
+            .boxed {
+              border: 1px solid;
+              padding-top: 6pt;
+              padding-bottom: 6pt;
+              padding-left: 6pt;
+              padding-right: 12pt;
+              overflow: auto;
+              margin-bottom: 6pt;
+            }
+
+            .boxed-tag {
+              font-style: italic;
+            }
+
+            .example-code {
+              background-color: var(--background-color);
+              display: inline-block;
+              min-width: 46ch;
+            }
+
+            a {
+              color: var(--link-color);
+            }
+            a:visited {
+              color: var(--visited-link-color);
+            }
+            body {
+              background-color: var(--background-color);
+              color: var(--text-color);
+            }
+            .report-name {
+              font-style: italic;
+            }
+
+            .centered {
+             text-align: center;
+            }
+            .evals-side {
+            }
+
+            .evals-text {
+              font-family: serif;
+              font-style: italic;
+            }
+    </style>
+    <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
+    <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1"></head>
+  <body>
+    <h1><a href="https://srfi.schemers.org/"
+        ><img class="srfi-logo"
+              src="https://srfi.schemers.org/srfi-logo.svg"
+              alt="SRFI surfboard logo"
+        /></a>###: Type-specific Flonum Libraries</h1>
+
+<p>by Peter McGoron</p>
+
+<h2 id="status">Status</h2>
+
+<h2 id="abstract"><a href="#abstract">&para;</a> Abstract</h2>
+
+<p>
+  This SRFI is an updated version of <a href="https://srfi.schemers.org/srfi-144/">SRFI
+  144</a> that allows an implementation to support multiple flonum representations.
+  Each flonum has its own separate library. Each library also has the
+  ability to inspect properties of the flonum operations, such as rounding
+  mode and deviations from IEEE 754 arithmetic. New flonum operations are
+  also available, such as random number generation and serialization.
+</p>
+
+<h2 id="issues"><a href="#issues">&para;</a> Issues</h2>
+
+<ul>
+  <li>
+    Should there be an interface that allows one to inspect the
+    floating point interface of a compile target at expand time,
+    if the expand time and run time floating point semantics differ?
+  </li>
+  <li>
+    Should this include conversion to/from f32 and f64 vectors,
+    and should it specify that f32vectors are vectors of binary32
+    numbers, etc?
+  </li>
+  <li>
+    Should conversion procedures raise an exception if a NaN value
+    is unacceptable, or should implementations be allowed to coerce it?
+  </li>
+  <li>
+    The proposed representation-specific flonum syntax is ugly,
+    although in this case accuracy is more important than aesthetics.
+    (They are based off of
+     <a href="https://cppreference.com/c/types/integer#Function_macros_for_minimum-width_integer_constants">
+     C’s macros for integer constants</a>.)
+    They also clash with the semantics of Scheme’s numbers:
+    what is the meaning of <code>#e#fl(binary64 1/2)</code>?
+  </li>
+  <li>
+    To what extent can we specify correct rounding for multi-argument
+    versions of procedures like <code>(:+ x y z w …)</code>?
+  </li>
+  <li>
+    Is <a href="#flonum-to-string">:flonum-&gt;string</a> redundant?
+    What does it do that regular <code>number->string</code> does not?
+  </li>
+  <li>
+    Should this include more procedures, like the recommended procedures
+    from IEEE 754-2019, and the latest C stanard?
+  </li>
+</ul>
+
+<h2 id="rationale"><a href="#rationale">&para;</a> Rationale</h2>
+<p><em>This section is non-normative.</em></p>
+
+<p>
+  Standard Scheme doesn’t give specifics about the precision and range
+  of inexact numbers.
+  From the <span class="report-name">R<sup>4</sup>RS</span> onward,
+  implementations could use <code>s</code>, <code>f</code>, <code>d</code>,
+  and <code>l</code> to denote inexact constants of different precisions.
+  The <span class="report-name">R<sup>6</sup>RS</span> and
+  <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a> included
+  “flonum” operations. However, these specifications do not specify what
+  the format of the flonum is. The flonum might not be an IEEE format
+  number and operations may differ from implementation to implementation.
+</p>
+
+<p>
+  This SRFI proposes a variant of SRFI 144 that is organized into
+  <em>representation-specific libraries</em>. The functions exported from
+  a specific library operate on a precisely defined number format. For
+  example, if one wanted to operate on binary64 floating point numbers,
+  one can import <code>(srfi ### binary64)</code>.
+</p>
+
+<h3 id="speed-portability-and-ease-of-use"><a href="#speed-portability-and-ease-of-use">&para;</a> Speed and Portability vs. Ease of Use</h3>
+
+<p>
+  One reason to use type-specific procedures is speed: the function
+  <code>sqrt</code> from <code>(srfi ### binary32)</code> can be compiled
+  to a single <code>FSQRT</code> instruction on a RISC-V processor. One could also
+  compile multiple square roots to a single vectorized <code>SQRTPS</code>
+  instruction on an x86_64 processor with SSE2.
+</p>
+
+<p>
+  Another reason to use type-specific procedures is portability. Given the
+  same rounding mode, format, and IEEE 754 conformance flag below,
+  operations like +, -, and √ will always return the same value given the
+  same inputs.
+</p>
+
+<p>
+  Most programmers do not have the speed and portability of floating point
+  operations as their top priorities. They want their floating
+  point calculations to <em>work well</em> above blazing speeds
+  or bit-for-bit reproducibility across architectures. Basically,
+  floating-point should do “what they want.” A type-flexible
+  system is more likely to do what the non-numerically-inclined programmer
+  wants: see <a href="#kahan1997">Kahan 1997</a> p. 29 and
+  <a href="#kahan1998">Kahan and Darcy 1998</a> pp. 60ff.
+</p>
+
+<p>
+  Scheme’s module system, lack of special arithmetic syntax, and latent
+  typing allow us to separate strict correctness and “do what I want.”
+  Programmers who wish
+  for their programs to do “what they want” should use Scheme’s generic
+  arithmetic. An implementation is free to do things like widen operands
+  or optimize expressions (for example, using the SSE2 instruction
+  <code>RSQRTPS</code> for <code>(/ 1 (sqrt x))</code>) without worrying
+  about strict reproducability or the absolute fastest speed.
+</p>
+
+<h2 id="specification"><a href="#specification">&para;</a> Specification</h2>
+
+<p>
+  This SRFI is organized into multiple parts:
+</p>
+
+<ol>
+  <li><a href="#library">The type-specific libraries</a>.</li>
+  <li><a href="#implications">Optimization considerations.</a></li>
+  <li><a href="#considerations">Relationships between type-specific
+      libraries and number vectors.</a></li>
+  <li><a href="#reader-syntax">Recommendations for lexical syntax.</a></li>
+</ol>
+
+<h3 id="terminology"><a href="#terminology">&para;</a> Terminology</h3>
+
+<p>
+  All references to IEEE 754 refer to its 2019 revision.
+</p>
+
+<p>
+  A <dfn>representation</dfn> is a type of inexact number that has fixed
+  properties, like exponent range and mantissa width. Examples include
+  binary32, binary64, and posit32
+  (<a href="#posit2022">Gustafson 2022</a>).
+</p>
+
+<p>
+  An operation is <dfn>correctly rounded</dfn> if the returned value is
+  the same as if the operation was calculated to infinite precision, and
+  then rounded to fit in the resulting representation according to the
+  current rounding mode.
+</p>
+
+<p>
+  Operations are <dfn>non-stop</dfn> if all functions return a flonum
+  in the same format as the input, even if the result is a subnormal,
+  infinity, or NaN.
+</p>
+
+<p>
+   Square brackets [] are used to denote a group of arguments that are
+   optional, but all arguments must be present or absent. If one pair
+   of square brackets are nested in another pair, then the nested pair
+   is optional even when the other arguments are supplied.
+</p>
+
+<p>
+  In procedure arguments, it is an error if <var>endianness</var> is not the
+  symbol <code>little</code>, <code>big</code>, or an endianness
+  supplied by the macro in <code>(rnrs bytevectors)</code>. When
+  <var>endianness</var> is not supplied, it is the native endianness.
+</p>
+
+<p>
+  Requirements on implementations using RFC 2119 terminology
+  are marked up in strong text.
+</p>
+
+<h3 id="library"><a href="#library">&para;</a> Type-specific libraries</h3>
+
+<p>
+  The following library names, if available, <strong>must</strong>
+  implement the library described in the sections below.
+</p>
+
+<dl>
+<dt><code>(srfi ### binary16)</code></dt>
+<dd> Operates on IEEE 754 binary16 (aka half precision floating point)
+     values.
+</dd>
+<dt><code>(srfi ### binary32)</code></dt>
+<dd> Operates on IEEE 754 binary32 (aka single precision floating point)
+     values.
+</dd>
+<dt><code>(srfi ### binary64)</code></dt>
+<dd> Operates on IEEE 754 binary64 (aka double precision floating point)
+     values.
+</dd>
+<dt><code>(srfi ### binary128)</code></dt>
+<dd> Operates on IEEE 754 binary128 (aka quadruple precision floating point)
+     values.
+</dd>
+<dt><code>(srfi ### binary256)</code></dt>
+<dd> Operates on IEEE 754 binary256 (aka octuple precision floating point)
+     values.
+</dd>
+</dl>
+
+<p>
+  The implementation <strong>must</strong> export <code>(srfi ###)</code>,
+  which implements the same library. It <strong>should</strong> be the same
+  as one of the above libraries.
+</p>
+
+<p>
+  The following library names are reserved (where ⟨n⟩ is a base-10 numeral).
+  They are reserved because some of the functions in the flonum library
+  may not be appropriate for these format numbers. A future SRFI or Report
+  will define operations on these representations.
+</p>
+<dl>
+<dt><code>(srfi ### decimal</code>⟨n⟩<code>)</code></dt>
+<dd>Operates on IEEE 754 decimal formats.</dd>
+<dt><code>(srfi ### complex-</code>⟨format⟩<code>⟨n⟩)</code>  where ⟨format⟩ is either <code>binary</code> or <code>decimal</code></dt>
+<dd>Operates on complex numbers represented as two values in that IEEE
+    format.
+</dd>
+<dt><code>(srfi ### binary</code>⟨n⟩<code>)</code> for ⟨n⟩ not previously defined</dt>
+<dd>Reserved for future IEEE 754 revisions.</dd>
+</dl>
+
+<p>
+  An implementation <strong>may</strong> provide libraries with different
+  names than the ones above. Such a library <strong>should</strong>
+  implement all of the procedures described below. For example,
+  an implementation could provide <code>(srfi ### posit32)</code> for
+  operations on posits, with a similar API to the one below. However,
+  posits do not have infinite values, so <code>infinite?</code> would
+  not be exported.
+</p>
+
+<h4 id="library-desc"><a href="#library-desc">&para;</a> IEEE binary floating point library</h3>
+
+<p>
+  The binary floating point libraries exports the identifiers of
+  <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a>, with the following
+  modifications:
+</p>
+
+<ul>
+<li>
+  The identifiers are not prefixed with <code>fl</code>. Instead, they are
+  prefixed with <code>:</code>. (Exceptions: procedures that start
+  with <code>flonum</code> now start with <code>:flonum</code>.
+  The procedure <code>make-fllog-base</code> becomes
+  <code>:make-log-base</code>.)
+</li>
+<li>
+  The <code>fl-fast-fl+*</code> identifier is not exported.
+</li>
+<li>
+  The procedure <code>flnormalized?</code> is now <code>:normal?</code>,
+  and <code>fldenormalized?</code> is now <code>:subnormal?</code>.
+</li>
+<li>
+  The procedure <code>:flonum</code> <strong>must</strong> return a NaN
+  value if the argument is a non-real number.
+</li>
+<li>
+  The implementation <strong>must</strong> supply a mode such that
+  the two-argument versions of
+  <code>:+</code>, <code>:-</code>, <code>:*</code>,
+  <code>:/</code>, <code>:+*</code> (aka fused multiply-add), <code>:sqrt</code>,
+  <code>:abs</code>, <code>:absdiff</code>, <code>:posdiff</code>,
+  <code>:floor</code>, <code>:ceiling</code>, <code>:round</code>,
+  <code>:truncate</code> and <code>:remainder</code>
+  return correctly rounded values.
+</li>
+<li>
+  Implementations <strong>should</strong> have the other procedures return
+  correctly rounded values.
+</li>
+<li>
+  The implementation <strong>must</strong> supply a mode such that
+  arithmetic is non-stop. (Most implementation already satisfy this requirement.)
+</li>
+<li>
+  The identifiers in the <a href="#new-identifiers">new identifers</a>
+  section are exported.
+</li>
+</ul>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale</span>: Multiple floating-point
+  libraries may be pulled into the same library. To disambiguate them,
+  one would prefix them differently. This would mean that procedures
+  would look like <code>f32:fl+</code>, which is redundant. Hence
+  this SRFI uses the shorter <code>:</code> prefix. Then the above
+  can be imported as <code>f32:+</code> using <code>f32</code> as a prefix.
+</p>
+<p>
+  The operations that must return correctly rounded values are the
+  one that IEEE 754 mandates to be correctly rounded.
+</p>
+</div>
+
+<h4><a href="#library-summary">&para;</a> Library summary</h4>
+
+<p>
+  The following identifiers are exported:
+</p>
+<p class="never-break-inside">
+   <code>:e</code>
+   <code>:1/e</code>
+   <code>:e-2</code>
+   <code>:e-pi/4</code>
+   <code>:log2-e</code>
+   <code>:log10-e</code>
+   <code>:log-2</code>
+   <code>:1/log-2</code>
+   <code>:log-3</code>
+   <code>:log-pi</code>
+   <code>:log-10</code>
+   <code>:1/log-10</code>
+   <code>:pi</code>
+   <code>:1/pi</code>
+   <code>:2pi</code>
+   <code>:pi/2</code>
+   <code>:pi/4</code>
+   <code>:2/sqrt-pi</code>
+   <code>:pi-squared</code>
+   <code>:degree</code>
+   <code>:2/pi</code>
+   <code>:sqrt-2</code>
+   <code>:sqrt-3</code>
+   <code>:sqrt-5</code>
+   <code>:sqrt-10</code>
+   <code>:1/sqrt-2</code>
+   <code>:cbrt-2</code>
+   <code>:cbrt-3</code>
+   <code>:4thrt-2</code>
+   <code>:phi</code>
+   <code>:log-phi</code>
+   <code>:1/log-phi</code>
+   <code>:euler</code>
+   <code>:e-euler</code>
+   <code>:sin-1</code>
+   <code>:cos-1</code>
+   <code>:gamma-1/2</code>
+   <code>:gamma-1/3</code>
+   <code>:gamma-2/3</code>
+   <code>:greatest</code>
+   <code>:least</code>
+   <code>:epsilon</code>
+   <code>:integer-exponent-zero</code>
+   <code>:integer-exponent-nan</code>
+   <code>:flonum</code>
+   <code>:adjacent</code>
+   <code>:copysign</code>
+   <code>:make-flonum</code>
+   <code>:integer-fraction</code>
+   <code>:exponent</code>
+   <code>:integer-exponent</code>
+   <code>:normalized-fraction-exponent</code>
+   <code>:sign-bit</code>
+   <code>:flonum?</code>
+   <code>:=?</code>
+   <code>:&lt;?</code>
+   <code>:&gt;?</code>
+   <code>:&lt;=?</code>
+   <code>:&gt;=?</code>
+   <code>:unordered?</code>
+   <code>:max</code>
+   <code>:min</code>
+   <code>:integer?</code>
+   <code>:zero?</code>
+   <code>:positive?</code>
+   <code>:negative?</code>
+   <code>:odd?</code>
+   <code>:even?</code>
+   <code>:finite?</code>
+   <code>:infinite?</code>
+   <code>:nan?</code>
+   <code>:normal?</code>
+   <code>:subnormal?</code>
+   <code>:+</code>
+   <code>:*</code>
+   <code>:+*</code>
+   <code>:-</code>
+   <code>:/</code>
+   <code>:abs</code>
+   <code>:absdiff</code>
+   <code>:posdiff</code>
+   <code>:sgn</code>
+   <code>:numerator</code>
+   <code>:denominator</code>
+   <code>:floor</code>
+   <code>:ceiling</code>
+   <code>:round</code>
+   <code>:truncate</code>
+   <code>:exp</code>
+   <code>:exp2</code>
+   <code>:exp-1</code>
+   <code>:square</code>
+   <code>:sqrt</code>
+   <code>:cbrt</code>
+   <code>:hypot</code>
+   <code>:expt</code>
+   <code>:log</code>
+   <code>:log1+</code>
+   <code>:log2</code>
+   <code>:log10</code>
+   <code>:make-log-base</code>
+   <code>:sin</code>
+   <code>:cos</code>
+   <code>:tan</code>
+   <code>:asin</code>
+   <code>:acos</code>
+   <code>:atan</code>
+   <code>:sinh</code>
+   <code>:cosh</code>
+   <code>:tanh</code>
+   <code>:asinh</code>
+   <code>:acosh</code>
+   <code>:atanh</code>
+   <code>:quotient</code>
+   <code>:remainder</code>
+   <code>:remquo</code>
+   <code>:gamma</code>
+   <code>:loggamma</code>
+   <code>:first-bessel</code>
+   <code>:second-bessel</code>
+   <code>:erf</code>
+   <code>:erfc</code>
+   <a href="#rounding-mode"><code>:rounding-mode</code></a>
+   <a href="#features"><code>:features</code></a>
+   <a href="#read-random-flonum"><code>:read-random-flonum</code></a>
+   <a href="#round-with-ties-to-away"><code>:round/ties-to-away</code></a>
+   <a href="#byte-width"><code>:byte-width</code></a>
+   <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
+   <a href="#bytevector-flonum-set"><code>:bytevector-flonum-set!</code></a>
+   <a href="#string-to-flonum"><code>:string-&gt;flonum</code></a>
+   <a href="#flonum-to-string"><code>:flonum-&gt;string</code></a>
+</p>
+
+<h4><a href="#new-identifiers">&para;</a> New identifiers</h4>
+
+<p>The examples assume  use the <a href="#reader-syntax">optional
+   reader syntax suggestions</a> to denote values of different
+   repersentation.
+</p>
+
+<div class="feature" id="rounding-mode">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#rounding-mode">:rounding-mode</a>)</code>
+</div>
+
+<p>
+  Returns the current rounding mode for this flonum type. This SRFI
+  defines the following symbols which can be returned from this procedure.
+   The SRFI defers to the IEEE
+  754 standard for the complete definition of these rounding modes.
+  An implementation <strong>may</strong> add other rounding modes,
+  which <strong>should</strong> be symbols. For example, an implementation
+  with support for <a href="https://mpfr.org">GNU MPFR</a> may add MPFR's
+  additional rounding modes.
+</p>
+
+<dl>
+<dt><code>round-to-nearest/ties-to-even</code></dt>
+<dd>Operations are rounded to the nearest representable value, with ties broken by
+    returning the value with an even least significant digit. For
+    representations where that is ambiguous, the returned value is
+    the larger of the tie in magnitude. (IEEE 754 roundTiesToEven) </dd>
+<dt><code>round-to-nearest/ties-to-away</code></dt>
+<dd>Operations are rounded to the nearest representable value, with ties broken by
+    returning the tie value with the largest magnitude.
+    (roundTiesToAway)</dd>
+<dt><code>round-towards-positive</code></dt>
+<dd>Operations are rounded to the closest representable value not less than
+    the infinitely precise value. (IEEE 754 roundTowardsPositive)</dd>
+<dt><code>round-towards-negative</code></dt>
+<dd>Operations are rounded to the closest representable value not greater than
+    the infinitely precise value. (IEEE 754 roundTowardsNegative)</dd>
+<dt><code>round-towards-zero</code></dt>
+<dd>Operations are rounded to the closest representable value not greater than
+    in magnitude the infinitely precise value. (IEEE 754 roundTowardsZero)</dd>
+</dl>
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: This SRFI provides no portable way
+  to change the rounding mode because it is a major implementation burden
+  with little benefit. In a vacuum, the rounding mode is best
+  represented as a dynamic variable that can be <code>parameterize</code>d.
+  However, the rounding mode is generally a global variable, and can
+  sometimes be attached to individual instructions (RISC-V is an example).
+  Modifying the rounding mode is a pretty rare operation: an analysis of
+  RISC-V code saw no use of any mode besides roundTiesToEven for arithmetic
+  operations [<a href="zurstrassen2023">Zurstraßen 2023</a>].
+</p>
+<p>
+  In a similar vein, this SRFI provides no way of inspecting and raising
+  IEEE 754 exceptions. An example of an implementation that has
+  both IEEE 754 exception handling and rounding mode control is
+  <a href="#mitscheme2022">MIT Scheme</a>.
+</p>
+<p>
+  The rounding mode is independent of the behavior of the <code>round</code>
+  function.
+</p>
+</div>
+
+<div class="feature" id="features">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#features">:features</a>)</code>
+</div>
+
+<p>
+  Returns a list containing information about the floating point operations
+  in this library. The following symbols have defined meanings. An implementation
+  <strong>may</strong> add other features, which <strong>should</strong> be symbols. 
+</p>
+
+<dl>
+<dt><code>subnormals-are-zero</code></dt>
+<dd>Subnormal numbers are treated as zero. (This is sometimes called “DAZ,”
+    or “denormals are zero” mode, for historical reasons.)</dd>
+<dt><code>flush-to-zero</code></dt>
+<dd>An operation that would underflow and create a subnormal number instead
+    creates a zero. (This is sometimes called “FTZ.”)</dd>
+<dt><code>ieee-754-2019</code></dt>
+<dd>Arithmetic compiles with IEEE 754. In particular, the
+    operations that IEEE 754 requires to be correctly rounded are correctly
+    rounded. <strong>Must</strong> not
+    appear when <code>subnormals-are-zero</code> or <code>flush-to-zero</code>
+    appear.</dd>
+<dt><code>non-stop</code></dt>
+<dd>Arithmetic is non-stop (see above).</dd>
+<dt><code>fast-fma</code></dt>
+<dd>The function <code>(:+* x y z)</code> is at least as fast as or faster
+    than <code>(:+ (:* x y) z)</code>. (Fused multiply add must be rounded
+    correctly when IEEE 754 compliance mode is on, regardless of
+    <code>fast-fma</code> being available or not.)</dd>
+<dt><code>⟨name⟩-correctly-rounded</code> where ⟨name⟩ is a procedure from the
+    library without <code>:</code> prefixed</dt>
+<dd>The function ⟨name⟩ is always correctly rounded.
+    (When <code>ieee-754-2019</code> appears, then features corresponding
+     to functions the IEEE 754 be correctly rounded <strong>must not</strong>
+     appear.)</dd>
+</dd>
+</dl>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: DAZ/FTZ modes are usually enabled
+  by the compiler, or are baked-in features of the architecture. As such,
+  this SRFI does not provide a portable way to manipulate this mode.
+</p>
+<p>
+  This should not be confused with the
+  <a href="https://standards.scheme.org/r7rs-html5/index.html#features">
+  <code>features</code></a>
+  procedure in the <span class="report-name">R<sup>7</sup>RS</span>.
+  This is a run-time procedure that reports on the run-time environment,
+  and the flags may change over the runtime of the program.
+  These flags are not accessable through <code>cond-expand</code>.
+</p>
+</div>
+
+<div class="feature" id="read-random-flonum">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#read-random-flonum">:read-random-flonum</a>
+                          <var>binary-input-port</var>
+                          [<var>start</var> [<var>end</var>]])</code>
+</div>
+<p>
+  Returns a random flonum between <var>start</var> (default 0) exclusive and
+  <var>end</var> (default 1) exclusive calculated from the bytes from
+  <var>binary-input-port</var>. If the bytes from the port are uniformly
+  distributed, then the resulting flonum is drawn from a uniform distribution
+  of flonums between the two supplied numbers, to the best extent possible.
+</p>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale</span>: Floating point random number
+  generators may take a variable number of bytes to return an answer:
+  see for example <a href="campbell2014">Campbell 2014</a>. Because of
+  this, this procedure cannot take a bytevector. This procedure could
+  take an <a href="https://srfi.schemers.org/srfi-158/">SRFI 158</a>
+  generator, but those have issues as described in
+  <a href="https://srfi.schemers.org/srfi-271/">SRFI 271</a>.
+</p>
+
+<p>
+  This procedure requires that <em>any</em> flonum between the two ends
+  may be returned with roughly equal probability. This precludes some
+  methods such as filling in the lower 52 bits of a binary64 number,
+  because that does not sample all possible exponents. If one wants
+  this faster (and less accurate) sampling method, one can directly
+  manipulate the structure of the flonum using a bytevector and <a
+  href="#bytevector-flonum-ref"><code>bytevector-flonum-ref</code></a>.
+</p>
+
+<p>
+  It is not possible to pick a random flonum between two arbitrary finite
+  flonums uniformly. It is possible in special cases, including the
+  important case of (0,1): see <a href="#goualard2022">Goualard 2022</a>
+  for discussion and an algorithm that attempts to sample from arbitrary
+  intervals as uniformly as possible.
+</p>
+</div>
+
+<div class="feature" id="round-with-ties-to-away">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#round-with-ties-to-away">:round/ties-to-away</a>
+                          <var>fl</var>)</code>
+</div>
+<p>
+  Round <var>fl</var> to an integer flonum, with ties broken as in
+  roundTiesToAway. (C99 <code>round</code>).
+</p>
+
+<pre
+><code class="example-code">(:round/ties-to-away 2.5)</code> ⇒ 3.0
+<code class="example-code">(:round 2.5)</code> ⇒ 2.0
+<code class="example-code">(:round/ties-to-away 3.5)</code> ⇒ 4.0
+<code class="example-code">(:round 3.5)</code> ⇒ 4.0</pre>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: The <code>flround</code> procedure
+  in the <span class="report-name">R<sup>6</sup>RS</span> and
+  <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a> implements
+  Scheme’s <code>round</code> ties-to-even behavior, which is the
+  behavior of <code>roundeven</code> in C11.
+</div>
+
+<div class="feature" id="byte-width">
+<span class="category">(srfi ### ⟨library⟩)<br>value</span>
+<code class="signature"><a href="#byte-width">:byte-width</a></code>
+</div>
+<p>Size of the flonum in bytes.</p>
+
+<div class="feature" id="bytevector-flonum-ref">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#bytevector-flonum-ref">:bytevector-flonum-ref</a>
+                         <var>bv</var>
+                         <var>k</var>
+                         [<var>endianness</var>])</code>
+</div>
+<p>It is an error if <var>k</var> to <var>k</var> +
+   <a href="#byte-width"><code>:byte-width</code></a>
+   are not valid indices of <var>bv</var>.
+   If <var>endianness</var> is not supplied, it is an error if
+   <var>k</var> is not a multiple of <code>:byte-width</code>.
+</p>
+
+<p>Read the bytes in <var>bv</var> at <var>k</var> as a flonum of this
+   type, with the <var>endianness</var>.
+</p>
+
+<p>If the value is a NaN, then the NaN <strong>should not</strong> be coerced into
+   another NaN.
+</p>
+
+<pre><code class="no-bg">(import (scheme base) (prefix (srfi ### binary64) f64:))
+
+(define bv (make-bytevector f64:byte-width))
+(bytevector-u8-set! bv 0 #b01000000)
+(bytevector-u8-set! bv 1 #b00001001)
+(bytevector-u8-set! bv 2 #b00100001)
+(bytevector-u8-set! bv 3 #b11111011)
+(bytevector-u8-set! bv 4 #b01010100)
+(bytevector-u8-set! bv 5 #b01000100)
+(bytevector-u8-set! bv 6 #b00101101)
+(bytevector-u8-set! bv 7 #b00011000)</code>
+<code class="example-code">(f64:bytevector-flonum-ref bv 0 'big)</code> ⇒ 3.141592653589793116d0</pre>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale</span>: Some implementations, in
+  particular those that use NaN boxing, may only be able to represent
+  a limited set of NaNs. There were few requirements on
+  quiet versus signalling NaN formats until 2019. Different systems
+  may have different canonical NaNs.
+  For these reasons portable code should not expect that different NaNs
+  are distinguishable.
+</p>
+</div>
+
+<div class="feature" id="bytevector-flonum-set">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#bytevector-flonum-set">:bytevector-flonum-set!</a>
+                         <var>bv</var>
+                         <var>k</var>
+                         <var>fl</var>
+                         [<var>endianness</var>])</code>
+</div>
+<p>It is an error if <var>k</var> to <var>k</var> +
+   <a href="#byte-width"><code>:byte-width</code></a>
+   are not valid indices of <var>bv</var>.
+   If <var>endianness</var> is not supplied, it is an error if
+   <var>k</var> is not a multiple of <code>byte-width</code>.
+</p>
+
+<p>
+  Write <var>fl</var> to <var>bv</var> at <var>k</var> with
+  <var>endianness</var>.
+</p>
+
+<p>
+  This procedure and
+  <a href="#bytevetor-flonum-ref"><code>:bytevector-flonum-ref</code></a>
+  <strong>must</strong> to round-trip on all non-NaNs. That is, given a non-NaN flonum <var>fl</var>,
+</p>
+
+<pre><code class="example-code">
+  (let ((bv (make-bytevector <a href="#byte-width">:byte-width</a>)))
+    (:bytevector-flonum-set! bv 0 <var>fl</var>)
+    (eqv? <var>fl</var> (:bytevector-flonum-ref bv 0)))
+</code></pre>
+
+<p>always evaluates to <code>#t</code>. These procedures
+<strong>should</strong> round-trip NaNs.</p>
+
+<pre><code class="no-bg"
+>(import (scheme base) (prefix (srfi ### binary32) f32))
+
+(define bv (make-bytevector f32:byte-width))
+(f32:bytevector-flonum-set! bv 0 1.41421353816986083984f0 'little)</code>
+<code class="example-code">bv</code>⇒ #u8(#xf3 #x04 #xb5 #x3f)</pre>
+
+<div class="feature" id="string-to-flonum">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#string-to-flonum">:string-&gt;flonum</a>
+                         <var>string</var>
+                         [<var>radix</var>])</code>
+</div>
+<p>It is an error if <var>radix</var> is not 2, 8, 10, or 16. The value
+   of <var>radix</var> defaults to 10.</p>
+
+<p>Read <var>string</var> as a number in that representation.</p>
+
+<pre><code class="no-bg"
+>(import (scheme base)
+        (prefix (srfi ### binary64) f64)
+        (prefix (srfi ### binary128) f128))</code>
+<code class="example-code">(f128:string->flonum "1e400")</code> ⇒ 1l400
+<code class="example-code">(f64:string->flonum "1e400")</code> ⇒ #fl(binary64 +inf.0)</pre>
+
+<div class="feature" id="flonum-to-string">
+<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flonum-to-string">:flonum-&gt;string</a>
+                         <var>fl</var>
+                         [<var>radix</var>])</code>
+</div>
+<p>It is an error if <var>radix</var> is not 2, 8, 10, or 16. The value
+   of <var>radix</var> defaults to 10.</p>
+
+<p>Return a string that represents <var>fl</var> in <var>radix</var>.
+   This procedure must round-trip <var>fl</var> with
+   <a href="#string-to-flonum"><code>string-&gt;flonum</code></a> in the way that the
+   <span class="report-name">R<sup>7</sup>RS</span> specifies for
+   <a href="https://standards.scheme.org/r7rs-html5/index.html#number-%3Estring"><code>number-&gt;string</code></a>.
+</p>
+
+<h3 id="implications"><a href="#implications">&para;</a> Implications of IEEE arithmetic for optimizers</h3>
+
+<p>
+  When an implementation advertises that it implements,
+  e.g. <code>sqrt</code> with one rounding, then it <strong>must
+  not</strong> reorder or optimize the program if it would return
+  a different result. For example, <code>(/ 1 (sqrt x))</code>
+  may return a different result if implemented as two operations
+  literally, versus as one inverse square root operation. Implementations
+  <strong>should</strong> offer modes that do not optimize mathematical
+  operations at the expense of reproducibility.
+</p>
+
+<p>
+  Given the same rounding mode, input values,
+  with <code>ieee-754-2019</code> and <code>non-stop</code> as features,
+  any set of operations that are correctly rounded will produce the same
+  answers on one correctly conforming implementation as on another with
+  the same rounding mode, input values, and features implicating correct
+  rounding.
+</p>
+
+<h4 id="examples"><a href="#examples">&para;</a> Examples</h4>
+<p>
+  <em>This section is non-normative.</em>
+</p>
+<pre><code class="no-bg">(import (scheme base) (prefix (srfi ### binary32) f32))
+(unless (member 'ieee-754-2019 (f32:features))
+  (error "requires IEEE 754 arithmetic"))
+
+(define (f32:kahan-sum lst)
+  (do ((sum (f32:flonum 0.0))
+       (c (f32:flonum 0.0))
+       (lst lst (cdr lst)))
+      ((null? lst) sum)
+    (let* ((y (fl32:- (car lst) c))
+           (t (fl32:+ sum y)))
+      (set! c (fl32:- (fl32:- t sum) y))
+      (set! sum t))))
+</code></pre>
+
+<p>
+  This code will always calculate the correct results with the
+  desired algorithmic properties on any conforming implementation.
+  In particular, a conforming implementation will not re-order operations
+  in such a way to make the output values differ.
+</p>
+
+<h3 id="considerations"><a href="#considerations">&para;</a> Considerations for inexact number vectors</h3>
+
+<p>
+  <a href="https://srfi.schemers.org/srfi-4/">SRFI 4</a> specifies
+  f32vectors and f64vectors, and 
+  <a href="https://srfi.schemers.org/srfi-160/">SRFI 160</a> specifies
+  c64vectors and c128vectors. Implementors <strong>should</strong> make
+  the elements of each vector the corresponding representation in the
+  table. If the corresponding <code>cond-expand</code> feature is available,
+  then the elements of the number vector <strong>must</strong> be that type.
+</p>
+
+<table>
+  <tr><th>Vector</th><th>Representation</th><th><code>cond-expand</code> feature</th></tr>
+  <tr><td>f32vector</td><td>binary32</td><td><code>f32vector-is-binary32</code></td></tr>
+  <tr><td>f64vector</td><td>binary64</td><td><code>f64vector-is-binary64</code></td></tr>
+  <tr><td>c64vector</td> <td>each part is binary32</td><td><code>c64vector-is-binary32</code></td></tr>
+  <tr><td>c128vector</td><td>each part is binary64</td><td><code>c128vector-is-binary64</code></td></tr>
+</table>
+
+<h3 id="reader-syntax"><a href="#reader-syntax">&para;</a> Reader syntax suggestions</h3>
+
+<p>
+  On implementations with binary floating point of the
+  corresponding precisions, the exponent specifiers in the table
+  <strong>should</strong> map to the corresponding representation:
+</p>
+
+<table>
+  <tr><th>Exponent</th><th>Representation</th></tr>
+  <tr><td><code>s</code></td><td>binary16</td></tr>
+  <tr><td><code>f</code></td><td>binary32</td></tr>
+  <tr><td><code>d</code></td><td>binary64</td></tr>
+</table>
+
+<p>
+  Because there is not a lot of hardware with binary128 support,
+  this SRFI makes no recommendation for the <code>l</code> exponent.
+  Some formats that could be used for <code>l</code> include
+  binary128, x87 <code>long double</code>, and so-called
+  “double-double” arithmetic (see <a href="#dekker1971">Dekker 1971</a>).
+</p>
+
+<p>
+  On implementations with wildly varying representations, such as decimal
+  floats or posit numbers, one may wish to specify the number format in a
+  precise and portable manner. One way to do so is to
+  modify the grammar of the
+  <span class="report-name">R<sup>7</sup>RS</span> to be the following:
+</p>
+
+<pre class="normal-font">
+  ⟨real <var>R</var>⟩ → ⟨real numeral <var>R</var>⟩
+           | ⟨represented flonum <var>R</var>⟩
+  ⟨real numeral <var>R</var>⟩ → ⟨sign⟩ ⟨ureal <var>R</var>⟩ | ⟨infnan⟩
+  ⟨represented flonum <var>R</var>⟩ → <code>#fl(</code> ⟨representation name⟩ ⟨real numeral <var>R</var>⟩ <code>)</code>
+  ⟨representation name⟩ → <code>binary16</code> | <code>binary32</code> | …
+</pre>
+
+<p>
+  For example, <code>#fl(binary256 1e400)</code> reads as a finite number,
+  while <code>#fl(binary64 1e400)</code> reads the same as <code>#fl(binary64 +inf.0)</code>.
+  The syntax allows for complex numbers to be written with mixed precision: for example,
+  <code>#fl(binary32 1.0)+#fl(binary64 2.0)i</code>.
+</p>
+
+<h2 id="implementation"><a href="#implementation">&para;</a> Implementation</h2>
+
+<p>
+  An implementation should use the floating point operations available in hardware
+  as much as possible.
+  Most implementations only have one floating-point type (binary64), and those
+  implementations can copy most of their
+  <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a>
+  implementation to <code>(srfi ### binary64)</code> with minor renamings.
+</p>
+
+<p>
+  The simplest way to implement the inspection portion of this SRFI is an FFI to C’s
+  <a href="https://en.cppreference.com/w/c/numeric/fenv.html"><code>fenv.h</code></a>.
+  Checking the FTZ/DAZ mode (for example, on Intel CPUs) requires intrinsics to
+  check the MXCSR register.
+</p>
+
+<p>
+  Although it is possible to implement
+  <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
+  and
+  <a href="#bytevector-flonum-set"><code>:bytevector-flonum-set!</code></a>
+  in terms of <code>:normalized-fraction-exponent</code> and
+  <code>:make-flonum</code>, it is much easier to manipulate the byte
+  representation of the flonum directly.
+</p>
+
+<p>
+  A sample implementation will be provided that wraps MIT Scheme’s
+  floating point environment API.
+</p>
+
+<h2 id="bibliography"><a href="#bibliography">&para;</a> Bibliography</h2>
+
+<ol>
+  <li id="campbell2014">Taylor Campbell. 2014. Uniform random floats:
+        How to generate a double-precision floating-point number in [0,
+        1] uniformly at random given a uniform random source of bits.
+        Retrieved from
+        <a href="https://mumble.net/~campbell/2014/04/28/uniform-random-float">
+        https://mumble.net/~campbell/2014/04/28/uniform-random-float
+        </a>
+        on 2026-06-20.</li>
+  <li id="dekker1971">
+  T. J. Dekker. 1971. A Floating-Point Technique for Extending the
+  Available Precision. <i>Numer. Math</i>, <b>18</b>, 224-242.
+  <a href="https://doi.org/10.1007/BF01397083">doi:10.1007/BF01397083</a>.
+  </li>
+  <li>Laurent Fousse et al. 2007. MPFR: A multiple-precision binary floating-point library with correct rounding.
+      <i>ACM Trans. Math. Softw.</i>, <b>33</b>, 2. 
+      <a href="https://doi.org/10.1145/1236463.1236468">doi:10.1145/1236463.1236468</a>.
+      The version referenced in this SRFI is 4.2.2.
+  </li>
+  <li id="goualard2022">Frédéric Goualard. 2022
+    Drawing random floating-point numbers from an interval.
+    <i>ACM Transactions on Modeling and Computer Simulation</i>, <b>32</b> (3).
+    <a href="https://hal.science/hal-03282794v2">hal-03282794v2</a>
+  </li>
+  <li>John Gustafson et al. 2022. Standard for Posit Arithmetic.
+      Retrieved from
+      <a href="https://posithub.org/docs/posit_standard-2.pdf">
+      https://posithub.org/docs/posit_standard-2.pdf</a>
+      on 2026-06-20.</li>
+  <li>IEEE Computer Society. 2019.
+      IEEE Standard for Floating-Point Arithmetic (IEEE STD 754-2019).
+      <a href="https://dx.doi.org/10.1109/IEEESTD.2019.8766229"
+         >doi:10.1109/IEEESTD.2019.8766229</a>.
+      ISBN 978-1-5044-5924-2.</li>
+  <li id="kahan1997">William Kahan. 1997. Lecture Notes on the Status of
+      IEEE Standard 754 for Binary Floating-Point Arithmetic.
+      Retrieved from
+      <a href="https://people.eecs.berkeley.edu/~wkahan/ieee754status/IEEE754.PDF"
+      >https://people.eecs.berkeley.edu/~wkahan/ieee754status/IEEE754.PDF</a>
+      on 2026-06-20.</li>
+  <li id="kahan1998">William Kahan and Joseph Darcy. 1998. How Java’s Floating-Point
+      Hurts Everyone. Retrieved from
+      <a href="https://people.eecs.berkeley.edu/~wkahan/JAVAhurt.pdf">https://people.eecs.berkeley.edu/~wkahan/JAVAhurt.pdf</a>
+      on 2026-06-20.</li>
+  <li id="mitscheme2022">Massachusetts Institute of Technology. 2022.
+     Fixnum and Flonum Operations in MIT/GNU Scheme.
+     Retrieved from
+     <a href="https://www.gnu.org/software/mit-scheme/documentation/stable/mit-scheme-ref/Fixnum-and-Flonum-Operations.html">
+     https://www.gnu.org/software/mit-scheme/documentation/stable/mit-scheme-ref/Fixnum-and-Flonum-Operations.html     </a> on 2026-06-20.
+  </li>
+  <li id="zurstrassen2023">Niko Zurstraßen. 2023.
+      Evaluation of the RISC-V Floating Point Extensions F/D.
+      Retrieved from
+      <a href="https://www.chciken.com/risc-v/2023/08/06/evaluation-riscv-fd.html">
+      https://www.chciken.com/risc-v/2023/08/06/evaluation-riscv-fd.html
+      </a>
+      on 2026-06-20.</li>
+</ol>
+
+<h2 id="acknowledgements"><a href="#acknowledgements">&para;</a> Acknowledgements</h2>
+
+<p>
+  Thanks to those in Working Group 2 for discussing the semantics of
+  this SRFI.
+  In particular, I would like to thank Zhu Zihao for lots of information
+  gathering.
+</p>
+
+<p>
+  I thank Bradley Lucier for his input.
+</p>
+
+<p>
+  I thank the authors of SRFI 144, as this work builds on theirs.
+</p>
+
+<p>
+  I also thank William Kahan, whose work on IEEE 754 and his many complaints
+  about how programming language designers fail to understand it influenced
+  the design of this SRFI (even if I could not incorporate all of his
+  suggestions).
+</p>
+
+<h2 id="copyright"><a href="#copyright">&para;</a> Copyright</h2>
+<p>&copy; 2026 Peter McGoron.</p>
+
+<p>
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation files
+  (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:</p>
+
+<p>
+  The above copyright notice and this permission notice (including the
+  next paragraph) shall be included in all copies or substantial
+  portions of the Software.</p>
+
+<p>
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+  NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+  ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.</p>
+
+  <hr>
+  <address>Editor: <a href="mailto:srfi-editors+at+srfi+dot+schemers+dot+org">Arthur A. Gleckler</a></address></body></html>
