@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 -->
   <head>
     <meta charset="utf-8">
-    <title>SRFI ###: Type-specific Flonum Libraries</title>
+    <title>SRFI 276: Type-specific Flonum Libraries</title>
     <style>
             @media (prefers-color-scheme: light) {
               :root {
@@ -109,7 +109,7 @@ SPDX-License-Identifier: MIT
         ><img class="srfi-logo"
               src="https://srfi.schemers.org/srfi-logo.svg"
               alt="SRFI surfboard logo"
-        /></a>###: Type-specific Flonum Libraries</h1>
+        /></a>276: Type-specific Flonum Libraries</h1>
 
 <p>by Peter McGoron</p>
 
@@ -187,14 +187,14 @@ SPDX-License-Identifier: MIT
   <em>representation-specific libraries</em>. The functions exported from
   a specific library operate on a precisely defined number format. For
   example, if one wanted to operate on binary64 floating point numbers,
-  one can import <code>(srfi ### binary64)</code>.
+  one can import <code>(srfi 276 binary64)</code>.
 </p>
 
 <h3 id="speed-portability-and-ease-of-use"><a href="#speed-portability-and-ease-of-use">&para;</a> Speed and Portability vs. Ease of Use</h3>
 
 <p>
   One reason to use type-specific procedures is speed: the function
-  <code>sqrt</code> from <code>(srfi ### binary32)</code> can be compiled
+  <code>sqrt</code> from <code>(srfi 276 binary32)</code> can be compiled
   to a single <code>FSQRT</code> instruction on a RISC-V processor. One could also
   compile multiple square roots to a single vectorized <code>SQRTPS</code>
   instruction on an x86_64 processor with SSE2.
@@ -296,30 +296,30 @@ SPDX-License-Identifier: MIT
 </p>
 
 <dl>
-<dt><code>(srfi ### binary16)</code></dt>
+<dt><code>(srfi 276 binary16)</code></dt>
 <dd> Operates on IEEE 754 binary16 (aka half precision floating point)
      values.
 </dd>
-<dt><code>(srfi ### binary32)</code></dt>
+<dt><code>(srfi 276 binary32)</code></dt>
 <dd> Operates on IEEE 754 binary32 (aka single precision floating point)
      values.
 </dd>
-<dt><code>(srfi ### binary64)</code></dt>
+<dt><code>(srfi 276 binary64)</code></dt>
 <dd> Operates on IEEE 754 binary64 (aka double precision floating point)
      values.
 </dd>
-<dt><code>(srfi ### binary128)</code></dt>
+<dt><code>(srfi 276 binary128)</code></dt>
 <dd> Operates on IEEE 754 binary128 (aka quadruple precision floating point)
      values.
 </dd>
-<dt><code>(srfi ### binary256)</code></dt>
+<dt><code>(srfi 276 binary256)</code></dt>
 <dd> Operates on IEEE 754 binary256 (aka octuple precision floating point)
      values.
 </dd>
 </dl>
 
 <p>
-  The implementation <strong>must</strong> export <code>(srfi ###)</code>,
+  The implementation <strong>must</strong> export <code>(srfi 276)</code>,
   which implements the same library. It <strong>should</strong> be the same
   as one of the above libraries.
 </p>
@@ -331,13 +331,13 @@ SPDX-License-Identifier: MIT
   will define operations on these representations.
 </p>
 <dl>
-<dt><code>(srfi ### decimal</code>⟨n⟩<code>)</code></dt>
+<dt><code>(srfi 276 decimal</code>⟨n⟩<code>)</code></dt>
 <dd>Operates on IEEE 754 decimal formats.</dd>
-<dt><code>(srfi ### complex-</code>⟨format⟩<code>⟨n⟩)</code>  where ⟨format⟩ is either <code>binary</code> or <code>decimal</code></dt>
+<dt><code>(srfi 276 complex-</code>⟨format⟩<code>⟨n⟩)</code>  where ⟨format⟩ is either <code>binary</code> or <code>decimal</code></dt>
 <dd>Operates on complex numbers represented as two values in that IEEE
     format.
 </dd>
-<dt><code>(srfi ### binary</code>⟨n⟩<code>)</code> for ⟨n⟩ not previously defined</dt>
+<dt><code>(srfi 276 binary</code>⟨n⟩<code>)</code> for ⟨n⟩ not previously defined</dt>
 <dd>Reserved for future IEEE 754 revisions.</dd>
 </dl>
 
@@ -345,7 +345,7 @@ SPDX-License-Identifier: MIT
   An implementation <strong>may</strong> provide libraries with different
   names than the ones above. Such a library <strong>should</strong>
   implement all of the procedures described below. For example,
-  an implementation could provide <code>(srfi ### posit32)</code> for
+  an implementation could provide <code>(srfi 276 posit32)</code> for
   operations on posits, with a similar API to the one below. However,
   posits do not have infinite values, so <code>infinite?</code> would
   not be exported.
@@ -564,7 +564,7 @@ SPDX-License-Identifier: MIT
 </p>
 
 <div class="feature" id="rounding-mode">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#rounding-mode">:rounding-mode</a>)</code>
 </div>
 
@@ -624,7 +624,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <div class="feature" id="features">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#features">:features</a>)</code>
 </div>
 
@@ -681,7 +681,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <div class="feature" id="read-random-flonum">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#read-random-flonum">:read-random-flonum</a>
                           <var>binary-input-port</var>
                           [<var>start</var> [<var>end</var>]])</code>
@@ -725,7 +725,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <div class="feature" id="round-with-ties-to-away">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#round-with-ties-to-away">:round/ties-to-away</a>
                           <var>fl</var>)</code>
 </div>
@@ -750,13 +750,13 @@ SPDX-License-Identifier: MIT
 </div>
 
 <div class="feature" id="byte-width">
-<span class="category">(srfi ### ⟨library⟩)<br>value</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>value</span>
 <code class="signature"><a href="#byte-width">:byte-width</a></code>
 </div>
 <p>Size of the flonum in bytes.</p>
 
 <div class="feature" id="bytevector-flonum-ref">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#bytevector-flonum-ref">:bytevector-flonum-ref</a>
                          <var>bv</var>
                          <var>k</var>
@@ -777,7 +777,7 @@ SPDX-License-Identifier: MIT
    another NaN.
 </p>
 
-<pre><code class="no-bg">(import (scheme base) (prefix (srfi ### binary64) f64:))
+<pre><code class="no-bg">(import (scheme base) (prefix (srfi 276 binary64) f64:))
 
 (define bv (make-bytevector f64:byte-width))
 (bytevector-u8-set! bv 0 #b01000000)
@@ -803,7 +803,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <div class="feature" id="bytevector-flonum-set">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#bytevector-flonum-set">:bytevector-flonum-set!</a>
                          <var>bv</var>
                          <var>k</var>
@@ -838,14 +838,14 @@ SPDX-License-Identifier: MIT
 <strong>should</strong> round-trip NaNs.</p>
 
 <pre><code class="no-bg"
->(import (scheme base) (prefix (srfi ### binary32) f32))
+>(import (scheme base) (prefix (srfi 276 binary32) f32))
 
 (define bv (make-bytevector f32:byte-width))
 (f32:bytevector-flonum-set! bv 0 1.41421353816986083984f0 'little)</code>
 <code class="example-code">bv</code>⇒ #u8(#xf3 #x04 #xb5 #x3f)</pre>
 
 <div class="feature" id="string-to-flonum">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#string-to-flonum">:string-&gt;flonum</a>
                          <var>string</var>
                          [<var>radix</var>])</code>
@@ -857,13 +857,13 @@ SPDX-License-Identifier: MIT
 
 <pre><code class="no-bg"
 >(import (scheme base)
-        (prefix (srfi ### binary64) f64)
-        (prefix (srfi ### binary128) f128))</code>
+        (prefix (srfi 276 binary64) f64)
+        (prefix (srfi 276 binary128) f128))</code>
 <code class="example-code">(f128:string->flonum "1e400")</code> ⇒ 1l400
 <code class="example-code">(f64:string->flonum "1e400")</code> ⇒ #fl(binary64 +inf.0)</pre>
 
 <div class="feature" id="flonum-to-string">
-<span class="category">(srfi ### ⟨library⟩)<br>procedure</span>
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flonum-to-string">:flonum-&gt;string</a>
                          <var>fl</var>
                          [<var>radix</var>])</code>
@@ -904,7 +904,7 @@ SPDX-License-Identifier: MIT
 <p>
   <em>This section is non-normative.</em>
 </p>
-<pre><code class="no-bg">(import (scheme base) (prefix (srfi ### binary32) f32))
+<pre><code class="no-bg">(import (scheme base) (prefix (srfi 276 binary32) f32))
 (unless (member 'ieee-754-2019 (f32:features))
   (error "requires IEEE 754 arithmetic"))
 
@@ -1000,7 +1000,7 @@ SPDX-License-Identifier: MIT
   Most implementations only have one floating-point type (binary64), and those
   implementations can copy most of their
   <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a>
-  implementation to <code>(srfi ### binary64)</code> with minor renamings.
+  implementation to <code>(srfi 276 binary64)</code> with minor renamings.
 </p>
 
 <p>
