@@ -388,7 +388,7 @@ SPDX-License-Identifier: MIT
   implement all of the procedures described below. For example,
   an implementation could provide <code>(srfi 276 posit32)</code> for
   operations on posits, with a similar API to the one below. However,
-  posits do not have infinite values, so <code>infinite?</code> would
+  posits do not have infinite values, so <code>:infinite?</code> would
   not be exported.
 </p>
 
@@ -1010,12 +1010,12 @@ SPDX-License-Identifier: MIT
 
 <p>
   When an implementation advertises that it implements,
-  e.g. <code>sqrt</code> with one rounding, then it <strong>must
+  e.g. <code>:sqrt</code> with one rounding, then it <strong>must
   not</strong> reorder or optimize the program if it would return
-  a different result. For example, <code>(/ 1 (sqrt x))</code>
+  a different result. For example, <code>(:/ 1.0 (:sqrt x))</code>
   may return a different result if implemented as two operations
   literally, versus as one inverse square root operation. Implementations
-  <strong>should</strong> offer modes that do not optimize mathematical
+  <strong>may</strong> offer modes that optimize mathematical
   operations at the expense of reproducibility.
 </p>
 
