@@ -137,11 +137,6 @@ SPDX-License-Identifier: MIT
 
 <ul>
   <li>
-    Should there be an interface that allows one to inspect the
-    floating point interface of a compile target at expand time,
-    if the expand-time and run-time floating point semantics differ?
-  </li>
-  <li>
     Should this include conversion to/from f32 and f64 vectors,
     and should it specify that f32vectors are vectors of binary32
     numbers, etc?
@@ -162,10 +157,6 @@ SPDX-License-Identifier: MIT
   <li>
     To what extent can we specify correct rounding for multi-argument
     versions of procedures like <code>(:+ x y z w …)</code>?
-  </li>
-  <li>
-    Is <a href="#flonum-to-string">:flonum-&gt;string</a> redundant?
-    What does it do that regular <code>number->string</code> does not?
   </li>
   <li>
     Should this include more procedures, like the recommended procedures
@@ -367,19 +358,29 @@ SPDX-License-Identifier: MIT
 </p>
 
 <ul>
-<li>
-  The identifiers are not prefixed with <code>fl</code>. Instead, they are
-  prefixed with <code>:</code>. (Exceptions: procedures that start
-  with <code>flonum</code> now start with <code>:flonum</code>.
-  The procedure <code>make-fllog-base</code> becomes
-  <code>:make-log-base</code>.)
+<li>Identifiers are renamed according to the following table:
+    <table>
+    <tr><th>Old</th><th>New</th></tr>
+    <tr><td><code>fl-e-2</code></td><td><code>:e^2</code></td></tr>
+    <tr><td><code>fl-e-pi/4</code></td><td><code>:e^pi/4</code></td></tr>
+    <tr><td><code>fl-pi-squared</code></td><td><code>:pi^2</code></td></tr>
+    <tr><td><code>fl-e-euler</code></td><td><code>:e^euler</code></td></tr>
+    <tr><td><code>flonum</code></td><td><code>:flonum</code></td></tr>
+    <tr><td><code>flonum?</code></td><td><code>:flonum?</code></td></tr>
+    <tr><td><code>make-flonum</code></td><td><code>make-flonum</code></td></tr>
+    <tr><td><code>flnormalized?</code></td><td><code>:normal?</code></td></tr>
+    <tr><td><code>fldenormalized?</code></td><td><code>:subnormal?</code></td></tr>
+    <tr><td><code>make-fllog-base</code></td><td><code>:make-log-base</code></td></tr>
+    </table>
+</li>
+<li>Identifiers not covered by the table have their
+    <code>fl</code> or <code>fl-</code>
+    prefixes replaced by <code>:</code>. For example,
+    <code>flsqrt</code> becomes <code>:sqrt</code>
+    and <code>fl-euler</code> becomes <code>:euler</code>.
 </li>
 <li>
   The <code>fl-fast-fl+*</code> identifier is not exported.
-</li>
-<li>
-  The procedure <code>flnormalized?</code> is now <code>:normal?</code>,
-  and <code>fldenormalized?</code> is now <code>:subnormal?</code>.
 </li>
 <li>
   The procedure <code>:flonum</code> <strong>must</strong> return a NaN
@@ -432,8 +433,8 @@ SPDX-License-Identifier: MIT
 <p class="never-break-inside">
    <code>:e</code>
    <code>:1/e</code>
-   <code>:e-2</code>
-   <code>:e-pi/4</code>
+   <code>:e^2</code>
+   <code>:e^pi/4</code>
    <code>:log2-e</code>
    <code>:log10-e</code>
    <code>:log-2</code>
@@ -448,7 +449,7 @@ SPDX-License-Identifier: MIT
    <code>:pi/2</code>
    <code>:pi/4</code>
    <code>:2/sqrt-pi</code>
-   <code>:pi-squared</code>
+   <code>:pi^2</code>
    <code>:degree</code>
    <code>:2/pi</code>
    <code>:sqrt-2</code>
@@ -463,7 +464,7 @@ SPDX-License-Identifier: MIT
    <code>:log-phi</code>
    <code>:1/log-phi</code>
    <code>:euler</code>
-   <code>:e-euler</code>
+   <code>:e^euler</code>
    <code>:sin-1</code>
    <code>:cos-1</code>
    <code>:gamma-1/2</code>
@@ -523,6 +524,8 @@ SPDX-License-Identifier: MIT
    <code>:exp-1</code>
    <code>:square</code>
    <code>:sqrt</code>
+   <code>:rsqrt</code>
+   <code>:reciprocal</code>
    <code>:cbrt</code>
    <code>:hypot</code>
    <code>:expt</code>
@@ -560,7 +563,6 @@ SPDX-License-Identifier: MIT
    <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
    <a href="#bytevector-flonum-set"><code>:bytevector-flonum-set!</code></a>
    <a href="#string-to-flonum"><code>:string-&gt;flonum</code></a>
-   <a href="#flonum-to-string"><code>:flonum-&gt;string</code></a>
 </p>
 
 <h4 id="new-identifiers"><a href="#new-identifiers">&para;</a> New identifiers</h4>
@@ -755,6 +757,40 @@ SPDX-License-Identifier: MIT
   behavior of <code>roundeven</code> in C11.
 </div>
 
+<div class="feature" id="rsqrt">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#rsqrt">:rsqrt</a>
+                          <var>fl</var>)</code>
+</div>
+
+<p>
+  Calculates the recpirocal of the square root: i.e.
+  <sup>1</sup>/<sub>√<var>fl</var></sub>.
+</p>
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: Reciprocal square root is available
+  in many CPUs as a hardware operation.
+</p>
+</div>
+
+<div class="feature" id="reciprocal">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#reciprocal">:reciprocal</a>
+                          <var>fl</var>)</code>
+</div>
+
+<p>
+  Calculates the reciprocal of <var>fl</var>: i.e.
+  <sup>1</sup>/<sub><var>fl</var></sub>.
+</p>
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: Reciprocal is available in many
+  CPUs as a hardware operation.
+</p>
+</div>
+
 <div class="feature" id="byte-width">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
 <code class="signature"><a href="#byte-width">:byte-width</a></code>
@@ -859,30 +895,24 @@ SPDX-License-Identifier: MIT
 <p>It is an error if <var>radix</var> is not 2, 8, 10, or 16. The value
    of <var>radix</var> defaults to 10.</p>
 
-<p>Read <var>string</var> as a number in that representation.</p>
+<p>Read <var>string</var> as a number in that representation. This
+   procedure must round-trip with <code>number-&gt;string</code>.</p>
 
 <pre><code class="no-bg"
 >(import (scheme base)
         (prefix (srfi 276 binary64) f64)
         (prefix (srfi 276 binary128) f128))</code>
-<code class="example-code">(f128:string->flonum "1e400")</code> ⇒ 1l400
-<code class="example-code">(f64:string->flonum "1e400")</code> ⇒ #fl(binary64 +inf.0)</pre>
+<code class="example-code">(f128:string->flonum "1e400")</code> ⇒ #fl(binary128 1e400)
+<code class="example-code">(f64:string->flonum "1e400")</code> ⇒ #fl(binary64 +inf.0)
+<code class="example-code"
+>(let ((v #fl(binary128 1e400)))
+  (eqv? (f128:string->flonum
+         (number->string v))
+        v))</code> ⇒ #t
+</pre>
 
 <div class="feature" id="flonum-to-string">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flonum-to-string">:flonum-&gt;string</a>
-                         <var>fl</var>
-                         [<var>radix</var>])</code>
-</div>
-<p>It is an error if <var>radix</var> is not 2, 8, 10, or 16. The value
-   of <var>radix</var> defaults to 10.</p>
-
-<p>Return a string that represents <var>fl</var> in <var>radix</var>.
-   This procedure must round-trip <var>fl</var> with
-   <a href="#string-to-flonum"><code>string-&gt;flonum</code></a> in the way that the
-   <span class="report-name">R<sup>7</sup>RS</span> specifies for
-   <a href="https://standards.scheme.org/r7rs-html5/index.html#number-%3Estring"><code>number-&gt;string</code></a>.
-</p>
 
 <h3 id="implications"><a href="#implications">&para;</a> Implications of IEEE arithmetic for optimizers</h3>
 
@@ -910,24 +940,42 @@ SPDX-License-Identifier: MIT
 <p>
   <em>This section is non-normative.</em>
 </p>
-<pre><code class="no-bg">(import (scheme base) (prefix (srfi 276 binary32) f32))
+<pre><code class="no-bg"
+>(import (scheme base)
+        (prefix (srfi 276 binary32) f32)
+        (srfi 151)
+        (rnrs bytevectors) ; for bytevector serialization operations
+)
+
 (unless (member 'ieee-754-2019 (f32:features))
   (error "requires IEEE 754 arithmetic"))
 
 (define (f32:kahan-sum lst)
-  (do ((sum (f32:flonum 0.0))
-       (c (f32:flonum 0.0))
+  (do ((sum 0.0s0)
+       (c 0.0s0)
        (lst lst (cdr lst)))
       ((null? lst) sum)
     (let* ((y (fl32:- (car lst) c))
            (t (fl32:+ sum y)))
       (set! c (fl32:- (fl32:- t sum) y))
       (set! sum t))))
+
+(define (f32:fast-inverse-square-root number)
+  (let ((bv (make-bytevector f32:byte-width))
+        (x2 (f32:* number 0.5s0)))
+    (f32:bytevector-flonum-set! bv 0 number)
+    (let* ((i (bytevector-u32-native-ref bv 0))
+           (i (- #x5f3759df (arithmetic-shift i -1))))
+      (bytevector-u32-native-set! bv 0)
+      (let ((y (f32:bytevector-flonum-ref bv 0)))
+        (f32:* y (f32:- 1.5s0 (f32:* x2 y y)))))))
 </code></pre>
 
 <p>
   This code will always calculate the correct results with the
-  desired algorithmic properties on any conforming implementation.
+  desired algorithmic properties on any conforming implementation
+  that implements the binary32 format and follows the
+  syntax recommendations.
   In particular, a conforming implementation will not re-order operations
   in such a way to make the output values differ.
 </p>
