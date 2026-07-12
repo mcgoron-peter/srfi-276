@@ -566,7 +566,7 @@ SPDX-License-Identifier: MIT
    <a href="#rounding-mode"><code>:rounding-mode</code></a>
    <a href="#features"><code>:features</code></a>
    <a href="#read-random-flonum"><code>:read-random-flonum</code></a>
-   <a href="#round-with-ties-to-away"><code>:round/ties-to-away</code></a>
+   <a href="#round-away"><code>:round-away</code></a>
    <a href="#byte-width"><code>:byte-width</code></a>
    <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
    <a href="#bytevector-flonum-set"><code>:bytevector-flonum-set!</code></a>
@@ -740,9 +740,9 @@ SPDX-License-Identifier: MIT
 </p>
 </div>
 
-<div class="feature" id="round-with-ties-to-away">
+<div class="feature" id="round-away">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#round-with-ties-to-away">:round/ties-to-away</a>
+<code class="signature">(<a href="#round-away">:round-away</a>
                           <var>fl</var>)</code>
 </div>
 <p>
@@ -751,9 +751,9 @@ SPDX-License-Identifier: MIT
 </p>
 
 <pre
-><code class="example-code">(:round/ties-to-away 2.5)</code> ⇒ 3.0
+><code class="example-code">(:round-away 2.5)</code> ⇒ 3.0
 <code class="example-code">(:round 2.5)</code> ⇒ 2.0
-<code class="example-code">(:round/ties-to-away 3.5)</code> ⇒ 4.0
+<code class="example-code">(:round-away 3.5)</code> ⇒ 4.0
 <code class="example-code">(:round 3.5)</code> ⇒ 4.0</pre>
 
 <div class="boxed">
