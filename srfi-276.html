@@ -294,6 +294,41 @@ SPDX-License-Identifier: MIT
   are marked up in strong text.
 </p>
 
+<h3 id="precise"><a href="#precise">&para;</a> Precise representation of flonums</h3>
+
+<p>
+  The examples in the SRFI use an extension to the syntax of Scheme datums
+  that explicitly states the representation of a flonum. This extension
+  might be useful on implementations with wildly varying representations
+  flonum, such as decimal floats or posit numbers.
+</p>
+
+<p>
+  The following modification to the grammar implements this representation:
+</p>
+
+<pre class="normal-font">
+  ⟨real <var>R</var>⟩ → … | ⟨real numeral <var>R</var>⟩
+           | ⟨represented flonum <var>R</var>⟩
+  ⟨real numeral <var>R</var>⟩ → ⟨sign⟩ ⟨ureal <var>R</var>⟩ | ⟨infnan⟩
+  ⟨represented flonum <var>R</var>⟩ → <code>#fl(</code> ⟨representation name⟩ ⟨real numeral <var>R</var>⟩ <code>)</code>
+  ⟨representation name⟩ → <code>binary16</code> | <code>binary32</code> | …
+</pre>
+
+<p>
+  For example, <code>#fl(binary256 1e400)</code> reads as a finite number,
+  while <code>#fl(binary64 1e400)</code> reads the same as <code>#fl(binary64 +inf.0)</code>.
+  The syntax allows for complex numbers to be written with mixed precision: for example,
+  <code>#fl(binary32 1.0)+#fl(binary64 2.0)i</code>.
+</p>
+
+<p>
+  Implementing this reader syntax <em>is not</em> a requirement for
+  supporting this SRFI. The sample implementation does not have an
+  implementation of this syntax.
+</p>
+
+
 <h3 id="library"><a href="#library">&para;</a> Type-specific libraries</h3>
 
 <p>
@@ -568,17 +603,13 @@ SPDX-License-Identifier: MIT
    <a href="#read-random-flonum"><code>:read-random-flonum</code></a>
    <a href="#round-away"><code>:round-away</code></a>
    <a href="#byte-width"><code>:byte-width</code></a>
+   <a href="#totallt"><code>:total&lt;?</code></a>
    <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
    <a href="#bytevector-flonum-set"><code>:bytevector-flonum-set!</code></a>
    <a href="#string-to-flonum"><code>:string-&gt;flonum</code></a>
 </p>
 
 <h4 id="new-identifiers"><a href="#new-identifiers">&para;</a> New identifiers</h4>
-
-<p>The examples assume  use the <a href="#reader-syntax">optional
-   reader syntax suggestions</a> to denote values of different
-   representation.
-</p>
 
 <div class="feature" id="rounding-mode">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -838,7 +869,7 @@ SPDX-License-Identifier: MIT
 (bytevector-u8-set! bv 5 #b01000100)
 (bytevector-u8-set! bv 6 #b00101101)
 (bytevector-u8-set! bv 7 #b00011000)</code>
-<code class="example-code">(f64:bytevector-flonum-ref bv 0 'big)</code> ⇒ 3.141592653589793116d0</pre>
+<code class="example-code">(f64:bytevector-flonum-ref bv 0 'big)</code> ⇒ #fl(binary64 3.141592653589793116)</pre>
 
 <div class="boxed">
 <p>
@@ -851,6 +882,59 @@ SPDX-License-Identifier: MIT
   are distinguishable.
 </p>
 </div>
+
+<div class="feature" id="totallt">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#totallt">:total&lt?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
+</div>
+
+<p>
+  Imposes a total ordering on flonums consistent with IEEE 754. The
+  following describes the order:
+</p>
+
+<ol>
+  <li>If <code>(:&lt;? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
+      evaluates to <code>#t</code>, then this procedure returns
+      <code>#t</code>.
+  </li>
+  <li><code>(:total&lt;? -0.0 +0.0)</code> returns <code>#t</code>.
+  </li>
+  <li><code>(:total&lt;? +0.0 -0.0)</code> returns <code>#f</code>.
+  </li>
+  <li>If <code>(:&gt;=? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
+      evaluates to <code>#t</code> and both values are not zero, then this procedure returns
+      <code>#f</code>.
+  </li>
+  <li>Let <var>nan</var> be a particular NaN value. Then one of the two statements
+      <strong>must</strong> be true:
+      <ol>
+        <li>For every non-NaN flonum <var>fl</var>, <code>(:total&lt;? <var>nan</var> <var>fl</var>)</code>
+            evaluates to <code>#t</code>.
+        </li>
+        <li>For every non-NaN flonum <var>fl</var>, <code>(:total&lt;? <var>nan</var> <var>fl</var>)</code>
+            evaluates to <code>#f</code>.
+        </li>
+      </ol>
+      Thus a NaN value is either less than all non-NaNs, or greater than all non-NaNs.
+      Two different NaN values (in the sense of <code>eqv?</code>) <strong>may</strong> have
+      a different order with respect to non-NaN values.
+  </li>
+  <li>If <var>fl<sub>1</sub></var> and <var>fl<sub>2</sub></var> are both NaNs,
+      then it is unspecified which one occurs after the other in the
+      ordering.
+  </li>
+</ol>
+
+<p>
+  Although the ordering is underspecified, any implementation <strong>must</strong> make
+  choices consistent with the fact that <code>:total&lt;?</code> is a
+  total ordering. Implementations <strong>should</strong> order NaNs according
+  to their sign and if they are signalling/quiet, as described in
+  IEEE 754, and <strong>should</strong> order NaNs with the same sign and
+  signalling/quiet status by the total ordering of their unsigned integer
+  payloads.
+</p>
 
 <div class="feature" id="bytevector-flonum-set">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -891,7 +975,7 @@ SPDX-License-Identifier: MIT
 >(import (scheme base) (prefix (srfi 276 binary32) f32))
 
 (define bv (make-bytevector f32:byte-width))
-(f32:bytevector-flonum-set! bv 0 1.41421353816986083984f0 'little)</code>
+(f32:bytevector-flonum-set! bv 0 #fl(binary32 1.41421353816986083984) 'little)</code>
 <code class="example-code">bv</code>⇒ #u8(#xf3 #x04 #xb5 #x3f)</pre>
 
 <div class="feature" id="string-to-flonum">
@@ -1029,29 +1113,6 @@ SPDX-License-Identifier: MIT
   Some formats that could be used for <code>l</code> include
   binary128, x87 <code>long double</code>, and so-called
   “double-double” arithmetic (see <a href="#dekker1971">Dekker 1971</a>).
-</p>
-
-<p>
-  On implementations with wildly varying representations, such as decimal
-  floats or posit numbers, one may wish to specify the number format in a
-  precise and portable manner. One way to do so is to
-  modify the grammar of the
-  <span class="report-name">R<sup>7</sup>RS</span> to be the following:
-</p>
-
-<pre class="normal-font">
-  ⟨real <var>R</var>⟩ → ⟨real numeral <var>R</var>⟩
-           | ⟨represented flonum <var>R</var>⟩
-  ⟨real numeral <var>R</var>⟩ → ⟨sign⟩ ⟨ureal <var>R</var>⟩ | ⟨infnan⟩
-  ⟨represented flonum <var>R</var>⟩ → <code>#fl(</code> ⟨representation name⟩ ⟨real numeral <var>R</var>⟩ <code>)</code>
-  ⟨representation name⟩ → <code>binary16</code> | <code>binary32</code> | …
-</pre>
-
-<p>
-  For example, <code>#fl(binary256 1e400)</code> reads as a finite number,
-  while <code>#fl(binary64 1e400)</code> reads the same as <code>#fl(binary64 +inf.0)</code>.
-  The syntax allows for complex numbers to be written with mixed precision: for example,
-  <code>#fl(binary32 1.0)+#fl(binary64 2.0)i</code>.
 </p>
 
 <h2 id="implementation"><a href="#implementation">&para;</a> Implementation</h2>
