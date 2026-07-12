@@ -188,6 +188,14 @@ SPDX-License-Identifier: MIT
   one can import <code>(srfi 276 binary64)</code>.
 </p>
 
+<p>
+  This SRFI does not require that implementations support all the NaN
+  operations and values that IEEE 754-2019 supports. Implementations
+  that do support the full range of NaN values should implement
+  <a href="https://srfi.schemers.org/srfi-208/">SRFI 208</a>, which
+  is designed to support multiple inexact real formats.
+</p>
+
 <h3 id="speed-portability-and-ease-of-use"><a href="#speed-portability-and-ease-of-use">&para;</a> Speed and Portability vs. Ease of Use</h3>
 
 <p>
