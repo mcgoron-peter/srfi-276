@@ -431,9 +431,9 @@ SPDX-License-Identifier: MIT
 </li>
 <li>
   The implementation <strong>must</strong> supply a mode such that
-  the two-argument versions of
-  <code>:+</code>, <code>:-</code>, <code>:*</code>,
-  <code>:/</code>, <code>:+*</code> (AKA fused multiply-add), <code>:sqrt</code>,
+  the one-and-two-argument versions of
+  <code>:+</code>, <code>:-</code>, <code>:*</code>, the two argument
+  version of <code>:/</code>, along with <code>:+*</code> (AKA fused multiply-add), <code>:sqrt</code>,
   <code>:abs</code>, <code>:absdiff</code>, <code>:posdiff</code>,
   <code>:floor</code>, <code>:ceiling</code>, <code>:round</code>,
   <code>:truncate</code> and <code>:remainder</code>
@@ -452,6 +452,17 @@ SPDX-License-Identifier: MIT
   section are exported.
 </li>
 </ul>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>:
+  Only the <em>one and two argument</em> versions of the
+  the procedure <code>:+</code>, <code>:-</code>, <code>:*</code>,
+  along with the two argument version of <code>:/</code>, are
+  required to return correctly rounded values. The multiple argument
+  versions of these procedures, and the single argument version of
+  <code>:/</code>, are not required to be correctly rounded.
+</p></div>
 
 <div class="boxed">
 <p>
@@ -568,7 +579,6 @@ SPDX-License-Identifier: MIT
    <code>:square</code>
    <code>:sqrt</code>
    <code>:rsqrt</code>
-   <code>:reciprocal</code>
    <code>:cbrt</code>
    <code>:hypot</code>
    <code>:expt</code>
@@ -602,6 +612,7 @@ SPDX-License-Identifier: MIT
    <a href="#features"><code>:features</code></a>
    <a href="#read-random-flonum"><code>:read-random-flonum</code></a>
    <a href="#round-away"><code>:round-away</code></a>
+   <a href="#rsqrt"><code>:rsqrt</code></a>
    <a href="#byte-width"><code>:byte-width</code></a>
    <a href="#totallt"><code>:total&lt;?</code></a>
    <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
@@ -810,23 +821,6 @@ SPDX-License-Identifier: MIT
 <p>
   <span class="boxed-tag">Note</span>: Reciprocal square root is available
   in many CPUs as a hardware operation.
-</p>
-</div>
-
-<div class="feature" id="reciprocal">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#reciprocal">:reciprocal</a>
-                          <var>fl</var>)</code>
-</div>
-
-<p>
-  Calculates the reciprocal of <var>fl</var>: i.e.
-  <sup>1</sup>/<sub><var>fl</var></sub>.
-</p>
-<div class="boxed">
-<p>
-  <span class="boxed-tag">Note</span>: Reciprocal is available in many
-  CPUs as a hardware operation.
 </p>
 </div>
 
