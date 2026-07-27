@@ -1106,7 +1106,8 @@ SPDX-License-Identifier: MIT
   this SRFI makes no recommendation for the <code>l</code> exponent.
   Some formats that could be used for <code>l</code> include
   binary128, x87 <code>long double</code>, and so-called
-  “double-double” arithmetic (see <a href="#dekker1971">Dekker 1971</a>).
+  “double-double” arithmetic (see <a href="#dekker1971">Dekker 1971</a>
+  and <a href="#JoldesMullerPopescu2017">Joldes, Muller, and Popescu 2017</a>).
 </p>
 
 <h2 id="implementation"><a href="#implementation">&para;</a> Implementation</h2>
@@ -1140,6 +1141,11 @@ SPDX-License-Identifier: MIT
 <p>
   A sample implementation will be provided that wraps MIT Scheme’s
   floating-point environment API.
+</p>
+
+<p>
+  Implementations that implement SRFI 276 are encouraged to also export
+  SRFI 144 as a compatability library.
 </p>
 
 <h2 id="bibliography"><a href="#bibliography">&para;</a> Bibliography</h2>
@@ -1178,6 +1184,14 @@ SPDX-License-Identifier: MIT
       <a href="https://dx.doi.org/10.1109/IEEESTD.2019.8766229"
          >doi:10.1109/IEEESTD.2019.8766229</a>.
       ISBN 978-1-5044-5924-2.</li>
+  <li id="JoldesMullerPopescu2017">
+      Mioara Joldes, Jean-Michel Muller, Valentina Popescu. 2017.
+      Tight and rigourous error bounds for basic building
+      blocks of double-word arithmetic.
+      <i>ACM Trans. Math. Soft.</i>, <b>44</b>, 2, 15.
+      <a href="https://doi.org/10.1145/3121432">doi:10.1145/3121432</a>.
+      <a href="https://hal.science/hal-01351529v3">hal-01351529v3</a>.
+  </li>
   <li id="kahan1997">William Kahan. 1997. Lecture Notes on the Status of
       IEEE Standard 754 for Binary Floating-Point Arithmetic.
       Retrieved from
@@ -1233,7 +1247,7 @@ SPDX-License-Identifier: MIT
 <p>
   Permission is hereby granted, free of charge, to any person
   obtaining a copy of this software and associated documentation files
-  (the "Software"), to deal in the Software without restriction,
+  (the “Software”), to deal in the Software without restriction,
   including without limitation the rights to use, copy, modify, merge,
   publish, distribute, sublicense, and/or sell copies of the Software,
   and to permit persons to whom the Software is furnished to do so,
@@ -1245,7 +1259,7 @@ SPDX-License-Identifier: MIT
   portions of the Software.</p>
 
 <p>
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  THE SOFTWARE IS PROVIDED “AS IS,” WITHOUT WARRANTY OF ANY KIND,
   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
   NONINFRINGEMENT.  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS

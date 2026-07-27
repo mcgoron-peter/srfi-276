@@ -335,7 +335,7 @@
       ;;; FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
       ;;; OTHER DEALINGS IN THE SOFTWARE.
       (define (:integer-fraction x)
-        (unless (:flonum? x)
+        (unless (flo:flonum? x)
           (error "invalid argument" x))
         (let ((int (flo:truncate x)))
           (values int (flo:- x int))))
@@ -349,7 +349,7 @@
                  (values (flo:* 0.5 result1) (+ result2 1)))
                 (else
                  (values result1 result2))))
-        (unless (:flonum? x)
+        (unless (flo:flonum? x)
           (error "invalid argment" x))
         (cond ((flo:nan? x)    ; unspecified for NaN
                (values x 0))
