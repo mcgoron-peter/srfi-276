@@ -332,6 +332,19 @@ SPDX-License-Identifier: MIT
   implementation of this syntax.
 </p>
 
+<h3 id="argument-convention"><a href="#argument-convention">&para;</a> Argument conventions</h3>
+
+<p>
+  The argument names have the same meanings as the
+  <span class="report-name">R<sup>7</sup>RS</span>; it is an error if
+  the wrong arguments are passed to a procedure.
+</p>
+
+<p>
+  It is an error if any <var>fl</var> argument is not a flonum. It is an
+  error if any <var>ifl</var> argument is not an integer flonum,
+  decided by <code><a href="#flintegerp">flinteger?</a></code>.
+</p>
 
 <h3 id="library"><a href="#library">&para;</a> Library names</h3>
 
@@ -342,8 +355,6 @@ SPDX-License-Identifier: MIT
 <dt><code>(srfi 276)</code></dt>
 <dd>Floating point library of implementation-defined representation.
     This should be an IEEE-754 binary floating point representation.</dd>
-<dt><code>(srfi 276 rounding-mode)</code></dt>
-<dd>Procedures to query the rounding mode.</dd>
 </dl>
 
 <p>
@@ -397,6 +408,8 @@ SPDX-License-Identifier: MIT
 </p>
 
 <dl>
+<dt><code>(srfi 276 rounding-mode)</code></dt>
+<dd>Procedures to query the rounding mode.</dd>
 <dt><code>(srfi 276 with-rounding-mode)</code></dt>
 <dd>Operation on the rounding mode in a dynamic extent.</dd>
 <dt><code>(srfi 276 set-rounding-mode!)</code></dt>
@@ -426,20 +439,27 @@ SPDX-License-Identifier: MIT
   the floating point format is similar to the IEEE formats.
 </p>
 
+<div class="boxed">
 <p>
-  The identifiers are all prefixed with <code>:</code>.  This is
-  because multiple floating-point libraries may be pulled into the same
-  library. To disambiguate them, one would prefix them differently. Using
-  the <span class="report-name">R<sup>6</sup>RS</span> convention,
-  procedures would look like <code>f32:fl+</code>, which is redundant.
-  Using the naming convention in this SRFI, the above can be imported
-  as <code>f32:+</code> using <code>f32</code> as a prefix.
+  <span class="boxed-tag">Rationale:</span>
+  For compatability with previous code and familiarity, the procedures
+  retain their <code>fl</code> prefixes, even though there may be
+  multiple procedures in different libraries with the same name. This
+  is because most implementations only have one floating point type.
 </p>
+
+<p>
+  Previous versions of this SRFI removed the <code>fl</code> prefix
+  and instead prefixed everything with <code>:</code>. This has been
+  reverted because it optimized for the uncommon case, and not to
+  mention was somewhat unsightly.
+</p>
+</div>
 
 <p>
   Throughout all code examples, when the floating point representatoin
   is important, the identifiers will be prefixed with
-  <code>f64</code> for binary64 numbers, and <code>f32</code> for
+  <code>f64:</code> for binary64 numbers, and <code>f32:</code> for
   binary32 numbers. All other prefixes will be defined by import
   statements in the example code.
 </p>
@@ -448,139 +468,140 @@ SPDX-License-Identifier: MIT
   The following identifiers are exported:
 </p>
 <p class="never-break-inside">
-   <code>:e</code>
-   <code>:1/e</code>
-   <code>:e^2</code>
-   <code>:e^pi/4</code>
-   <code>:log2-e</code>
-   <code>:log10-e</code>
-   <code>:log-2</code>
-   <code>:1/log-2</code>
-   <code>:log-3</code>
-   <code>:log-pi</code>
-   <code>:log-10</code>
-   <code>:1/log-10</code>
-   <code>:pi</code>
-   <code>:1/pi</code>
-   <code>:2pi</code>
-   <code>:pi/2</code>
-   <code>:pi/4</code>
-   <code>:2/sqrt-pi</code>
-   <code>:pi^2</code>
-   <code>:degree</code>
-   <code>:2/pi</code>
-   <code>:sqrt-2</code>
-   <code>:sqrt-3</code>
-   <code>:sqrt-5</code>
-   <code>:sqrt-10</code>
-   <code>:1/sqrt-2</code>
-   <code>:cbrt-2</code>
-   <code>:cbrt-3</code>
-   <code>:4thrt-2</code>
-   <code>:phi</code>
-   <code>:log-phi</code>
-   <code>:1/log-phi</code>
-   <code>:euler</code>
-   <code>:e^euler</code>
-   <code>:sin-1</code>
-   <code>:cos-1</code>
-   <code>:gamma-1/2</code>
-   <code>:gamma-1/3</code>
-   <code>:gamma-2/3</code>
-   <code>:greatest</code>
-   <code>:least</code>
-   <code>:epsilon</code>
-   <code>:integer-exponent-zero</code>
-   <code>:integer-exponent-nan</code>
-   <code>:flonum</code>
-   <code>:adjacent</code>
-   <code>:copysign</code>
-   <code>:make-flonum</code>
-   <code>:integer-fraction</code>
-   <code>:exponent</code>
-   <code>:integer-exponent</code>
-   <code>:normalized-fraction-exponent</code>
-   <code>:sign-bit</code>
-   <code>:flonum?</code>
-   <code>:=?</code>
-   <code>:&lt;?</code>
-   <code>:&gt;?</code>
-   <code>:&lt;=?</code>
-   <code>:&gt;=?</code>
-   <code>:unordered?</code>
-   <code>:max</code>
-   <code>:min</code>
-   <code>:integer?</code>
-   <code>:zero?</code>
-   <code>:positive?</code>
-   <code>:negative?</code>
-   <code>:odd?</code>
-   <code>:even?</code>
-   <code>:finite?</code>
-   <code>:infinite?</code>
-   <code>:nan?</code>
-   <code>:normal?</code>
-   <code>:subnormal?</code>
-   <code>:+</code>
-   <code>:*</code>
-   <code>:+*</code>
-   <code>:-</code>
-   <code>:/</code>
-   <code>:abs</code>
-   <code>:absdiff</code>
-   <code>:posdiff</code>
-   <code>:sgn</code>
-   <code>:numerator</code>
-   <code>:denominator</code>
-   <code>:floor</code>
-   <code>:ceiling</code>
-   <code>:round</code>
-   <code>:truncate</code>
-   <code>:exp</code>
-   <code>:exp2</code>
-   <code>:exp-1</code>
-   <code>:square</code>
-   <code>:sqrt</code>
-   <code>:rsqrt</code>
-   <code>:cbrt</code>
-   <code>:hypot</code>
-   <code>:expt</code>
-   <code>:log</code>
-   <code>:log1+</code>
-   <code>:log2</code>
-   <code>:log10</code>
-   <code>:make-log-base</code>
-   <code>:sin</code>
-   <code>:cos</code>
-   <code>:tan</code>
-   <code>:asin</code>
-   <code>:acos</code>
-   <code>:atan</code>
-   <code>:sinh</code>
-   <code>:cosh</code>
-   <code>:tanh</code>
-   <code>:asinh</code>
-   <code>:acosh</code>
-   <code>:atanh</code>
-   <code>:quotient</code>
-   <code>:remainder</code>
-   <code>:remquo</code>
-   <code>:gamma</code>
-   <code>:loggamma</code>
-   <code>:first-bessel</code>
-   <code>:second-bessel</code>
-   <code>:erf</code>
-   <code>:erfc</code>
-   <a href="#rounding-mode"><code>:rounding-mode</code></a>
-   <a href="#features"><code>:features</code></a>
-   <a href="#read-random-flonum"><code>:read-random-flonum</code></a>
-   <a href="#round-away"><code>:round-away</code></a>
-   <a href="#rsqrt"><code>:rsqrt</code></a>
-   <a href="#byte-width"><code>:byte-width</code></a>
-   <a href="#totallt"><code>:total&lt;?</code></a>
-   <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
-   <a href="#bytevector-flonum-set"><code>:bytevector-flonum-set!</code></a>
-   <a href="#string-to-flonum"><code>:string-&gt;flonum</code></a>
+   <code>fl-e</code>
+   <code>fl-1/e</code>
+   <code>fl-e^2</code>
+   <code>fl-e^pi/4</code>
+   <code>fl-log2-e</code>
+   <code>fl-log10-e</code>
+   <code>fl-log-2</code>
+   <code>fl-1/log-2</code>
+   <code>fl-log-3</code>
+   <code>fl-log-pi</code>
+   <code>fl-log-10</code>
+   <code>fl-1/log-10</code>
+   <code>fl-pi</code>
+   <code>fl-1/pi</code>
+   <code>fl-2pi</code>
+   <code>fl-pi/2</code>
+   <code>fl-pi/4</code>
+   <code>fl-2/sqrt-pi</code>
+   <code>fl-pi^2</code>
+   <code>fl-degree</code>
+   <code>fl-2/pi</code>
+   <code>fl-sqrt-2</code>
+   <code>fl-sqrt-3</code>
+   <code>fl-sqrt-5</code>
+   <code>fl-sqrt-10</code>
+   <code>fl-1/sqrt-2</code>
+   <code>fl-cbrt-2</code>
+   <code>fl-cbrt-3</code>
+   <code>fl-4thrt-2</code>
+   <code>fl-phi</code>
+   <code>fl-log-phi</code>
+   <code>fl-1/log-phi</code>
+   <code>fl-euler</code>
+   <code>fl-e^euler</code>
+   <code>fl-sin-1</code>
+   <code>fl-cos-1</code>
+   <code>fl-gamma-1/2</code>
+   <code>fl-gamma-1/3</code>
+   <code>fl-gamma-2/3</code>
+   <code>fl-greatest</code>
+   <code>fl-least</code>
+   <code>fl-epsilon</code>
+   <code>fl-integer-exponent-zero</code>
+   <code>fl-integer-exponent-nan</code>
+   <code>flonum</code>
+   <code>fladjacent</code>
+   <code>flcopysign</code>
+   <code>flmake-flonum</code>
+   <code>flinteger-fraction</code>
+   <code>flexponent</code>
+   <code>flinteger-exponent</code>
+   <code>flnormalized-fraction-exponent</code>
+   <code>flsign-negative?</code>
+   <code>flonum?</code>
+   <code>fl=?</code>
+   <code>fl&lt;?</code>
+   <code>fl&gt;?</code>
+   <code>fl&lt;=?</code>
+   <code>fl&gt;=?</code>
+   <code>flunordered?</code>
+   <code>flmax</code>
+   <code>flmin</code>
+   <code>flinteger?</code>
+   <code>flzero?</code>
+   <code>flpositive?</code>
+   <code>flnegative?</code>
+   <code>flodd?</code>
+   <code>fleven?</code>
+   <code>flfinite?</code>
+   <code>flinfinite?</code>
+   <code>flnan?</code>
+   <code>flnormal?</code>
+   <code>flsubnormal?</code>
+   <code>fl+</code>
+   <code>fl*</code>
+   <code>fl+*</code>
+   <code>fl-</code>
+   <code>fl/</code>
+   <code>flabs</code>
+   <code>flabsdiff</code>
+   <code>flposdiff</code>
+   <code>flsgn</code>
+   <code>flnumerator</code>
+   <code>fldenominator</code>
+   <code>flfloor</code>
+   <code>flceiling</code>
+   <code>flround</code>
+   <code>fltruncate</code>
+   <code>flexp</code>
+   <code>flexp2</code>
+   <code>flexp-1</code>
+   <code>flsquare</code>
+   <code>flsqrt</code>
+   <code>flrsqrt</code>
+   <code>flcbrt</code>
+   <code>flhypot</code>
+   <code>flexpt</code>
+   <code>fllog</code>
+   <code>fllog1+</code>
+   <code>fllog2</code>
+   <code>fllog10</code>
+   <code>make-fllog-base</code>
+   <code>flsin</code>
+   <code>flcos</code>
+   <code>fltan</code>
+
+  <code>flasin</code>
+   <code>flacos</code>
+   <code>flatan</code>
+   <code>flsinh</code>
+   <code>flcosh</code>
+   <code>fltanh</code>
+   <code>flasinh</code>
+   <code>flacosh</code>
+   <code>flatanh</code>
+   <code>flquotient</code>
+   <code>flremainder</code>
+   <code>flremquo</code>
+   <code>flgamma</code>
+   <code>flloggamma</code>
+   <code>flfirst-bessel</code>
+   <code>flsecond-bessel</code>
+   <code>flerf</code>
+   <code>flerfc</code>
+   <a href="#rounding-mode"><code>flrounding-mode</code></a>
+   <a href="#features"><code>flfeatures</code></a>
+   <a href="#read-random-flonum"><code>flread-random-flonum</code></a>
+   <a href="#round-away"><code>flround-away</code></a>
+   <a href="#rsqrt"><code>flrsqrt</code></a>
+   <a href="#byte-width"><code>flbyte-width</code></a>
+   <a href="#totallt"><code>fltotal&lt;?</code></a>
+   <a href="#bytevector-flonum-ref"><code>bytevector-flonum-ref</code></a>
+   <a href="#bytevector-flonum-set"><code>bytevector-flonum-set!</code></a>
+   <a href="#string-to-flonum"><code>string-&gt;flonum</code></a>
 </p>
 
 <h4 id="numeric-constants"><a href="#numeric-constants">&para;</a> Numeric constants</h4>
@@ -680,9 +701,9 @@ SPDX-License-Identifier: MIT
 
 <h4 id="implementation-constants"><a href="#implementation-constants">&para;</a> Implementation constants</h4>
 
-<div class="feature" id="radix">
+<div class="feature" id="flradix">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#radix">:radix</a></code>
+<code class="signature"><a href="#flradix">fl-radix</a></code>
 </div>
 
 <p>
@@ -691,9 +712,9 @@ SPDX-License-Identifier: MIT
   value throughout this SRFI.
 </p>
 
-<div class="feature" id="precision">
+<div class="feature" id="flprecision">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#precision">:precision</a></code>
+<code class="signature"><a href="#flprecision">fl-precision</a></code>
 </div>
 
 <p>
@@ -709,9 +730,9 @@ SPDX-License-Identifier: MIT
   is 16 (16 decimal digits).
 </div>
 
-<div class="feature" id="maximum-exponent">
+<div class="feature" id="fl-maximum-exponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#maximum-exponent">:maximum-exponent</a></code>
+<code class="signature"><a href="#fl-maximum-exponent">fl-maximum-exponent</a></code>
 </div>
 
 <p>
@@ -720,9 +741,9 @@ SPDX-License-Identifier: MIT
   can have, represented as an exact integer. For binary64 numbers, this is 1023.
 </p>
 
-<div class="feature" id="minimum-exponent">
+<div class="feature" id="fl-minimum-exponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#minimum-exponent">:minimum-exponent</a></code>
+<code class="signature"><a href="#fl-minimum-exponent">fl-minimum-exponent</a></code>
 </div>
 
 <p>
@@ -732,42 +753,42 @@ SPDX-License-Identifier: MIT
   <code>(- 1 :maximum-exponent)</code>.
 </p>
 
-<div class="feature" id="greatest">
+<div class="feature" id="fl-greatest">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#greatest">:greatest</a></code>
+<code class="signature"><a href="#fl-greatest">fl-greatest</a></code>
 </div>
 
 <p>
   The largest normalized floating point number.
 </p>
 
-<div class="feature" id="least">
+<div class="feature" id="fl-least">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#least">:least</a></code>
+<code class="signature"><a href="#fl-least">fl-least</a></code>
 </div>
 
 <p>
   The smallest positive floating point number. This number may not be normalized.
 </p>
 
-<div class="feature" id="least-normal">
+<div class="feature" id="fl-least-normal">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#least-normal">:least-normal</a></code>
+<code class="signature"><a href="#fl-least-normal">fl-least-normal</a></code>
 </div>
 
 <p>
   The smallest positive normal floating point number.
 </p>
 
-<div class="feature" id="epsilon">
+<div class="feature" id="fl-epsilon">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#epsilon">:epsilon</a></code>
+<code class="signature"><a href="#epsilon">fl-epsilon</a></code>
 </div>
 
 <p>
   The difference between 1.0 and the least normalized value greater than
   1.0 that is representable in this type. This is defined as
-  <code>(:- (:adjacent 1.0 +inf.0) 1.0)</code>.
+  <code>(fl- (fladjacent 1.0 +inf.0) 1.0)</code>.
 </p>
 
 <div class="boxed">
@@ -777,9 +798,9 @@ SPDX-License-Identifier: MIT
   This definition is the same as C's definition.
 </div>
 
-<div class="feature" id="byte-width">
+<div class="feature" id="fl-byte-width">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#byte-width">:byte-width</a></code>
+<code class="signature"><a href="#fl-byte-width">fl-byte-width</a></code>
 </div>
 <p>Size of the flonum in bytes as an exact integer. For the binary64 representation, this
    is 8.</p>
@@ -787,49 +808,49 @@ SPDX-License-Identifier: MIT
 <h4 id="constructors"><a href="#constructors">&para;</a> Constructors</h4>
 <div class="feature" id="flonum">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flonum">:flonum</a> <var>z</var>)</code>
+<code class="signature">(<a href="#flonum">flonum</a> <var>z</var>)</code>
 </div>
 
 <p>Convert a number into a flonum.</p>
 
 <p>If <var>z</var> is not real, then a NaN is returned.</p>
 
-<p>If <var>x</var> is exact, then it is converted to inexact before the
+<p>If <var>z</var> is exact, then it is converted to inexact before the
    following rules are applied.
 </p>
 
-<p>If <var>x</var> is a signed zero, return a zero flonum with the sign
-   of <var>x</var>.
+<p>If <var>z</var> is a signed zero, return a zero flonum with the sign
+   of <var>z</var>.
 </p>
 
 <p>
-   If <var>x</var> is a finite number, and there is a flonum that is
+   If <var>z</var> is a finite number, and there is a flonum that is
    equal to it in the sense of <code>=</code>, return that flonum.
 </p>
 
 <p>
-  If <var>x</var> is a finite number that is between two flonums,
+  If <var>z</var> is a finite number that is between two flonums,
   return the closest flonum, rounding in an implementation defined manner.
 </p>
 
 <p>
-  If <var>x</var> is a finite number that is greater than all flonums,
+  If <var>z</var> is a finite number that is greater than all flonums,
   or less than all flonums, either the closest flonum or the appropriately
   signed infinity is returned.
 </p>
 
 <p>
-   If <var>x</var> is an infinite number, then return an infinite flonum
+   If <var>z</var> is an infinite number, then return an infinite flonum
    with the appropriate sign.
 </p>
 
 <p>
-   If <var>x</var> is a NaN, return a NaN.
+   If <var>z</var> is a NaN, return a NaN.
 </p>
 
-<div class="feature" id="adjacent">
+<div class="feature" id="fladjacent">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#adjacent">:adjacent</a> <var>fl</var><sub>1</sub> <var>fl</var><sub>2</sub>)</code>
+<code class="signature">(<a href="#fladjacent">fladjacent</a> <var>fl</var><sub>1</sub> <var>fl</var><sub>2</sub>)</code>
 </div>
 <p>
   If <var>fl</var><sub>1</sub> = <var>fl</var><sub>2</sub>, returns
@@ -842,12 +863,12 @@ SPDX-License-Identifier: MIT
 </p>
 
 <pre
-><code class="example-code">(f64:adjacent 1.0 +inf.0)</code> ⇒ #fl(binary64 1.0000000000000002)</code>
+><code class="example-code">(f64:fladjacent 1.0 +inf.0)</code> ⇒ #fl(binary64 1.0000000000000002)</code>
 </pre>
 
-<div class="feature" id="copysign">
+<div class="feature" id="flcopysign">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#copysign">:copysign</a> <var>fl</var><sub>1</sub> <var>fl</var><sub>2</sub>)</code>
+<code class="signature">(<a href="#flcopysign">flcopysign</a> <var>fl</var><sub>1</sub> <var>fl</var><sub>2</sub>)</code>
 </div>
 
 <p>
@@ -856,20 +877,20 @@ SPDX-License-Identifier: MIT
 </p>
 
 <pre
-><code class="example-code">(:copysign +inf.0 -1.0)</code> ⇒ -inf.0</code>
-<code class="example-code">(:copysign +0.0 -1.0)</code> ⇒ -0.0</code>
+><code class="example-code">(flcopysign +inf.0 -1.0)</code> ⇒ -inf.0</code>
+<code class="example-code">(flcopysign +0.0 -1.0)</code> ⇒ -0.0</code>
 </pre>
 
 <div class="feature" id="make-flonum">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#make-flonum">:make-flonum</a> <var>fl</var> <var>n</var>)</code>
+<code class="signature">(<a href="#make-flonum">make-flonum</a> <var>fl</var> <var>n</var>)</code>
 </div>
 
 <p>
   Return <var>fl</var>×<var>b</var><sup><var>n</var></sup> correctly rounded.
   The allowed values of <var>n</var> are implementation-dependent and
   may depend on <var>fl</var>. However, this procedure must round-trip
-  with <a href="#normalized-fraction-exponent"><code>:normalized-fraction-exponent</code></a>.
+  with <a href="#flnormalized-fraction-exponent"><code>normalized-fraction-exponent</code></a>.
 </p>
 <div class="boxed">
   <span class="boxed-tag">Note:</span>
@@ -882,9 +903,9 @@ SPDX-License-Identifier: MIT
 
 <h4 id="accessors"><a href="#accessors">&para;</a> Accessors</h4>
 
-<div class="feature" id="integer-fraction">
+<div class="feature" id="flinteger-fraction">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#integer-fraction">:integer-fraction</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flinteger-fraction">flinteger-fraction</a> <var>fl</var>)</code>
 </div>
 <p>
   Returns two values, the integral part of <var>fl</var> as a flonum
@@ -897,16 +918,16 @@ SPDX-License-Identifier: MIT
 
 <p>
   If <var>fl</var> is infinity, the integral part is <var>fl</var>, and
-  the fractional part is <code>(:copysign 0.0 <var>fl</var>)</code>.
+  the fractional part is <code>(flcopysign 0.0 <var>fl</var>)</code>.
 </p>
 
 <p>
   If <var>fl</var> is a NaN, then a NaN is returned for both values.
 </p>
 
-<div class="feature" id="exponent">
+<div class="feature" id="flexponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#exponent">:exponent</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flexponent">flexponent</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -923,9 +944,9 @@ SPDX-License-Identifier: MIT
   If <var>fl</var> is infinity, return <var>fl</var>.
 </p>
 
-<div class="feature" id="normalized-fraction-exponent">
+<div class="feature" id="flnormalized-fraction-exponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#normalized-fraction-exponent">:normalized-fraction-exponent</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flnormalized-fraction-exponent">flnormalized-fraction-exponent</a> <var>fl</var>)</code>
 </div>
 <p>
   Returns two values, a correctly signed fraction <var>y</var> whose
@@ -953,32 +974,32 @@ SPDX-License-Identifier: MIT
   <code>frexp</code> in C.
 </div>
 
-<div class="feature" id="integer-exponent">
+<div class="feature" id="flinteger-exponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#integer-exponent">:integer-exponent</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flinteger-exponent">flinteger-exponent</a> <var>fl</var>)</code>
 </div>
-<div class="feature" id="integer-exponent-zero">
+<div class="feature" id="fl-integer-exponent-zero">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#integer-exponent-zero">:integer-exponent-zero</a></code>
+<code class="signature"><a href="#fl-integer-exponent-zero">fl-integer-exponent-zero</a></code>
 </div>
-<div class="feature" id="integer-exponent-nan">
+<div class="feature" id="fl-integer-exponent-nan">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#integer-exponent-nan">:integer-exponent-nan</a></code>
+<code class="signature"><a href="#fl-integer-exponent-nan">fl-integer-exponent-nan</a></code>
 </div>
 
 <p>
-  Returns the same as <a href="#exponent"><code>:exponent</code></a>
+  Returns the same as <a href="#flexponent"><code>flexponent</code></a>
   as an exact integer.
 </p>
 
 <p>
-  When <var>fl</var> is zero, returns <code>:integer-exponent-zero</code>,
+  When <var>fl</var> is zero, returns <code>fl-integer-exponent-zero</code>,
   which is a negative exact integer less than the smallest exponent
   returned by a finite value.
 </p>
 
 <p>
-  When <var>fl</var> is NaN, returns <code>:integer-exponent-nan</code>,
+  When <var>fl</var> is NaN, returns <code>fl-integer-exponent-nan</code>,
   which is an exact integer whose magnitude is larger than the magnitude
   of any exponent returned by a finite value.
 </p>
@@ -995,9 +1016,9 @@ SPDX-License-Identifier: MIT
   to Scheme.
 </div>
 
-<div class="feature" id="sign-negativep">
+<div class="feature" id="flsign-negativep">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#sign-negativep">:sign-negative?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flsign-negativep">flsign-negative?</a> <var>fl</var>)</code>
 </div>
 
 <p>Returns true if the sign of <var>fl</var> is negative, and false
@@ -1014,7 +1035,7 @@ SPDX-License-Identifier: MIT
 
 <div class="feature" id="flonump">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flonump">:flonum?</a> <var>obj</var>)</code>
+<code class="signature">(<a href="#flonump">flonum?</a> <var>obj</var>)</code>
 </div>
 
 <p>
@@ -1023,11 +1044,11 @@ SPDX-License-Identifier: MIT
 </p>
 <div class="feature" id="flonum-comp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flonum-comp">:=?</a> <var>fl</var> …)</code>
-<code class="signature">(<a href="#flonum-comp">:&lt;?</a> <var>fl</var> …)</code>
-<code class="signature">(<a href="#flonum-comp">:&gt;?</a> <var>fl</var> …)</code>
-<code class="signature">(<a href="#flonum-comp">:&lt;=?</a> <var>fl</var> …)</code>
-<code class="signature">(<a href="#flonum-comp">:&gt;=?</a> <var>fl</var> …)</code>
+<code class="signature">(<a href="#flonum-comp">fl=?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-comp">fl&lt;?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-comp">fl&gt;?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-comp">fl&lt;=?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-comp">fl&gt;=?</a> <var>fl</var> …)</code><br>
 </div>
 
 <p>
@@ -1044,13 +1065,19 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-  The same rules apply here for NaNs and infinities as they do for normal
-  Scheme arithmetic. In particular, NaN cannot be compared to any value.
+  If NaN is passed as an argument to these procedures (when the number of
+  arguments is greater than 1), the procedure returns false. A NaN is not
+  equal to itself.
+</p>
+
+<p>
+  Positive infinity compares greater than any finite number.
+  Negative infinity compares less than any finite number.
 </p>
 
 <div class="feature" id="flunorderedp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flunorderedp">:unordered?</a> <var>fl</var><sub>1</sub> <var>fl</var><sub>2</sub>)</code>
+<code class="signature">(<a href="#flunorderedp">flunordered?</a> <var>fl</var><sub>1</sub> <var>fl</var><sub>2</sub>)</code>
 </div>
 
 <p>
@@ -1058,48 +1085,48 @@ SPDX-License-Identifier: MIT
   a NaN, and <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="integerp">
+<div class="feature" id="flintegerp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#integerp">:integer?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flintegerp">flinteger?</a> <var>fl</var>)</code>
 </div>
 <p>
   Returns <code>#t</code> when the argument is an integer flonum, and
   <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="zerop">
+<div class="feature" id="flzerop">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#zerop">:zero?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flzerop">flzero?</a> <var>fl</var>)</code>
 <p>
   Returns <code>#t</code> when the argument is a zero, and
   <code>#f</code> otherwise.
 </p>
 </div>
 
-<div class="feature" id="positivep">
+<div class="feature" id="flpositivep">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#positivep">:positive?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flpositivep">flpositive?</a> <var>fl</var>)</code>
 </div>
 <p>
   Returns <code>#t</code> when the argument is greater than 0, and
   <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="negativep">
+<div class="feature" id="flnegativep">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#negativep">:negative?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flnegativep">flnegative?</a> <var>fl</var>)</code>
 </div>
 <p>
   Returns <code>#t</code> when the argument is less than 0, and
   <code>#f</code> otherwise.
 </p>
 <pre
-><code class="example-code">(:negative? -0.0)</code> ⇒ #f</code>
+><code class="example-code">(flnegative? -0.0)</code> ⇒ #f</code>
 </pre>
 
-<div class="feature" id="oddp">
+<div class="feature" id="floddp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#oddp">:odd?</a> <var>ifl</var>)</code>
+<code class="signature">(<a href="#floddp">flodd?</a> <var>ifl</var>)</code>
 </div>
 
 <p>
@@ -1107,9 +1134,9 @@ SPDX-License-Identifier: MIT
   <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="evenp">
+<div class="feature" id="flevenp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#evenp">:even?</a> <var>ifl</var>)</code>
+<code class="signature">(<a href="#flevenp">fleven?</a> <var>ifl</var>)</code>
 </div>
 
 <p>
@@ -1117,9 +1144,9 @@ SPDX-License-Identifier: MIT
   <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="finitep">
+<div class="feature" id="flfinitep">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#finitep">:finite?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flfinitep">flfinite?</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -1128,9 +1155,9 @@ SPDX-License-Identifier: MIT
   and <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="infinitep">
+<div class="feature" id="flinfinitep">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#infinitep">:infinite?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flinfinitep">flinfinite?</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -1138,9 +1165,9 @@ SPDX-License-Identifier: MIT
   and <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="nanp">
+<div class="feature" id="flnanp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#nanp">:nan?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flnanp">flnan?</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -1148,9 +1175,9 @@ SPDX-License-Identifier: MIT
   and <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="normalizedp">
+<div class="feature" id="flnormalizedp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#normalizedp">:normalized?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flnormalizedp">flnormalized?</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -1159,9 +1186,9 @@ SPDX-License-Identifier: MIT
   otherwise.
 </p>
 
-<div class="feature" id="subnormalp">
+<div class="feature" id="flsubnormalp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#subnormalp">:subnormal?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flsubnormalp">flsubnormal?</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -1173,10 +1200,10 @@ SPDX-License-Identifier: MIT
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#max" id="max">:max</a> <var>fl</var> …)</code><br>
-<code class="signature">(<a href="#max-filter-nans" id="max-filter-nans">:max-filter-nans</a> <var>fl</var> …)</code><br>
-<code class="signature">(<a href="#min" id="min">:min</a> <var>fl</var> …)</code><br>
-<code class="signature">(<a href="#min-filter-nans" id="min-filter-nans">:min-filter-nans</a> <var>fl</var> …)</code>
+<code class="signature">(<a href="#flmax" id="max">flmax</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmax-filter-nans" id="max-filter-nans">flmax-filter-nans</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmin" id="min">flmin</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmin-filter-nans" id="min-filter-nans">flmin-filter-nans</a> <var>fl</var> …)</code>
 </div>
 
 <p>
@@ -1192,29 +1219,29 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-  If <code>:max</code> or <code>:min</code> have a NaN in any of its
+  If <code>flmax</code> or <code>flmin</code> have a NaN in any of its
   arguments, then a NaN is returned.
 </p>
 
 <p>
-  If either <code>:max-filter-nans</code> or <code>:min-filter-nans</code>
+  If either <code>flmax-filter-nans</code> or <code>flmin-filter-nans</code>
   have a NaN in its arguments, it is ignored unless all inputs are NaNs,
   in which case a NaN is returned.
 </p>
 
 <div class="boxed">
   <span class="boxed-tag">Note:</span>
-  The <code>:max</code>/<code>:min</code> procedures correspond
+  The <code>flmax</code>/<code>flmin</code> procedures correspond
   to the <span class="report-name">R<sup>6</sup>RS</span>’s
   <code>flmax</code>/<code>flmin</code>, while the
-  <code>:max-filter-nans</code>/<code>:min-filter-nans</code>procedure
+  <code>flmax-filter-nans</code>/<code>flmin-filter-nans</code>procedure
   corresponds to the <code>flmax</code>/<code>flmin</code> procedure in
   SRFI 144.
 </div>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#max" id="max">:+</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flplus" id="flplus">fl+</a> <var>fl</var> …)</code><br>
 </div>
 
 <p>
