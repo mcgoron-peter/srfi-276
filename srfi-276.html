@@ -1516,6 +1516,135 @@ SPDX-License-Identifier: MIT
   numerator and denominator of a NaN is a NaN.
 </p>
 
+<h4 id="integer-rounding"><a href="#integer-rounding">&para;</a> Integer rounding</h4>
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flfloor" id="flfloor">flfloor</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flceiling" id="flceiling">flceiling</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fltruncate" id="fltruncate">fltruncate</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flround" id="flround">flround</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flround-away" id="flround-away">flround-away</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  These procedures find an integer near <var>fl</var>.
+  When given an infinity or zero, these procedures always return that value.
+  When given a NaN, they return a NaN.
+</p>
+
+<p>
+  The <code>flfloor</code> procedure returns the greatest integer flonum
+  not larger than <var>fl</var>.
+</p>
+<p>
+  The <code>flceiling</code> procedure returns the least integer flonum
+  not larger than <var>fl</var>.
+</p>
+<p>
+  The <code>fltruncate</code> procedure returns the closest integer flonum
+  whose absolute value is not not larger than the absolute value of <var>fl</var>.
+</p>
+<p>
+  The <code>flround</code> procedure returns the closest integer flonum: when
+  <var>fl</var> is halfway between two integers, it rounds to even.
+</p>
+<p>
+  The <code>flround-away</code> procedure returns the closest integer
+  flonum: when <var>fl</var> is halfway between two integers, it rounds
+  to the number further from zero.
+</p>
+
+<h4 id="exponential"><a href="#exponential">&para;</a> Exponentials and logarithms</h4>
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flexp" id="flexp">flexp</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flexp2" id="flexp2">flexp2</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flexp10" id="flexp10">flexp10</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Returns <var>a</var><sup><var>fl</var></sup>, where
+  <var>a</var> is respectively the mathematical constant <var>e</var>, 2, or 10.
+</p>
+
+<p>
+  If the argument is positive infinity, the result is positive infinity.
+  If the argument is negative infinity, the result is positive 1.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flexpm1" id="flexpm1">flexp-1</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flexp2m1" id="flexp2m1">flexp2-1</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flexp10m1" id="flexp10m1">flexp10-1</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Returns <var>a</var><sup><var>fl</var></sup> &minus; 1, where
+  <var>a</var> is respectively the mathematical constant <var>e</var>, 2, or 10.
+  It is expected that this will be more accurate than
+  <code>(fl- (flexp <var>fl</var>) 1.0)</code> etc when
+  <var>fl</var> is small.
+</p>
+
+<p>
+  If the argument is positive infinity, the result is positive infinity.
+  If the argument is negative infinity, the result is positive 0.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#fllog"   id="fllog">fllog</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fllog2"  id="fllog2">fllog2</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fllog10" id="fllog10">fllog10</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Returns log<sub><var>a</var></sub>(<var>fl</var>), where <var>a</var>
+  is respectively the mathematical constant <var>e</var>, 2, or 10.
+</p>
+
+<p>
+  If the argument is positive infinity, the result is positive infinity.
+  If the argument is negative 1, the result is negative infinity, and
+  a divide-by-zero exception is raised.  If the argument is less than
+  negative 1, NaN is returned, and an invalid exception is raised.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#fllogp1"   id="fllogp1">fllog+1</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fllog2p1"  id="fllog2p1">fllog2+1</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fllog10p1" id="fllog10p1">fllog10+1</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Returns log<sub><var>a</var></sub>(<var>fl</var> + 1), where <var>a</var>
+  is respectively the mathematical constant <var>e</var>, 2, or 10.
+  It is expected that this will be more accurate than
+  <code>(fllog (fl+ 1.0 <var>fl</var>))</code> etc when
+  <var>fl</var> is small.
+</p>
+
+<p>
+  If the argument is positive infinity, the result is positive infinity.
+  If the argument is zero, the result is negative infinity, and a divide-by-zero
+  exception is raised.
+  If the argument is negative, NaN is returned, and an invalid exception is
+  raised.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#make-fllog-base"   id="make-fllog-base">make-fllog-base</a> <var>fl</var>)</code><br>
+
+<p>
+  Returns a procedure that computes the base <var>fl</var> logarithm of
+  its input, with similar rules applied to infinities, NaNs, and negative
+  arguments as <a href="#fllog"><code>fllog</code></a>. It is an error
+  if <var>fl</var> is less than 1.0.
+</p>
+
 <h4 id="new-identifiers"><a href="#new-identifiers">&para;</a> New identifiers</h4>
 
 <div class="feature" id="rounding-mode">
