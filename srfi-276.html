@@ -1042,6 +1042,7 @@ SPDX-License-Identifier: MIT
    Returns <code>#t</code> if <var>obj</var> is a flonum and
    <code>#f</code> otherwise. 
 </p>
+
 <div class="feature" id="flonum-comp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flonum-comp">fl=?</a> <var>fl</var> …)</code><br>
@@ -1074,6 +1075,85 @@ SPDX-License-Identifier: MIT
   Positive infinity compares greater than any finite number.
   Negative infinity compares less than any finite number.
 </p>
+
+<div class="feature" id="flonum-total-comp">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flonum-total-comp">fltotal=?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-total-comp">fltotal&lt;?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-total-comp">fltotal&gt;?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-total-comp">fltotal&lt;=?</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flonum-total-comp">fltotal&gt;=?</a> <var>fl</var> …)</code><br>
+</div>
+
+<p>
+  Imposes a total ordering on flonums consistent with IEEE 754. The
+  following describes the order:
+</p>
+
+<ol>
+  <li>If <code>(fl&lt;? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
+      returns <code>#t</code>, then
+      <code>(fltotal&lt;? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code> returns
+      <code>#t</code>.
+  </li>
+  <li><code>(fltotal&lt;? -0.0 +0.0)</code> returns <code>#t</code>.
+  </li>
+  <li><code>(fltotal&lt;? +0.0 -0.0)</code> returns <code>#f</code>.
+  </li>
+  <li>If <var>fl<sub>1</sub></var> and <var>fl<sub>2</sub></var> are <code>eqv?</code>,
+      then <code>(fltotal=? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
+      returns <code>#t</code>.
+  </li>
+  <li>Let <var>nan</var> be a particular NaN value. Then exactly one of the two statements
+      must be true:
+      <ol>
+        <li>For every non-NaN flonum <var>fl</var>, <code>(fltotal&lt;? <var>nan</var> <var>fl</var>)</code>
+            evaluates to <code>#t</code>.
+        </li>
+        <li>For every non-NaN flonum <var>fl</var>, <code>(fltotal&lt;? <var>nan</var> <var>fl</var>)</code>
+            evaluates to <code>#f</code>.
+        </li>
+      </ol>
+      Thus a NaN value is either less than all non-NaNs, or greater than all non-NaNs.
+  </li>
+  <li>If <var>fl<sub>1</sub></var> and <var>fl<sub>2</sub></var> are both non-<code>eqv?</code> NaNs,
+      then it is unspecified which one occurs after the other in the
+      ordering.
+  </li>
+</ol>
+
+<p>
+  Although the ordering is underspecified, any implementation must make
+  choices consistent with the fact that <code>fltotal&lt;?</code> is a
+  total ordering that respects trichotomy. Implementations should order NaNs according
+  to their sign and if they are signalling/quiet, as described in
+  IEEE 754, and should order NaNs with the same sign and
+  signalling/quiet status by the total ordering of their unsigned integer
+  payloads.
+</p>
+
+<p>
+  There is no requirement that the order be total when one of the arguments
+  is a non-canonical flonum.
+</p>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale:</span>
+  A total ordering on flonums is useful for when the flonums are stored in
+  a set structure.
+</p>
+
+<p>
+  When the numbers are in a IEEE 754 binary floating point representation,
+  then for non-NaN flonums <var>fl<sub>1</sub></var> and <var>fl<sub>2</sub></var>
+  that are not both zero, the regular and total orderings coincide.
+  The definition is written so that the ordering is forwards compatible with
+  IEEE 754 decimal floats, which have numerically equal yet bitwise-unequal
+  numbers, and also non-canonical encodings. The total ordering of
+  decimal floats is more complicated.
+</p>
+</div>
 
 <div class="feature" id="flunorderedp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -1499,59 +1579,6 @@ SPDX-License-Identifier: MIT
   are distinguishable.
 </p>
 </div>
-
-<div class="feature" id="totallt">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#totallt">:total&lt?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
-</div>
-
-<p>
-  Imposes a total ordering on flonums consistent with IEEE 754. The
-  following describes the order:
-</p>
-
-<ol>
-  <li>If <code>(:&lt;? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
-      evaluates to <code>#t</code>, then this procedure returns
-      <code>#t</code>.
-  </li>
-  <li><code>(:total&lt;? -0.0 +0.0)</code> returns <code>#t</code>.
-  </li>
-  <li><code>(:total&lt;? +0.0 -0.0)</code> returns <code>#f</code>.
-  </li>
-  <li>If <code>(:&gt;=? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>
-      evaluates to <code>#t</code> and both values are not zero, then this procedure returns
-      <code>#f</code>.
-  </li>
-  <li>Let <var>nan</var> be a particular NaN value. Then one of the two statements
-      <strong>must</strong> be true:
-      <ol>
-        <li>For every non-NaN flonum <var>fl</var>, <code>(:total&lt;? <var>nan</var> <var>fl</var>)</code>
-            evaluates to <code>#t</code>.
-        </li>
-        <li>For every non-NaN flonum <var>fl</var>, <code>(:total&lt;? <var>nan</var> <var>fl</var>)</code>
-            evaluates to <code>#f</code>.
-        </li>
-      </ol>
-      Thus a NaN value is either less than all non-NaNs, or greater than all non-NaNs.
-      Two different NaN values (in the sense of <code>eqv?</code>) <strong>may</strong> have
-      a different order with respect to non-NaN values.
-  </li>
-  <li>If <var>fl<sub>1</sub></var> and <var>fl<sub>2</sub></var> are both NaNs,
-      then it is unspecified which one occurs after the other in the
-      ordering.
-  </li>
-</ol>
-
-<p>
-  Although the ordering is underspecified, any implementation <strong>must</strong> make
-  choices consistent with the fact that <code>:total&lt;?</code> is a
-  total ordering. Implementations <strong>should</strong> order NaNs according
-  to their sign and if they are signalling/quiet, as described in
-  IEEE 754, and <strong>should</strong> order NaNs with the same sign and
-  signalling/quiet status by the total ordering of their unsigned integer
-  payloads.
-</p>
 
 <div class="feature" id="bytevector-flonum-set">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
