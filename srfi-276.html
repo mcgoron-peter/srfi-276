@@ -1326,7 +1326,194 @@ SPDX-License-Identifier: MIT
 
 <p>
   Return the sum of the arguments. If no arguments are given,
-  positive zero is returned. The following special cases apply:
+  positive zero is returned. If one argument is given, that
+  argument is returned. The following special cases apply:
+</p>
+
+<ol>
+<li>If any argument is a NaN, NaN is returned.</li>
+<li>Infinity added to a finite number returns that infinity.</li>
+<li>Two infinities of the same sign return an infinity of the same sign.</li>
+<li>Two infinities of opposite signs return a NaN.</li>
+<li>Let <var>fl</var> be a zero. Then <code>(fl+ <var>fl</var> <var>fl</var>)</code>
+    returns <var>fl</var>.</li>
+<li>Let <var>fl<sub>1</sub></var> and <var>fl<sub>2</sub></var> be
+    numbers with opposite signs that sum exactly to zero. Then the
+    returned zero is negative in roundTowardsNegative mode, and positive
+    in all other rounding modes.</li>
+</ol>
+
+<p>
+  The following examples assume that the rounding mode is not
+  roundTowardsNegative.
+</p>
+
+<pre
+><code class="example-code">(fl+ 0.0 -0.0)</code> ⇒ +0.0</code>
+<code class="example-code">(fl+ -0.0 0.0)</code> ⇒ +0.0</code>
+<code class="example-code">(fl+ -0.0 -0.0)</code> ⇒ -0.0</code>
+</pre>
+
+<p>
+  When given two arguments, this procedure always returns the correctly
+  rounded value. When given more than two arguments, the implementation
+  may rearrange arguments or use an algorithm like compensated summation
+  to minimize error.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flminus" id="flminus">fl-</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var> …)</code><br>
+</div>
+
+<p>
+  When one argument is given, the value is returned with the sign bit
+  flipped.
+  When more than one argument is given, the procedure is the equivalent
+  of <code>(fl+ <var>fl<sub>1</sub></var> (fl- <var>fl<sub>2</sub></var>) …)</code>.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#fltimes" id="fltimes">fl*</a> <var>fl</var> …)</code><br>
+</div>
+
+<p>
+  When given no arguments, returns positive 1.0. When given one argument,
+  returns that argument.
+</p>
+
+<p>When given more than one argument, computes the product of the arguments.
+   When no argument is NaN and no operation returns a NaN, the returned
+   sign is the exclusive OR of the sign bits of each argument. The
+   following special cases apply:
+</p>
+
+<ol>
+<li>If any argument is a NaN, NaN is returned.</li>
+<li>Infinity times a finite number returns an infinity.</li>
+<li>Infinity times a zero returns a NaN.</p>
+</ol>
+
+<p>
+  When given two arguments, this procedure always returns the correctly
+  rounded value. When given more than two arguments, the implementation
+  may rearrange arguments or use an alternative algorithm to minimize
+  error.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#fldivide" id="fldivide">fl/</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var> …)</code><br>
+</div>
+
+<p>
+  When given one argument, computes the recoprical of the given argument.
+  The recoprical of infinity is the appropriately signed zero, and the
+  recoprical of zero is the appropriately signed infinity.
+</p>
+
+<p>
+  When given more than one argument, divides the first argument by the
+  rest. The returned sign, when the number is not NaN, is the exclusive
+  OR of the signs of the input arguments. The following special cases apply:
+</p>
+
+<ol>
+<li>If any argument is a NaN, NaN is returned.</li>
+<li>Infinity divided by a finite number returns an infinity.</li>
+<li>Infinity divided by a finite number returns an infinity and
+    signals the invalid operation exception.</li>
+<li>Zero divided by zero returns a NaN.</li>
+<li>Infinity divided by infinity returns a NaN.</li>
+</ol>
+
+<p>
+  When given one or two arguments, the correctly rounded value is
+  returned.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flfma" id="flfma">fl+*</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var> <var>fl<sub>3</sub></var>)</code><br>
+</div>
+
+<p>
+  Return <var>fl<sub>1</sub></var>*<var>fl<sub>2</sub></var>+<var>fl<sub>3</sub></var>
+  correctly rounded.
+</p>
+
+<p>
+  When the value of the operation is exactly zero, it has the same rule
+  for the sign of zero as the sum operation. If the value is rounded to
+  zero, it takes the sign of the exact result.
+</p>
+
+<p>
+  If, interpreted separately, the sum or multiplication would return a
+  NaN, then this operation will return a NaN.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flabs" id="flabs">flabs</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Returns the absolute value of <var>fl</var>.
+  The absolute value of any zero is positive zero, and the absolute value
+  of any infinity is positive infinity.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flabsdiff" id="flabsdiff">flabsdiff</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  Returns |<var>fl<sub>1</sub></var> - <var>fl<sub>2</sub></var>|.
+  The behavior on infinities, zeroes, and NaNs is equivalent to the behavior
+  of <code>(flabs (fl- <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>))</code>.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flposdiff" id="flposdiff">flposdiff</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  Let <var>x</var> = <var>fl<sub>1</sub></var> - <var>fl<sub>2</sub></var>.
+  If <var>x</var> is positive, return it. If <var>x</var> is a NaN, return
+  that NaN. Otherwise return positive zero.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flsgn" id="flsgn">flsgn</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Equivalent to <code>(<a href="flcopysign">flcopysign</a> 1.0 <var>fl</var>)</code>.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flnumerator" id="flnumerator">flnumerator</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fldenominator" id="fldenominator">fldenominator</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Returns the numerator/denominator of <var>fl</var> as a flonum.
+  The numerator and denominator must represent <var>fl</var> in
+  lowest terms, although any pair of numbers that when divided
+  yield <var>fl</var> in the current rounding mode is acceptable,
+  subject to the constraints below.
+</p>
+
+<p>
+  The denominator is always positive. The numerator of an infinite flonum
+  is itself. The denominator of an infinite or zero flonum is 1.0. The
+  numerator and denominator of a NaN is a NaN.
 </p>
 
 <h4 id="new-identifiers"><a href="#new-identifiers">&para;</a> New identifiers</h4>
