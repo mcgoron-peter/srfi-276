@@ -147,21 +147,12 @@ SPDX-License-Identifier: MIT
     is unacceptable, or should implementations be allowed to coerce it?
   </li>
   <li>
-    The proposed representation-specific flonum syntax is ugly,
-    although in this case accuracy is more important than aesthetics.
-    (They are based off of
-     <a href="https://cppreference.com/c/types/integer#Function_macros_for_minimum-width_integer_constants">
-     C’s macros for integer constants</a>.)
-    They also clash with the semantics of Scheme’s numbers:
-    what is the meaning of <code>#e#fl(binary64 1/2)</code>?
-  </li>
-  <li>
-    To what extent can we specify correct rounding for multi-argument
-    versions of procedures like <code>(:+ x y z w …)</code>?
-  </li>
-  <li>
-    Should this include more procedures, like the recommended procedures
-    from IEEE 754-2019, and the latest C standard?
+    IEEE 754-2019 mandates that some procedures return non-NaN values even
+    when given NaN values: for example, <code>(flexpt 1.0 +nan.0)</code>
+    ⇒ 1.0 if the NaN is a quiet NaN. The quiet NaN is the one usually
+    returned from floating point operations. This conflicts with the
+    usual view of Scheme inexact numbers, where <code>1.0</code> is an
+    approximation of 1.0. How do we handle this?
   </li>
 </ul>
 
@@ -1554,7 +1545,7 @@ SPDX-License-Identifier: MIT
   to the number further from zero.
 </p>
 
-<h4 id="exponential"><a href="#exponential">&para;</a> Exponentials and logarithms</h4>
+<h4 id="exponential"><a href="#exponential">&para;</a> Exponentials</h4>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flexp" id="flexp">flexp</a> <var>fl</var>)</code><br>
@@ -1591,6 +1582,123 @@ SPDX-License-Identifier: MIT
   If the argument is positive infinity, the result is positive infinity.
   If the argument is negative infinity, the result is positive 0.
 </p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flexpt" id="flexpt">flexpt</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  Returns <var>fl<sub>1</sub></var><sup><var>fl<sub>2</sub></var></sup>.
+  The following special cases apply:
+</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flexpt <var>x</var> ±0.0)</code></td>
+    <td><var>x</var> is not sNaN</td>
+    <td></td>
+    <td>1.0</td>
+</tr>
+<tr><td><code>(flexpt ±0.0 <var>y</var>)</code></td>
+    <td><var>y</var> &lt; 0, <var>y</var> odd</td>
+    <td>divideByZero</td>
+    <td><code>±inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt ±0.0 −inf.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt ±0.0 +inf.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(flexpt ±0.0 <var>y</var>)</code></td>
+    <td><var>y</var> &gt; 0, <var>y</var> odd</td>
+    <td></td>
+    <td><code>±inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt −1.0 ±inf.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>1.0</code></td>
+</tr>
+<tr><td><code>(flexpt +1.0 <var>y</var>)</code></td>
+    <td><var>y</var> is not sNaN</td>
+    <td></td>
+    <td><code>1.0</code></td>
+</tr>
+<tr><td><code>(flexpt <var>x</var> +inf.0)</code></td>
+    <td>−1 &lt; <var>x</var> &lt; 1</td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(flexpt <var>x</var> +inf.0)</code></td>
+    <td><var>x</var> &lt; &minus;1 or for 1 &lt; x</td>
+    <td></td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt <var>x</var> −inf.0)</code></td>
+    <td>−1 &lt; x &lt; 1</td>
+    <td></td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt <var>x</var> +inf.0)</code></td>
+    <td><var>x</var> &lt; &minus;1 or for 1 &lt; x</td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(flexpt +inf.0 <var>y</var>)</code></td>
+    <td><var>y</var> &lt; 0</td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(flexpt +inf.0 <var>y</var>)</code></td>
+    <td><var>y</var> &gt; 0</td>
+    <td></td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt −inf.0 <var>y</var>)</code></td>
+    <td><var>y</var> &lt; 0, <var>y</var> odd</td>
+    <td></td>
+    <td><code>-0.0</code></td>
+</tr>
+<tr><td><code>(flexpt −inf.0 <var>y</var>)</code></td>
+    <td><var>y</var> &gt; 0, <var>y</var> odd</td>
+    <td></td>
+    <td><code>-inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt −inf.0 <var>y</var>)</code></td>
+ <td><var>y</var> < 0, <var>y</var> finite, not odd</td>
+ <td></td>
+ <td><code>+0.0</code></td>
+</tr>
+<tr>
+<tr><td><code>(flexpt −inf.0 <var>y</var>)</code></td>
+ <td><var>y</var> &gt; 0, <var>y</var> finite, not odd</td>
+ <td></td>
+ <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt ±0.0 <var>y</var>)</code></td>
+    <td><var>y</var> &lt; 0 and <var>y</var> finite, not odd</td>
+    <td>divideByZero</td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt ±0.0 y)</code></td>
+<td><var>y</var> &gt; 0, <var>y</var> finite and not odd</td>
+<td></td>
+<td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(flexpt <var>x</var>, <var>y</var>)</code></td>
+    <td>finite <var>x</var> &lt; 0, finite non-integer <var>y</var></td>
+    <td>invalid operation</td>
+    <td>NaN</td>
+</tr>
+</table>
+
+<h4 id="logarithms"><a href="#logarithms">&para;</a> Logarithms</h4>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
