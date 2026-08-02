@@ -187,14 +187,6 @@ SPDX-License-Identifier: MIT
   FFI to C23: the definitions between this SRFI and C23 are harmonized.
 </p>
 
-<p>
-  This SRFI does not require that implementations support all the NaN
-  operations and values that IEEE 754-2019 supports. Implementations
-  that do support the full range of NaN values should implement
-  <a href="https://srfi.schemers.org/srfi-208/">SRFI 208</a>, which
-  is designed to support multiple inexact real formats.
-</p>
-
 <h3 id="speed-portability-and-ease-of-use"><a href="#speed-portability-and-ease-of-use">&para;</a> Speed and Portability vs. Ease of Use</h3>
 
 <p>
@@ -275,19 +267,23 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-   Square brackets [] are used to denote a group of arguments that are
-   optional, but all arguments must be present or absent. If one pair
-   of square brackets is nested in another pair, then the nested pair
-   is optional even when the other arguments are supplied.
+  <dfn>Signaling NaN</dfn> and <dfn>quiet NaN</dfn> are defined in the
+  IEEE 754: implementations and representations should differentiate
+  between the two. If an implementation or representation does not
+  differentiate between the two, then all NaNs should be considered quiet.
+  Thus, if an implementation has only quiet NaNs, then statements about
+  the behavior of procedures on signaling NaNs do not apply.
 </p>
 
 <p>
-  In procedure arguments, it is an error if <var>endianness</var> is not the
-  symbol <code>little</code>, <code>big</code>, or an endianness
-  supplied by the macro in <code>(rnrs bytevectors)</code>. When
-  <var>endianness</var> is not supplied, it is the native endianness.
+  A <dfn>floating-point exception</dfn> is a flag in an environment that
+  is raised if a floating point operation does something exceptional,
+  such as overflow. They are not the same as Scheme exceptions.
+  Some operations raise a floating-point exception on certain arguments.
+  Implementations are only required to implement those exceptions if they
+  implement the floating-point environment library. Implementations should
+  also raise floating-point exceptions when generic arithmetic is used.
 </p>
-
 
 <h3 id="precise"><a href="#precise">&para;</a> Precise representation of flonums</h3>
 
@@ -335,6 +331,20 @@ SPDX-License-Identifier: MIT
   It is an error if any <var>fl</var> argument is not a flonum. It is an
   error if any <var>ifl</var> argument is not an integer flonum,
   decided by <code><a href="#flintegerp">flinteger?</a></code>.
+</p>
+
+<p>
+   Square brackets [] are used to denote a group of arguments that are
+   optional, but all arguments must be present or absent. If one pair
+   of square brackets is nested in another pair, then the nested pair
+   is optional even when the other arguments are supplied.
+</p>
+
+<p>
+  In procedure arguments, it is an error if <var>endianness</var> is not the
+  symbol <code>little</code>, <code>big</code>, or an endianness
+  supplied by the macro in <code>(rnrs bytevectors)</code>. When
+  <var>endianness</var> is not supplied, it is the native endianness.
 </p>
 
 <h3 id="library"><a href="#library">&para;</a> Library names</h3>
@@ -415,7 +425,7 @@ SPDX-License-Identifier: MIT
   implement all of the procedures described below. For example,
   an implementation could provide <code>(srfi 276 posit32)</code> for
   operations on posits, with a similar API to the one below. However,
-  posits do not have infinite values, so <code>:infinite?</code> would
+  posits do not have infinite values, so <code>flinfinite?</code> would
   not be exported.
 </p>
 
@@ -595,6 +605,28 @@ SPDX-License-Identifier: MIT
    <a href="#string-to-flonum"><code>string-&gt;flonum</code></a>
 </p>
 
+<h4 id="nan-conventions"><a href="#nan-conventions">&para;</a> NaN conventions</h4>
+
+<p>
+  This SRFI does not require that implementations support all the NaN
+  operations and values that IEEE 754-2019 supports. Implementations
+  that do support the full range of NaN values should implement
+  <a href="https://srfi.schemers.org/srfi-208/">SRFI 208</a>, which
+  is designed to support multiple inexact real formats.
+</p>
+
+<p>
+  By default, all operations that return flonums will return a quiet
+  NaN if they are given a quiet NaN in any input. Any exceptions are
+  noted. Implementations should propagate NaNs if they have one or more
+  NaN inputs.
+</p>
+
+<p>
+  By default, giving a signaling NaN to a procedure will cause the
+  invalidOperation floating point exception to be raised.
+</p>
+
 <h4 id="numeric-constants"><a href="#numeric-constants">&para;</a> Numeric constants</h4>
 
 <p>
@@ -604,91 +636,51 @@ SPDX-License-Identifier: MIT
 
 <table>
 <tr><th>Old</th><th>New</th></tr>
-<tr><td><code>fl-e-2</code></td><td><code>:e^2</code></td></tr>
-<tr><td><code>fl-e-pi/4</code></td><td><code>:e^pi/4</code></td></tr>
-<tr><td><code>fl-pi-squared</code></td><td><code>:pi^2</code></td></tr>
-<tr><td><code>fl-e-euler</code></td><td><code>:e^euler</code></td></tr>
+<tr><td><code>fl-e-2</code></td><td><code>fl-e^2</code></td></tr>
+<tr><td><code>fl-e-pi/4</code></td><td><code>fl-e^pi/4</code></td></tr>
+<tr><td><code>fl-pi-squared</code></td><td><code>fl-pi^2</code></td></tr>
+<tr><td><code>fl-e-euler</code></td><td><code>fl-e^euler</code></td></tr>
 </table>
 
 <p>The identifiers 
-   <code>:e</code>,
-   <code>:1/e</code>,
-   <code>:log2-e</code>,
-   <code>:log10-e</code>,
-   <code>:log-2</code>,
-   <code>:1/log-2</code>,
-   <code>:log-3</code>,
-   <code>:log-pi</code>,
-   <code>:log-10</code>,
-   <code>:1/log-10</code>,
-   <code>:pi</code>,
-   <code>:1/pi</code>,
-   <code>:2pi</code>,
-   <code>:pi/2</code>,
-   <code>:pi/4</code>,
-   <code>:2/sqrt-pi</code>,
-   <code>:degree</code>,
-   <code>:2/pi</code>,
-   <code>:sqrt-2</code>,
-   <code>:sqrt-3</code>,
-   <code>:sqrt-5</code>,
-   <code>:sqrt-10</code>,
-   <code>:1/sqrt-2</code>,
-   <code>:cbrt-2</code>,
-   <code>:cbrt-3</code>,
-   <code>:4thrt-2</code>,
-   <code>:phi</code>,
-   <code>:log-phi</code>,
-   <code>:1/log-phi</code>,
-   <code>:euler</code>,
-   <code>:sin-1</code>,
-   <code>:cos-1</code>,
-   <code>:gamma-1/2</code>,
-   <code>:gamma-1/3</code>, and
-   <code>:gamma-2/3</code>
+   <code>fl-e</code>,
+   <code>fl-1/e</code>,
+   <code>fl-log2-e</code>,
+   <code>fl-log10-e</code>,
+   <code>fl-log-2</code>,
+   <code>fl-1/log-2</code>,
+   <code>fl-log-3</code>,
+   <code>fl-log-pi</code>,
+   <code>fl-log-10</code>,
+   <code>fl-1/log-10</code>,
+   <code>fl-pi</code>,
+   <code>fl-1/pi</code>,
+   <code>fl-2pi</code>,
+   <code>fl-pi/2</code>,
+   <code>fl-pi/4</code>,
+   <code>fl-2/sqrt-pi</code>,
+   <code>fl-degree</code>,
+   <code>fl-2/pi</code>,
+   <code>fl-sqrt-2</code>,
+   <code>fl-sqrt-3</code>,
+   <code>fl-sqrt-5</code>,
+   <code>fl-sqrt-10</code>,
+   <code>fl-1/sqrt-2</code>,
+   <code>fl-cbrt-2</code>,
+   <code>fl-cbrt-3</code>,
+   <code>fl-4thrt-2</code>,
+   <code>fl-phi</code>,
+   <code>fl-log-phi</code>,
+   <code>fl-1/log-phi</code>,
+   <code>fl-euler</code>,
+   <code>fl-sin-1</code>,
+   <code>fl-cos-1</code>,
+   <code>fl-gamma-1/2</code>,
+   <code>fl-gamma-1/3</code>, and
+   <code>fl-gamma-2/3</code>
    are defined by the same formulas as their corresponding SRFI 144
-   identifiers, but with the <code>fl-</code> prefix replaced with
-   <code>:</code>.
+   identifiers.
 </p>
-
-<!--
-<li>Identifiers not covered by the table have their
-    <code>fl</code> or <code>fl-</code>
-    prefixes replaced by <code>:</code>. For example,
-    <code>flsqrt</code> becomes <code>:sqrt</code>
-    and <code>fl-euler</code> becomes <code>:euler</code>.
-</li>
-<li>
-  The <code>fl-fast-fl+*</code> identifier is not exported.
-</li>
-<li>
-  The procedure <code>:flonum</code> <strong>must</strong> return a NaN
-  value if the argument is a non-real number.
-</li>
-<li>
-  The implementation <strong>must</strong> supply a mode such that
-  the one-and-two-argument versions of
-  <code>:+</code>, <code>:-</code>, <code>:*</code>, the two argument
-  version of <code>:/</code>, along with <code>:+*</code> (AKA fused multiply-add), <code>:sqrt</code>,
-  <code>:abs</code>, <code>:absdiff</code>, <code>:posdiff</code>,
-  <code>:floor</code>, <code>:ceiling</code>, <code>:round</code>,
-  <code>:truncate</code> and <code>:remainder</code>
-  return correctly rounded values.
-</li>
-<li>
-  Implementations <strong>should</strong> have the other procedures return
-  correctly rounded values.
-</li>
-<li>
-  The implementation <strong>must</strong> supply a mode such that
-  arithmetic is non-stop. (Most implementation already satisfy this requirement.)
-</li>
-<li>
-  The identifiers in the <a href="#new-identifiers">new identifiers</a>
-  section are exported.
-</li>
-</ul>
--->
 
 <h4 id="implementation-constants"><a href="#implementation-constants">&para;</a> Implementation constants</h4>
 
@@ -1024,6 +1016,11 @@ SPDX-License-Identifier: MIT
 
 <h4 id="accessors"><a href="#accessors">&para;</a> Predicates</h4>
 
+<p>
+  Unless otherwise specified, none of these procedures raise exceptions
+  when given signaling NaNs.
+</p>
+
 <div class="feature" id="flonump">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flonump">flonum?</a> <var>obj</var>)</code>
@@ -1052,8 +1049,18 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-  When passed zero or one arugments, they always return true, even when
+  When passed zero or one arguments, they always return true, even when
   that number is NaN.
+</p>
+
+<p>
+  When passed two or more arguments where one of them is a signaling NaN,
+  the procedures raise the invalidOperation floating-point exception.
+</p>
+
+<p>
+  When all operations except <code>fl=?</code> are passed a quiet NaN,
+  the procedures raise the invalidOperation floating-point exception.
 </p>
 
 <p>
@@ -1066,6 +1073,25 @@ SPDX-License-Identifier: MIT
   Positive infinity compares greater than any finite number.
   Negative infinity compares less than any finite number.
 </p>
+
+<div class="feature" id="flonum-comp">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flonum-comp">fl!=?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  This predicate returns <code>#t</code> when the two values are not equal.
+  When passed a signaling NaN, this procedure raises the invalidOperation
+  floating-point exception. When given NaN values, this procedure returns
+  <code>#f</code>.
+</p>
+
+<div class="boxed"><p>
+  <span class="boxed-tag">Rationale</span>:
+  Since NaNs are unordered, <code>(not (fl=? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>))</code>
+  is not the same as
+  <code>(fl!=? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>.
+</div>
 
 <div class="feature" id="flonum-total-comp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
