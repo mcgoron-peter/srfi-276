@@ -2089,6 +2089,97 @@ SPDX-License-Identifier: MIT
    except that the output of atan is divided by π.
 </p>
 
+<h4 id="hyperbolic"><a href="#hyperbolic">&para;</a> Hyperbolic functions</h4>
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flsinh">flsinh</a> <var>fl</var>)</code>
+</div>
+
+<p>
+  Return sinh(<var>fl</var>).
+</p>
+
+<p>When passed zero, return that zero. When passed infinity, return that
+infinity.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flcosh">flcosh</a> <var>fl</var>)</code>
+</div>
+<p>
+  Return cosh(<var>fl</var>).
+</p>
+
+<p>When passed zero, return 1. When passed infinity, return positive
+infinity.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#fltanh">fltanh</a> <var>fl</var>)</code>
+</div>
+<p>
+  Return tanh(<var>fl</var>).
+</p>
+
+<p>When passed zero, return that zero. When passed infinity, return
+<code>(flcopysign 1.0 <var>fl</var>)</code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flasinh">flasinh</a> <var>fl</var>)</code>
+</div>
+
+<p>
+  Return asinh(<var>fl</var>).
+</p>
+
+<p>When passed zero, return that zero. When passed infinity, return that
+infinity.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flacosh">flacosh</a> <var>fl</var>)</code>
+</div>
+
+<p>
+  Return acosh(<var>fl</var>).
+</p>
+
+<p>When passed 1, return positive zero. When passed positive infinity,
+   return positive infinity.
+</p>
+
+<p>
+  When passed a value less than 1, return a NaN and raise the
+  invalidOperation floating-point exception.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flatanh">flatanh</a> <var>fl</var>)</code>
+</div>
+<p>
+  Return acosh(<var>fl</var>). The following special cases apply:
+</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(atanh ±0.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>±0.0</code></td>
+</tr>
+<tr><td><code>(atanh ±1.0)</code></td>
+    <td></td>
+    <td>divideByZero</td>
+    <td><code>±inf.0</code></td>
+</tr>
+<tr><td><code>(atanh <var>x</var>)</code></td>
+    <td>|x| &gt; 1</td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+</table>
+
 <div class="feature" id="rounding-mode">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#rounding-mode">:rounding-mode</a>)</code>
