@@ -1917,6 +1917,80 @@ SPDX-License-Identifier: MIT
 </p>
 
 <h4 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h4>
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#sin" id="#sin">flsin</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#cos" id="#cos">flcos</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#tan" id="#tan">fltan</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Return the respective value at that point for the trigonometric function,
+  with the argument measured in radians.
+</p>
+
+<p>
+  When an infinity is passed to any of these functions, NaN is returned and
+  the invalidOperation floating point exception is raised.
+</p>
+
+<p>
+  When sin or tan are given zero, return that zero.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#sinpi" id="#sinpi">flsinpi</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#cospi" id="#cospi">flcospi</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Return the respective value at that point for the trigonometric function,
+  with the argument measured in radians. For example,
+  sinpi(<var>fl</var>) = sin(π<var>fl</var>).
+</p>
+
+<p>
+  The same special cases for sin and cos apply here.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#tanpi" id="#tanpi">fltanpi</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Return the value of tan(π<var>fl</var>). The following special cases apply:
+</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(fltanpi ±0.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>±0.0</code></td>
+</tr>
+<tr><td><code>(fltanpi <var>n</var>)</code></td>
+    <td><var>n</var> is positive and even, or negative and odd</td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(fltanpi <var>n</var>)</code></td>
+    <td><var>n</var> is positive and odd, or negative and even</td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(fltanpi <var>x</var>)</code></td>
+    <td><var>x</var> = <var>n</var> + 1/2 for even <var>n</var></td>
+    <td>divideByZero</td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(fltanpi <var>x</var>)</code></td>
+    <td><var>x</var> = <var>n</var> + 1/2 for odd <var>n</var></td>
+    <td>divideByZero</td>
+    <td><code>+inf.0</code></td>
+</tr>
+</table>
 
 <div class="feature" id="rounding-mode">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
