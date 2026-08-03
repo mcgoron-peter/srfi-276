@@ -1941,17 +1941,35 @@ SPDX-License-Identifier: MIT
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#sinpi" id="#sinpi">flsinpi</a> <var>fl</var>)</code><br>
-<code class="signature">(<a href="#cospi" id="#cospi">flcospi</a> <var>fl</var>)</code><br>
 </div>
 
-<p>
-  Return the respective value at that point for the trigonometric function,
-  with the argument measured in radians. For example,
-  sinpi(<var>fl</var>) = sin(π<var>fl</var>).
+<p>Return sin(π<var>fl</var>).</p>
+
+<p>When given a zero, return that zero. When given a positive integer,
+   return positive zero. When given a negative integer, return negative
+   zero.
 </p>
 
 <p>
-  The same special cases for sin and cos apply here.
+  When an infinity is passed to this function, NaN is returned and
+  the invalidOperation floating point exception is raised.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#cospi" id="#cospi">flcospi</a> <var>fl</var>)</code><br>
+</div>
+
+<p>Return cos(π<var>fl</var>).</p>
+
+<p>
+  Let <var>fl</var> = <var>n</var> + ½, where <var>n</var> is an
+  integer. Then this function returns positive zero.
+</p>
+
+<p>
+  When an infinity is passed to this function, NaN is returned and
+  the invalidOperation floating point exception is raised.
 </p>
 
 <div class="feature">
@@ -1991,6 +2009,85 @@ SPDX-License-Identifier: MIT
     <td><code>+inf.0</code></td>
 </tr>
 </table>
+
+<h4 id="inverse-trigonometric"><a href="#inverse-trigonometric">&para;</a> Inverse trigonometric functions</h4>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flasin" id="#flasin">flasin</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flasinpi" id="#flasinpi">flasinpi</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Compute the arcsine of the argument.
+  When given a zero, return that zero. When given a value whose absolute
+  value is greater than 1, return a NaN and raise the invalidOperation
+  floating point exception.
+</p>
+
+<p>The function <code>flasinpi</code> is defined as asin(<var>fl</var>)/π.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flacos" id="#flacos">flacos</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flacospi" id="#flacospi">flacospi</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Compute the arccosine of the argument.
+  When given a zero, positive one. When given a value whose absolute
+  value is greater than 1, return a NaN and raise the invalidOperation
+  floating point exception.
+</p>
+<p>
+  The function <code>flacospi</code> is defined as acos(<var>fl</var>)/π.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flatan" id="#flatan">flatan</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
+<code class="signature">(<a href="#flatanpi" id="#flatanpi">flatanpi</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
+</div>
+
+<p>
+  When given one argument, compute the arctan of the argument. At
+  infinity, return the closest approximation to ±π/2.
+</p>
+
+<p>
+  When given two arguments, compute the atan2 function. When one of the
+  arguments is a zero, returns the appropriate value from the atan
+  table in the <span class="report-name">R<sup>7</sup>RS</span>.
+  The following special cases are added to the table:
+</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flatan <var>y</var> -inf.0)</code></td>
+    <td>finite nonzero <var>y</var></td>
+    <td><code>(flcopysign π/2 <var>y</var>)</code></td>
+</tr>
+<tr><td><code>(flatan <var>y</var> +inf.0)</code></td>
+    <td>finite nonzero <var>y</var></td>
+    <td><code>(flcopysign 0.0 <var>y</var>)</code></td>
+</tr>
+<tr><td><code>(flatan ±inf.0 <var>x</var>)</code></td>
+    <td>finite <var>x</var></td>
+    <td><code>(flcopysign π/2 ±inf.0)</code></td>
+</tr>
+<tr><td><code>(flatan ±inf.0 -inf.0)</code></td>
+    <td></td>
+    <td><code>(flcopysign 3π/4 ±inf.0)</code></td>
+</tr>
+<tr><td><code>(flatan ±inf.0 +inf.0)</code></td>
+    <td></td>
+    <td><code>(flcopysign π/4 ±inf.0)</code></td>
+</tr>
+</table>
+
+<p>The function <code>flatanpi</code> is the same as <code>flatan</code>
+   except that the output of atan is divided by π.
+</p>
 
 <div class="feature" id="rounding-mode">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
