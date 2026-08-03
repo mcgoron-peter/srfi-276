@@ -280,9 +280,12 @@ SPDX-License-Identifier: MIT
   is raised if a floating point operation does something exceptional,
   such as overflow. They are not the same as Scheme exceptions.
   Some operations raise a floating-point exception on certain arguments.
-  Implementations are only required to implement those exceptions if they
-  implement the floating-point environment library. Implementations should
-  also raise floating-point exceptions when generic arithmetic is used.
+  If an implementation does not support the floating point environment
+  library, then it does not need to implement the exception behavior
+  as described in the library section.  Implementations that support
+  the floating point environment library shuold raise floating-point
+  exceptions when generic arithmetic is done in such a way that would
+  raise the exception when using the floating point library.
 </p>
 
 <h3 id="precise"><a href="#precise">&para;</a> Precise representation of flonums</h3>
@@ -724,9 +727,9 @@ SPDX-License-Identifier: MIT
   can have, represented as an exact integer. For binary64 numbers, this is 1023.
 </p>
 
-<div class="feature" id="fl-minimum-exponent">
+<div class="feature" id="fl-minimum-normalized-exponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#fl-minimum-exponent">fl-minimum-exponent</a></code>
+<code class="signature"><a href="#fl-minimum-normalized-exponent">fl-minimum-normalized-exponent</a></code>
 </div>
 
 <p>
@@ -734,6 +737,15 @@ SPDX-License-Identifier: MIT
   represented as (-1)<sup>s</sup>(<var>s</var><sub>0</sub>.<var>s</var><sub>1</sub>…)×2<sup>e</sup>
   can have, represented as an exact integer. For IEEE 754 representations, this is
   <code>(- 1 :maximum-exponent)</code>.
+</p>
+
+<div class="feature" id="fl-minimum-exponent">
+<span class="category">(srfi 276 ⟨library⟩)<br>value</span>
+<code class="signature"><a href="#fl-minimum-exponent">fl-minimum-exponent</a></code>
+</div>
+
+<p>
+  The minimum exponent of any non-zero floating point number.
 </p>
 
 <div class="feature" id="fl-greatest">
@@ -751,7 +763,8 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  The smallest positive floating point number. This number may not be normalized.
+  The smallest positive floating point number. This number may not
+  be normalized.
 </p>
 
 <div class="feature" id="fl-least-normal">
@@ -1622,7 +1635,7 @@ SPDX-License-Identifier: MIT
 <table>
 <tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
 <tr><td><code>(flexpt <var>x</var> ±0.0)</code></td>
-    <td><var>x</var> is not sNaN</td>
+    <td><var>x</var> is not NaN</td>
     <td></td>
     <td>1.0</td>
 </tr>
@@ -1652,7 +1665,7 @@ SPDX-License-Identifier: MIT
     <td><code>1.0</code></td>
 </tr>
 <tr><td><code>(flexpt +1.0 <var>y</var>)</code></td>
-    <td><var>y</var> is not sNaN</td>
+    <td><var>y</var> is not NaN</td>
     <td></td>
     <td><code>1.0</code></td>
 </tr>
@@ -1724,6 +1737,26 @@ SPDX-License-Identifier: MIT
 </tr>
 </table>
 
+<p>
+  Let <var>nan</var> be a quiet NaN.
+  It is unspecified if <code>(flexpt <var>nan</var> ±0.0)</code>
+  returns <code>1.0</code> or a NaN.
+  It is unspecified if <code>(flexpt 1.0 <var>nan</var>)</code>
+  returns <code>1.0</code> or a NaN.
+</p>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale:</span>
+  IEEE 754 mandates that <code>(flexpt <var>nan</var> ±0.0)</code>
+  and <code>(flexpt 1.0 <var>nan</var>)</code>
+  returns <code>1.0</code>. This rule allows for the usual Scheme
+  rule, where an inexact operation on NaNs returns NaN, while also
+  allowing for an implementation to FFI into an IEEE 754 math library,
+  which provides this rule.
+</p>
+</div>
+
 <h4 id="logarithms"><a href="#logarithms">&para;</a> Logarithms</h4>
 
 <div class="feature">
@@ -1771,6 +1804,7 @@ SPDX-License-Identifier: MIT
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#make-fllog-base"   id="make-fllog-base">make-fllog-base</a> <var>fl</var>)</code><br>
+</div>
 
 <p>
   Returns a procedure that computes the base <var>fl</var> logarithm of
@@ -1779,7 +1813,110 @@ SPDX-License-Identifier: MIT
   if <var>fl</var> is less than 1.0.
 </p>
 
-<h4 id="new-identifiers"><a href="#new-identifiers">&para;</a> New identifiers</h4>
+<h4 id="power"><a href="#power">&para;</a> Powers and roots</h4>
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flcbrt"   id="flcbrt">flcbrt</a> <var>fl</var>)</code><br>
+</div>
+
+<p>Calculate <var>fl</var><sup>1/3</sup>. When passed a zero or an
+   infinity, returns the argument.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flcompound"   id="flcompound">flcompound</a> <var>fl</var> <var>n</var>)</code><br>
+</div>
+
+<p>Calculate (1 + <var>fl</var>)<sup>n</sup>. It is expected that
+   this function is more accurate than
+   <code>(flexpt (fl+ 1.0 <var>fl</var>) <var>n</var>)</code>
+   when <var>fl</var> is small. The following special cases apply:
+</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flcompound <var>x</var> 0.0)</code></td>
+    <td><var>x</var> ≥ -1</td>
+    <td></td>
+    <td>1.0</td>
+</tr>
+<tr><td><code>(flcompound <var>x</var> <var>n</var>)</code></td>
+    <td><var>x</var> &lt; -1, <var>n</var> ≠ 0</td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+<tr><td><code>(flcompound -1.0 <var>n</var>)</code></td>
+    <td><var>n</var> &lt; 0</td>
+    <td>divideByZero</td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flcompound -1.0 <var>n</var>)</code></td>
+    <td><var>n</var> &gt; 0</td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+<tr><td><code>(flcompound +inf.0 <var>n</var>)</code></td>
+    <td><var>n</var> &gt; 0</td>
+    <td></td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flcompound +inf.0 <var>n</var>)</code></td>
+    <td><var>n</var> &lt; 0</td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+</table>
+<p>
+  Let <var>nan</var> be a quiet NaN.
+  It is unspecified if <code>(flcompound <var>nan</var> ±0.0)</code>
+  returns <code>1.0</code> or NaN.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flhypot"   id="flhypot">flhypot</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  Calculate √(<var>fl<sub>1</sub></var><sup>2</sup> + <var>fl<sub>2</sub></var><sup>2</sup>).
+</p>
+
+<p>
+  If one argument is zero, the returned value is the absolute value of the
+  other argument.
+</p>
+
+<p>
+  If one argument is infinity, then the returned value is infinity, even if
+  another value is NaN.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flrsqrt"   id="flrsqrt">flrsqrt</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Calculates 1/√<var>fl</var>. When passed zero, returns the appropriately
+  signed infinity and raises the divideByZero floating point exception.
+  When passed positive infinity, returns positive zero. When passed a
+  negative number, returns a NaN and raises the invalidOperation floating
+  point exception.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flsqrt"   id="flsqrt">flsqrt</a> <var>fl</var>)</code><br>
+</div>
+
+<p>
+  Returns √<var>fl</var>. This function always returns a correctly rounded
+  result. When passed a zero, returns that zero. When passed postivite
+  infinity, returns positive infinity. When passed a negative number,
+  returns NaN and raises the invalidOperation floating-point exception.
+</p>
+
+<h4 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h4>
 
 <div class="feature" id="rounding-mode">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
