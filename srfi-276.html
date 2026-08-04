@@ -134,6 +134,48 @@ SPDX-License-Identifier: MIT
   operations corresponding to IEEE 754-2019 and C23.
 </p>
 
+<h2 id="toc"><a href="#toc">&para;</a> Table of Contents</h2>
+
+<ol>
+<li><a href="#issues">Issues</a></li>
+<li><a href="#rationale">Rationale</a>
+    <ol>
+    <li><a href="#speed-portability-and-ease-of-use">Speed and Portability vs. Ease of Use</a></li>
+    </ol>
+</li>
+<li><a href="#terminology">Terminology</a></li>
+<li><a href="#precise">Precise representation of flonums</a></li>
+<li><a href="#argument-convention">Argument conventions</a></li>
+<li><a href="#library">Library names</a></li>
+<li><a href="#library-desc">Floating-point library</a>
+    <ol>
+    <li><a href="#nan-conventions">NaN conventions</a></li>
+    <li><a href="#numeric-constants">Numeric constants</a></li>
+    <li><a href="#implementation-constants">Implementation constants</a></li>
+    <li><a href="#constructors">Constructors</a></li>
+    <li><a href="#accessors">Accessors</a></li>
+    <li><a href="#predicates">Predicates</a></li>
+    <li><a href="#arithmetic">Arithmetic</a></li>
+    <li><a href="##integer-rounding">Integer rounding</a></li>
+    <li><a href="#exponential">Exponentials</a></li>
+    <li><a href="#logarithms">Logarithms</a></li>
+    <li><a href="#power">Powers and roots</a></li>
+    <li><a href="#trigonometric">Trigonometric functions</a></li>
+    <li><a href="#inverse-trigonometric">Inverse trigonometric functions</a></li>
+    <li><a href="#hyperbolic">Hyperbolic functions</a></li>
+    </ol>
+</li>
+<li><a href="#implications">Implications of IEEE arithmetic for optimizers</a></li>
+<li><a href="#examples">Examples</a></li>
+<li><a href="#considerations">Considerations for inexact number vectors</a></li>
+<li><a href="#reader-syntax">Reader syntax suggestions</a></li>
+<li><a href="#implementation">Implementation</a></li>
+<li><a href="#bibliography">Bibliography</a></li>
+<li><a href="#acknowledgements">Acknowledgements</a></li>
+<li><a href="#appendix1">Appendix 1: Relationship between this SRFI, C23, and IEEE 754</a></li>
+<li><a href="#copyright">Copyright</a></li>
+</ol>
+
 <h2 id="issues"><a href="#issues">&para;</a> Issues</h2>
 
 <ul>
@@ -226,21 +268,7 @@ SPDX-License-Identifier: MIT
   about strict reproducibility or the absolute fastest speed.
 </p>
 
-<h2 id="specification"><a href="#specification">&para;</a> Specification</h2>
-
-<p>
-  This SRFI is organized into these parts:
-</p>
-
-<ol>
-  <li><a href="#library">The type-specific libraries</a>.</li>
-  <li><a href="#implications">Optimization considerations.</a></li>
-  <li><a href="#considerations">Relationships between type-specific
-      libraries and number vectors.</a></li>
-  <li><a href="#reader-syntax">Recommendations for lexical syntax.</a></li>
-</ol>
-
-<h3 id="terminology"><a href="#terminology">&para;</a> Terminology</h3>
+<h2 id="terminology"><a href="#terminology">&para;</a> Terminology</h2>
 
 <p>
   All references to IEEE 754 refer to its 2019 revision.
@@ -288,7 +316,7 @@ SPDX-License-Identifier: MIT
   raise the exception when using the floating point library.
 </p>
 
-<h3 id="precise"><a href="#precise">&para;</a> Precise representation of flonums</h3>
+<h2 id="precise"><a href="#precise">&para;</a> Precise representation of flonums</h2>
 
 <p>
   The examples in the SRFI use an extension to the syntax of Scheme datums
@@ -322,7 +350,7 @@ SPDX-License-Identifier: MIT
   implementation of this syntax.
 </p>
 
-<h3 id="argument-convention"><a href="#argument-convention">&para;</a> Argument conventions</h3>
+<h2 id="argument-convention"><a href="#argument-convention">&para;</a> Argument conventions</h2>
 
 <p>
   The argument names have the same meanings as the
@@ -350,7 +378,7 @@ SPDX-License-Identifier: MIT
   <var>endianness</var> is not supplied, it is the native endianness.
 </p>
 
-<h3 id="library"><a href="#library">&para;</a> Library names</h3>
+<h2 id="library"><a href="#library">&para;</a> Library names</h2>
 
 <p>
   The implementation must export the following libraries:
@@ -432,7 +460,7 @@ SPDX-License-Identifier: MIT
   not be exported.
 </p>
 
-<h3 id="library-desc"><a href="#library-desc">&para;</a> Floating-point library</h4>
+<h2 id="library-desc"><a href="#library-desc">&para;</a> Floating-point library</h2>
 
 <p>
   The floating-point libraries are an extension of
@@ -608,7 +636,7 @@ SPDX-License-Identifier: MIT
    <a href="#string-to-flonum"><code>string-&gt;flonum</code></a>
 </p>
 
-<h4 id="nan-conventions"><a href="#nan-conventions">&para;</a> NaN conventions</h4>
+<h3 id="nan-conventions"><a href="#nan-conventions">&para;</a> NaN conventions</h3>
 
 <p>
   This SRFI does not require that implementations support all the NaN
@@ -627,10 +655,18 @@ SPDX-License-Identifier: MIT
 
 <p>
   By default, giving a signaling NaN to a procedure will cause the
-  invalidOperation floating point exception to be raised.
+  invalidOperation floating point exception to be raised and will cause
+  a NaN to be returned.
 </p>
 
-<h4 id="numeric-constants"><a href="#numeric-constants">&para;</a> Numeric constants</h4>
+<p>
+  It is unspecified what the sign of a NaN is. Implementations should
+  make <code>+nan.0</code> have a positive sign, and <code>-nan.0</code>
+  have a negative sign, and have that sign be reflected in the machine
+  representation of the NaN.
+</p>
+
+<h3 id="numeric-constants"><a href="#numeric-constants">&para;</a> Numeric constants</h3>
 
 <p>
   The numeric constants of SRFI 144 are exported for the number type
@@ -685,7 +721,7 @@ SPDX-License-Identifier: MIT
    identifiers.
 </p>
 
-<h4 id="implementation-constants"><a href="#implementation-constants">&para;</a> Implementation constants</h4>
+<h3 id="implementation-constants"><a href="#implementation-constants">&para;</a> Implementation constants</h3>
 
 <div class="feature" id="flradix">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
@@ -801,7 +837,8 @@ SPDX-License-Identifier: MIT
 <p>Size of the flonum in bytes as an exact integer. For the binary64 representation, this
    is 8.</p>
 
-<h4 id="constructors"><a href="#constructors">&para;</a> Constructors</h4>
+<h3 id="constructors"><a href="#constructors">&para;</a> Constructors</h3>
+
 <div class="feature" id="flonum">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flonum">flonum</a> <var>z</var>)</code>
@@ -888,6 +925,11 @@ SPDX-License-Identifier: MIT
   may depend on <var>fl</var>. However, this procedure must round-trip
   with <a href="#flnormalized-fraction-exponent"><code>normalized-fraction-exponent</code></a>.
 </p>
+
+<p>
+  This procedure raises no floating-point exceptions when given NaNs.
+</p>
+
 <div class="boxed">
   <span class="boxed-tag">Note:</span>
   In SRFI 144, this was given the semantics of the C function
@@ -897,7 +939,7 @@ SPDX-License-Identifier: MIT
   and <code>make-flonum</code> in SRFI 144 are equivalent.
 </div>
 
-<h4 id="accessors"><a href="#accessors">&para;</a> Accessors</h4>
+<h3 id="accessors"><a href="#accessors">&para;</a> Accessors</h3>
 
 <div class="feature" id="flinteger-fraction">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -1027,7 +1069,7 @@ SPDX-License-Identifier: MIT
   for a negative sign and 0 otherwise.
 </div>
 
-<h4 id="accessors"><a href="#accessors">&para;</a> Predicates</h4>
+<h3 id="predicates"><a href="#predicates">&para;</a> Predicates</h3>
 
 <p>
   Unless otherwise specified, none of these procedures raise exceptions
@@ -1306,7 +1348,7 @@ SPDX-License-Identifier: MIT
   <code>#f</code> otherwise.
 </p>
 
-<h4 id="arithmetic"><a href="#arithmetic">&para;</a> Arithmetic</h4>
+<h3 id="arithmetic"><a href="#arithmetic">&para;</a> Arithmetic</h3>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -1546,7 +1588,7 @@ SPDX-License-Identifier: MIT
   numerator and denominator of a NaN is a NaN.
 </p>
 
-<h4 id="integer-rounding"><a href="#integer-rounding">&para;</a> Integer rounding</h4>
+<h3 id="integer-rounding"><a href="#integer-rounding">&para;</a> Integer rounding</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flfloor" id="flfloor">flfloor</a> <var>fl</var>)</code><br>
@@ -1584,7 +1626,7 @@ SPDX-License-Identifier: MIT
   to the number further from zero.
 </p>
 
-<h4 id="exponential"><a href="#exponential">&para;</a> Exponentials</h4>
+<h3 id="exponential"><a href="#exponential">&para;</a> Exponentials</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flexp" id="flexp">flexp</a> <var>fl</var>)</code><br>
@@ -1757,7 +1799,7 @@ SPDX-License-Identifier: MIT
 </p>
 </div>
 
-<h4 id="logarithms"><a href="#logarithms">&para;</a> Logarithms</h4>
+<h3 id="logarithms"><a href="#logarithms">&para;</a> Logarithms</h3>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -1813,7 +1855,7 @@ SPDX-License-Identifier: MIT
   if <var>fl</var> is less than 1.0.
 </p>
 
-<h4 id="power"><a href="#power">&para;</a> Powers and roots</h4>
+<h3 id="power"><a href="#power">&para;</a> Powers and roots</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flcbrt"   id="flcbrt">flcbrt</a> <var>fl</var>)</code><br>
@@ -1916,7 +1958,7 @@ SPDX-License-Identifier: MIT
   returns NaN and raises the invalidOperation floating-point exception.
 </p>
 
-<h4 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h4>
+<h3 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#sin" id="#sin">flsin</a> <var>fl</var>)</code><br>
@@ -2010,7 +2052,7 @@ SPDX-License-Identifier: MIT
 </tr>
 </table>
 
-<h4 id="inverse-trigonometric"><a href="#inverse-trigonometric">&para;</a> Inverse trigonometric functions</h4>
+<h3 id="inverse-trigonometric"><a href="#inverse-trigonometric">&para;</a> Inverse trigonometric functions</h3>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2089,7 +2131,7 @@ SPDX-License-Identifier: MIT
    except that the output of atan is divided by π.
 </p>
 
-<h4 id="hyperbolic"><a href="#hyperbolic">&para;</a> Hyperbolic functions</h4>
+<h3 id="hyperbolic"><a href="#hyperbolic">&para;</a> Hyperbolic functions</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flsinh">flsinh</a> <var>fl</var>)</code>
@@ -2499,7 +2541,7 @@ infinity.</p>
 <div class="feature" id="flonum-to-string">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 
-<h3 id="implications"><a href="#implications">&para;</a> Implications of IEEE arithmetic for optimizers</h3>
+<h2 id="implications"><a href="#implications">&para;</a> Implications of IEEE arithmetic for optimizers</h2>
 
 <p>
   When an implementation advertises that it implements,
@@ -2521,7 +2563,7 @@ infinity.</p>
   rounding.
 </p>
 
-<h4 id="examples"><a href="#examples">&para;</a> Examples</h4>
+<h2 id="examples"><a href="#examples">&para;</a> Examples</h2>
 <p>
   <em>This section is non-normative.</em>
 </p>
@@ -2565,7 +2607,7 @@ infinity.</p>
   in such a way to make the output values differ.
 </p>
 
-<h3 id="considerations"><a href="#considerations">&para;</a> Considerations for inexact number vectors</h3>
+<h2 id="considerations"><a href="#considerations">&para;</a> Considerations for inexact number vectors</h2>
 
 <p>
   <a href="https://srfi.schemers.org/srfi-4/">SRFI 4</a> specifies
@@ -2585,7 +2627,7 @@ infinity.</p>
   <tr><td>c128vector</td><td>each part is binary64</td><td><code>c128vector-is-binary64</code></td></tr>
 </table>
 
-<h3 id="reader-syntax"><a href="#reader-syntax">&para;</a> Reader syntax suggestions</h3>
+<h2 id="reader-syntax"><a href="#reader-syntax">&para;</a> Reader syntax suggestions</h2>
 
 <p>
   On implementations with binary floating point of the
