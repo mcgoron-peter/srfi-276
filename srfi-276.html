@@ -1537,6 +1537,38 @@ SPDX-License-Identifier: MIT
 
 <h3 id="integer-division"><a href="#integer-division">&para;</a> Integer division</h3>
 
+<p>The following special cases apply to the procedures in this section:
+</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(⟨prefix⟩-remainder ±0.0 <var>y</var>)</code></td>
+    <td><var>y</var> ≠ 0.0</td>
+    <td></td>
+    <td><code>±0.0</code></td>
+</tr>
+<tr><td><code>(⟨prefix⟩-remainder <var>x</var> <var>y</var>)</code></td>
+    <td><var>y</var> = 0</td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+<tr><td><code>(⟨prefix⟩-remainder <var>x</var> <var>y</var>)</code></td>
+    <td><var>x</var> infinite</td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+<tr><td><code>(⟨prefix⟩-remainder <var>x</var> ±inf.0)</code></td>
+    <td><var>x</var> is finite</td>
+    <td></td>
+    <td><var>x</var></td>
+</tr>
+<tr><td><code>(⟨prefix⟩-quotient <var>x</var> ±inf.0)</code></td>
+    <td><var>x</var> is finite</td>
+    <td></td>
+    <td><code>(flcopysign 0.0 <var>x</var>)</code></td>
+</tr>
+</table>
+
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#fltruncate-quotient" id="fltruncate-quotient">fltruncate-quotient</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
