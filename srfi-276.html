@@ -164,7 +164,8 @@ SPDX-License-Identifier: MIT
     <li><a href="#accessors">Accessors</a></li>
     <li><a href="#predicates">Predicates</a></li>
     <li><a href="#arithmetic">Arithmetic</a></li>
-    <li><a href="##integer-rounding">Integer rounding</a></li>
+    <li><a href="#integer-rounding">Integer rounding</a></li>
+    <li><a href="#integer-division">Integer division</a></li>
     <li><a href="#exponential">Exponentials</a></li>
     <li><a href="#logarithms">Logarithms</a></li>
     <li><a href="#power">Powers and roots</a></li>
@@ -1534,6 +1535,58 @@ SPDX-License-Identifier: MIT
 </p>
 </div>
 
+<h3 id="integer-division"><a href="#integer-division">&para;</a> Integer division</h3>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#fltruncate-quotient" id="fltruncate-quotient">fltruncate-quotient</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(<a href="#fltruncate-remainder" id="fltruncate-remainder">fltruncate-remainder</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  Let <var>q</var> = truncate(<var>fl<sub>1</sub></var>/<var>fl<sub>2</sub></var>) and let <var>r</var> be a flonum such that
+  <var>fl<sub>1</sub></var> = <var>q</var><var>fl<sub>2</sub></var> + <var>r</var>.
+</p>
+
+<p>
+  Then <code>fltruncate-quotient</code> returns <var>q</var> and
+  <code>fltruncate-remainder</code> returns <var>r</var>. The remainder
+  is always correctly rounded.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flremquo" id="flremquo">flremquo</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  Let <var>q</var> = roundtoeven(<var>fl<sub>1</sub></var>/<var>fl<sub>2</sub></var>) and let <var>r</var> be a flonum such that
+  <var>fl<sub>1</sub></var> = <var>q</var><var>fl<sub>2</sub></var> + <var>r</var>.
+</p>
+
+<p>
+  This procedure returns two values: a corretly signed integer whose
+  magnitude is congruent to the magnitude of <var>q</var> modulo
+  <var>k</var>, where <var>k</var> ≥ 3, and the correctly rounded
+  remainder.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flround-quotient" id="flround-quotient">flround-quotient</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(<a href="#flround-remainder" id="flround-remainder">flround-remainder</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+</div>
+
+<p>
+  Let <var>q</var> = roundtoeven(<var>fl<sub>1</sub></var>/<var>fl<sub>2</sub></var>) and let <var>r</var> be a flonum such that
+  <var>fl<sub>1</sub></var> = <var>q</var><var>fl<sub>2</sub></var> + <var>r</var>.
+</p>
+
+<p>
+  Then <code>flround-quotient</code> returns <var>q</var> and
+  <code>flround-remainder</code> returns <var>r</var>. The remainder
+  is always correctly rounded.
+</p>
 
 <h3 id="exponential"><a href="#exponential">&para;</a> Exponentials</h3>
 <div class="feature">
