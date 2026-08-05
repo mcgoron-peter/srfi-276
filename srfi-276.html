@@ -169,6 +169,7 @@ SPDX-License-Identifier: MIT
     <li><a href="#inverse-trigonometric">Inverse trigonometric functions</a></li>
     <li><a href="#hyperbolic">Hyperbolic functions</a></li>
     <li><a href="#special">Special functions</a></li>
+    <li><a href="#implementation-query">Implementation query</a></li>
     </ol>
 </li>
 <li><a href="#implications">Implications of IEEE arithmetic for optimizers</a></li>
@@ -1652,6 +1653,23 @@ SPDX-License-Identifier: MIT
   to the number further from zero.
 </p>
 
+<pre
+><code class="example-code">(flround-away 2.5)</code> ⇒ 3.0
+<code class="example-code">(flround 2.5)</code> ⇒ 2.0
+<code class="example-code">(flround-away 3.5)</code> ⇒ 4.0
+<code class="example-code">(flround 3.5)</code> ⇒ 4.0</pre>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: The <code>flround</code> procedure
+  in the <span class="report-name">R<sup>6</sup>RS</span> and
+  <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a> implements
+  Scheme’s <code>round</code> ties-to-even behavior, which is the
+  behavior of <code>roundeven</code> in C11.
+</p>
+</div>
+
+
 <h3 id="exponential"><a href="#exponential">&para;</a> Exponentials</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -1971,6 +1989,13 @@ SPDX-License-Identifier: MIT
   negative number, returns a NaN and raises the invalidOperation floating
   point exception.
 </p>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: Reciprocal square root is available
+  in many CPUs as a hardware operation.
+</p>
+</div>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2443,20 +2468,206 @@ infinity.</p>
 </tr>
 </table>
 
-<div class="feature" id="rounding-mode">
+<h3 id="implementation-query"><a href="#implementation-query">&para;</a>
+  Implementation query</h3>
+
+
+<div class="feature" id="features">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#rounding-mode">:rounding-mode</a>)</code>
+<code class="signature">(<a href="#flfeatures">flfeatures</a>)</code>
 </div>
 
 <p>
-  Returns the current rounding mode for this flonum type. This SRFI
-  defines the following symbols which can be returned from this procedure.
-   The SRFI defers to the IEEE
-  754 standard for the complete definition of these rounding modes.
-  An implementation <strong>may</strong> add other rounding modes,
-  which <strong>should</strong> be symbols. For example, an implementation
-  with support for <a href="https://mpfr.org">GNU MPFR</a> may add MPFR's
-  additional rounding modes.
+  Returns a list containing information about the floating-point
+  operations in this library. The following symbols have defined
+  meanings. An implementation may add other features, which should
+  be symbols.
+</p>
+
+<dl>
+<dt><code>subnormals-are-zero</code></dt>
+<dd>Subnormal numbers are treated as zero. (This is sometimes called “DAZ,”
+    or “denormals are zero” mode, for historical reasons.)</dd>
+<dt><code>flush-to-zero</code></dt>
+<dd>An operation that would underflow and create a subnormal number instead
+    creates a zero. (This is sometimes called “FTZ.”)</dd>
+<dt><code>ieee-754-2019</code></dt>
+<dd>Arithmetic compiles with IEEE 754. In particular, the
+    operations that IEEE 754 requires to be correctly rounded are correctly
+    rounded. Must not
+    appear when <code>subnormals-are-zero</code> or <code>flush-to-zero</code>
+    appear.</dd>
+<dt><code>non-stop</code></dt>
+<dd>Arithmetic is non-stop (see above).</dd>
+<dt><code>fast-fma</code></dt>
+<dd>The function <code>(fl+* x y z)</code> is at least as fast as or faster
+    than <code>(fl+ (fl* x y) z)</code>. (Fused multiply-add must be rounded
+    correctly when IEEE 754 compliance mode is on, regardless of
+    whether <code>fast-fma</code> is available.)</dd>
+<dt><code>⟨name⟩-correctly-rounded</code> where ⟨name⟩ is a procedure from the
+    library</dt>
+<dd>The function ⟨name⟩ is always correctly rounded.
+    (When <code>ieee-754-2019</code> appears, then features corresponding
+     to functions the IEEE 754 be correctly rounded must not
+     appear.)</dd>
+</dl>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: DAZ/FTZ modes are usually enabled
+  by the compiler, or are baked-in features of the architecture. As such,
+  this SRFI does not provide a portable way to manipulate this mode.
+</p>
+<p>
+  This should not be confused with the
+  <a href="https://standards.scheme.org/r7rs-html5/index.html#features">
+  <code>features</code></a>
+  procedure in the <span class="report-name">R<sup>7</sup>RS</span>.
+  This is a run-time procedure that reports on the run-time environment,
+  and the flags may change over the runtime of the program.
+  These flags are not accessible through <code>cond-expand</code>.
+</p>
+</div>
+
+<h3 id="serialization"><a href="#serialization">&para;</a>
+  Serialization and deserialization procedures</h3>
+
+<div class="feature" id="bytevector-flonum-ref">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#bytevector-flonum-ref">bytevector-flonum-ref</a>
+                         <var>bv</var>
+                         <var>k</var>
+                         [<var>endianness</var>])</code>
+</div>
+<p>It is an error if <var>k</var> to <var>k</var> +
+   <a href="#flbyte-width"><code>flbyte-width</code></a>
+   are not valid indices of <var>bv</var>.
+   If <var>endianness</var> is not supplied, it is an error if
+   <var>k</var> is not a multiple of <code>:byte-width</code>.
+</p>
+
+<p>Read the bytes in <var>bv</var> at <var>k</var> as a flonum of this
+   type, with the <var>endianness</var>.
+</p>
+
+<p>
+   If the value is a NaN, then the NaN should not be coerced into
+   another NaN.
+</p>
+
+<pre><code class="no-bg">(import (scheme base) (prefix (srfi 276 binary64) f64:))
+
+(define bv (make-bytevector f64:flbyte-width))
+(bytevector-u8-set! bv 0 #b01000000)
+(bytevector-u8-set! bv 1 #b00001001)
+(bytevector-u8-set! bv 2 #b00100001)
+(bytevector-u8-set! bv 3 #b11111011)
+(bytevector-u8-set! bv 4 #b01010100)
+(bytevector-u8-set! bv 5 #b01000100)
+(bytevector-u8-set! bv 6 #b00101101)
+(bytevector-u8-set! bv 7 #b00011000)</code>
+<code class="example-code">(f64:bytevector-flonum-ref bv 0 'big)</code> ⇒ #fl(binary64 3.141592653589793116)</pre>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale</span>: Some implementations, in
+  particular those that use NaN boxing, may only be able to represent
+  a limited set of NaNs. Different systems may have different canonical
+  NaNs.  For these reasons portable code should not expect that different
+  NaNs are distinguishable.
+</p>
+</div>
+
+<div class="feature" id="bytevector-flonum-set">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#bytevector-flonum-set">bytevector-flonum-set!</a>
+                         <var>bv</var>
+                         <var>k</var>
+                         <var>fl</var>
+                         [<var>endianness</var>])</code>
+</div>
+<p>It is an error if <var>k</var> to <var>k</var> +
+   <a href="#flbyte-width"><code>byte-width</code></a>
+   are not valid indices of <var>bv</var>.
+   If <var>endianness</var> is not supplied, it is an error if
+   <var>k</var> is not a multiple of <code>byte-width</code>.
+</p>
+
+<p>
+  Write <var>fl</var> to <var>bv</var> at <var>k</var> with
+  <var>endianness</var>.
+</p>
+
+<p>
+  This procedure and
+  <a href="#bytevector-flonum-ref"><code>bytevector-flonum-ref</code></a>
+  must to round-trip on all non-NaNs. That is, given a non-NaN flonum <var>fl</var>,
+</p>
+
+<pre><code class="example-code">
+  (let ((bv (make-bytevector <a href="#flbyte-width">flbyte-width</a>)))
+    (bytevector-flonum-set! bv 0 <var>fl</var>)
+    (eqv? <var>fl</var> (bytevector-flonum-ref bv 0)))
+</code></pre>
+
+<p>always evaluates to <code>#t</code>. These procedures
+should round-trip NaNs.</p>
+
+<pre><code class="no-bg"
+>(import (scheme base) (prefix (srfi 276 binary32) f32))
+
+(define bv (make-bytevector f32:flbyte-width))
+(f32:bytevector-flonum-set! bv 0 #fl(binary32 1.41421353816986083984) 'little)</code>
+<code class="example-code">bv</code>⇒ #u8(#xf3 #x04 #xb5 #x3f)</pre>
+
+<div class="feature" id="string-to-flonum">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#string-to-flonum">string-&gt;flonum</a>
+                         <var>string</var>
+                         [<var>radix</var>])</code>
+</div>
+<p>It is an error if <var>radix</var> is not 2, 8, 10, or 16. The value
+   of <var>radix</var> defaults to 10.</p>
+
+<p>Read <var>string</var> as a number in that representation. This
+   procedure must round-trip with <code>number-&gt;string</code>.</p>
+
+<pre><code class="no-bg"
+>(import (scheme base)
+        (prefix (srfi 276 binary64) f64)
+        (prefix (srfi 276 binary128) f128))</code>
+<code class="example-code">(f128:string->flonum "1e400")</code> ⇒ #fl(binary128 1e400)
+<code class="example-code">(f64:string->flonum "1e400")</code> ⇒ #fl(binary64 +inf.0)
+<code class="example-code"
+>(let ((v #fl(binary128 1e400)))
+  (eqv? (f128:string->flonum
+         (number->string v))
+        v))</code> ⇒ #t
+</pre>
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note:</span>
+  There is no <code>flonum-&gt;string</code> procedure, as
+  <code>number-&gt;string</code> is already polymorphic.
+</p>
+</div>
+
+<h2 id="rounding-mode-library"><a href="#rounding-mode-library">&para;</a>
+    Rounding mode library</h3>
+
+<div class="feature" id="rounding-mode">
+<span class="category">(srfi 276 rounding-mode)<br>procedure</span>
+<code class="signature">(<a href="#flrounding-mode">flrounding-mode</a>)</code>
+</div>
+
+<p>
+  Returns the current rounding mode. This SRFI defines the following
+  symbols which can be returned from this procedure.  The SRFI defers
+  to the IEEE 754 standard for the complete definition of these
+  rounding modes.  An implementation may add other rounding modes,
+  which should be symbols. For example, an implementation with support
+  for <a href="#mpfr">GNU MPFR</a> may add MPFR's additional
+  rounding modes.
 </p>
 
 <dl>
@@ -2481,286 +2692,11 @@ infinity.</p>
 </dl>
 <div class="boxed">
 <p>
-  <span class="boxed-tag">Note</span>: This SRFI provides no portable way
-  to change the rounding mode because it is a major implementation burden
-  with little benefit. In a vacuum, the rounding mode is best
-  represented as a dynamic variable that can be <code>parameterize</code>d.
-  However, the rounding mode is generally a global variable, and can
-  sometimes be attached to individual instructions (RISC-V is an example).
-  Modifying the rounding mode is a pretty rare operation: an analysis of
-  RISC-V code saw no use of any mode besides roundTiesToEven for arithmetic
-  operations [<a href="zurstrassen2023">Zurstraßen 2023</a>].
-</p>
-<p>
-  In a similar vein, this SRFI provides no way of inspecting and raising
-  IEEE 754 exceptions. An example of an implementation that has
-  both IEEE 754 exception handling and rounding mode control is
-  <a href="#mitscheme2022">MIT Scheme</a>.
-</p>
-<p>
+  <span class="boxed-tag">Note</span>:
   The rounding mode is independent of the behavior of the <code>round</code>
-  function.
+  function, and all procedures that do some sort of rounding.
 </p>
 </div>
-
-<div class="feature" id="features">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#features">:features</a>)</code>
-</div>
-
-<p>
-  Returns a list containing information about the floating-point operations
-  in this library. The following symbols have defined meanings. An implementation
-  <strong>may</strong> add other features, which <strong>should</strong> be symbols.
-</p>
-
-<dl>
-<dt><code>subnormals-are-zero</code></dt>
-<dd>Subnormal numbers are treated as zero. (This is sometimes called “DAZ,”
-    or “denormals are zero” mode, for historical reasons.)</dd>
-<dt><code>flush-to-zero</code></dt>
-<dd>An operation that would underflow and create a subnormal number instead
-    creates a zero. (This is sometimes called “FTZ.”)</dd>
-<dt><code>ieee-754-2019</code></dt>
-<dd>Arithmetic compiles with IEEE 754. In particular, the
-    operations that IEEE 754 requires to be correctly rounded are correctly
-    rounded. <strong>Must</strong> not
-    appear when <code>subnormals-are-zero</code> or <code>flush-to-zero</code>
-    appear.</dd>
-<dt><code>non-stop</code></dt>
-<dd>Arithmetic is non-stop (see above).</dd>
-<dt><code>fast-fma</code></dt>
-<dd>The function <code>(:+* x y z)</code> is at least as fast as or faster
-    than <code>(:+ (:* x y) z)</code>. (Fused multiply-add must be rounded
-    correctly when IEEE 754 compliance mode is on, regardless of
-    whether <code>fast-fma</code> is available.)</dd>
-<dt><code>⟨name⟩-correctly-rounded</code> where ⟨name⟩ is a procedure from the
-    library without <code>:</code> prefixed</dt>
-<dd>The function ⟨name⟩ is always correctly rounded.
-    (When <code>ieee-754-2019</code> appears, then features corresponding
-     to functions the IEEE 754 be correctly rounded <strong>must not</strong>
-     appear.)</dd>
-</dl>
-
-<div class="boxed">
-<p>
-  <span class="boxed-tag">Note</span>: DAZ/FTZ modes are usually enabled
-  by the compiler, or are baked-in features of the architecture. As such,
-  this SRFI does not provide a portable way to manipulate this mode.
-</p>
-<p>
-  This should not be confused with the
-  <a href="https://standards.scheme.org/r7rs-html5/index.html#features">
-  <code>features</code></a>
-  procedure in the <span class="report-name">R<sup>7</sup>RS</span>.
-  This is a run-time procedure that reports on the run-time environment,
-  and the flags may change over the runtime of the program.
-  These flags are not accessible through <code>cond-expand</code>.
-</p>
-</div>
-
-<div class="feature" id="read-random-flonum">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#read-random-flonum">:read-random-flonum</a>
-                          <var>binary-input-port</var>
-                          [<var>start</var> [<var>end</var>]])</code>
-</div>
-<p>
-  Returns a random flonum between <var>start</var> (default 0) exclusive and
-  <var>end</var> (default 1) exclusive calculated from the bytes from
-  <var>binary-input-port</var>. If the bytes from the port are uniformly
-  distributed, then the resulting flonum is drawn from a uniform distribution
-  of flonums between the two supplied numbers, to the best extent possible.
-</p>
-
-<div class="boxed">
-<p>
-  <span class="boxed-tag">Rationale</span>: floating-point random number
-  generators may take a variable number of bytes to return an answer:
-  see for example <a href="campbell2014">Campbell 2014</a>. Because of
-  this, this procedure cannot take a bytevector. This procedure could
-  take an <a href="https://srfi.schemers.org/srfi-158/">SRFI 158</a>
-  generator, but those have issues as described in
-  <a href="https://srfi.schemers.org/srfi-271/">SRFI 271</a>.
-</p>
-
-<p>
-  This procedure requires that <em>any</em> flonum between the two ends
-  may be returned with roughly equal probability. This precludes some
-  methods such as filling in the lower 52 bits of a binary64 number,
-  because that does not sample all possible exponents. If one wants
-  this faster (and less accurate) sampling method, one can directly
-  manipulate the structure of the flonum using a bytevector and <a
-  href="#bytevector-flonum-ref"><code>bytevector-flonum-ref</code></a>.
-</p>
-
-<p>
-  It is not possible to pick a random flonum between two arbitrary finite
-  flonums uniformly. It is possible in special cases, including the
-  important case of (0,1): see <a href="#goualard2022">Goualard 2022</a>
-  for discussion and an algorithm that attempts to sample from arbitrary
-  intervals as uniformly as possible.
-</p>
-</div>
-
-<div class="feature" id="round-away">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#round-away">:round-away</a>
-                          <var>fl</var>)</code>
-</div>
-<p>
-  Round <var>fl</var> to an integer flonum, with ties broken as in
-  roundTiesToAway. (C99 <code>round</code>).
-</p>
-
-<pre
-><code class="example-code">(:round-away 2.5)</code> ⇒ 3.0
-<code class="example-code">(:round 2.5)</code> ⇒ 2.0
-<code class="example-code">(:round-away 3.5)</code> ⇒ 4.0
-<code class="example-code">(:round 3.5)</code> ⇒ 4.0</pre>
-
-<div class="boxed">
-<p>
-  <span class="boxed-tag">Note</span>: The <code>flround</code> procedure
-  in the <span class="report-name">R<sup>6</sup>RS</span> and
-  <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a> implements
-  Scheme’s <code>round</code> ties-to-even behavior, which is the
-  behavior of <code>roundeven</code> in C11.
-</div>
-
-<div class="feature" id="rsqrt">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#rsqrt">:rsqrt</a>
-                          <var>fl</var>)</code>
-</div>
-
-<p>
-  Calculates the recpirocal of the square root: i.e.
-  <sup>1</sup>/<sub>√<var>fl</var></sub>.
-</p>
-<div class="boxed">
-<p>
-  <span class="boxed-tag">Note</span>: Reciprocal square root is available
-  in many CPUs as a hardware operation.
-</p>
-</div>
-
-<div class="feature" id="bytevector-flonum-ref">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#bytevector-flonum-ref">:bytevector-flonum-ref</a>
-                         <var>bv</var>
-                         <var>k</var>
-                         [<var>endianness</var>])</code>
-</div>
-<p>It is an error if <var>k</var> to <var>k</var> +
-   <a href="#byte-width"><code>:byte-width</code></a>
-   are not valid indices of <var>bv</var>.
-   If <var>endianness</var> is not supplied, it is an error if
-   <var>k</var> is not a multiple of <code>:byte-width</code>.
-</p>
-
-<p>Read the bytes in <var>bv</var> at <var>k</var> as a flonum of this
-   type, with the <var>endianness</var>.
-</p>
-
-<p>If the value is a NaN, then the NaN <strong>should not</strong> be coerced into
-   another NaN.
-</p>
-
-<pre><code class="no-bg">(import (scheme base) (prefix (srfi 276 binary64) f64:))
-
-(define bv (make-bytevector f64:byte-width))
-(bytevector-u8-set! bv 0 #b01000000)
-(bytevector-u8-set! bv 1 #b00001001)
-(bytevector-u8-set! bv 2 #b00100001)
-(bytevector-u8-set! bv 3 #b11111011)
-(bytevector-u8-set! bv 4 #b01010100)
-(bytevector-u8-set! bv 5 #b01000100)
-(bytevector-u8-set! bv 6 #b00101101)
-(bytevector-u8-set! bv 7 #b00011000)</code>
-<code class="example-code">(f64:bytevector-flonum-ref bv 0 'big)</code> ⇒ #fl(binary64 3.141592653589793116)</pre>
-
-<div class="boxed">
-<p>
-  <span class="boxed-tag">Rationale</span>: Some implementations, in
-  particular those that use NaN boxing, may only be able to represent
-  a limited set of NaNs. There were few requirements on
-  quiet versus signalling NaN formats until 2019. Different systems
-  may have different canonical NaNs.
-  For these reasons portable code should not expect that different NaNs
-  are distinguishable.
-</p>
-</div>
-
-<div class="feature" id="bytevector-flonum-set">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#bytevector-flonum-set">:bytevector-flonum-set!</a>
-                         <var>bv</var>
-                         <var>k</var>
-                         <var>fl</var>
-                         [<var>endianness</var>])</code>
-</div>
-<p>It is an error if <var>k</var> to <var>k</var> +
-   <a href="#byte-width"><code>:byte-width</code></a>
-   are not valid indices of <var>bv</var>.
-   If <var>endianness</var> is not supplied, it is an error if
-   <var>k</var> is not a multiple of <code>byte-width</code>.
-</p>
-
-<p>
-  Write <var>fl</var> to <var>bv</var> at <var>k</var> with
-  <var>endianness</var>.
-</p>
-
-<p>
-  This procedure and
-  <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
-  <strong>must</strong> to round-trip on all non-NaNs. That is, given a non-NaN flonum <var>fl</var>,
-</p>
-
-<pre><code class="example-code">
-  (let ((bv (make-bytevector <a href="#byte-width">:byte-width</a>)))
-    (:bytevector-flonum-set! bv 0 <var>fl</var>)
-    (eqv? <var>fl</var> (:bytevector-flonum-ref bv 0)))
-</code></pre>
-
-<p>always evaluates to <code>#t</code>. These procedures
-<strong>should</strong> round-trip NaNs.</p>
-
-<pre><code class="no-bg"
->(import (scheme base) (prefix (srfi 276 binary32) f32))
-
-(define bv (make-bytevector f32:byte-width))
-(f32:bytevector-flonum-set! bv 0 #fl(binary32 1.41421353816986083984) 'little)</code>
-<code class="example-code">bv</code>⇒ #u8(#xf3 #x04 #xb5 #x3f)</pre>
-
-<div class="feature" id="string-to-flonum">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#string-to-flonum">:string-&gt;flonum</a>
-                         <var>string</var>
-                         [<var>radix</var>])</code>
-</div>
-<p>It is an error if <var>radix</var> is not 2, 8, 10, or 16. The value
-   of <var>radix</var> defaults to 10.</p>
-
-<p>Read <var>string</var> as a number in that representation. This
-   procedure must round-trip with <code>number-&gt;string</code>.</p>
-
-<pre><code class="no-bg"
->(import (scheme base)
-        (prefix (srfi 276 binary64) f64)
-        (prefix (srfi 276 binary128) f128))</code>
-<code class="example-code">(f128:string->flonum "1e400")</code> ⇒ #fl(binary128 1e400)
-<code class="example-code">(f64:string->flonum "1e400")</code> ⇒ #fl(binary64 +inf.0)
-<code class="example-code"
->(let ((v #fl(binary128 1e400)))
-  (eqv? (f128:string->flonum
-         (number->string v))
-        v))</code> ⇒ #t
-</pre>
-
-<div class="feature" id="flonum-to-string">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 
 <h2 id="implications"><a href="#implications">&para;</a> Implications of IEEE arithmetic for optimizers</h2>
 
@@ -2926,7 +2862,7 @@ infinity.</p>
   Available Precision. <i>Numer. Math</i>, <b>18</b>, 224-242.
   <a href="https://doi.org/10.1007/BF01397083">doi:10.1007/BF01397083</a>.
   </li>
-  <li>Laurent Fousse et al. 2007. MPFR: A multiple-precision binary floating-point library with correct rounding.
+  <li id="mpfr">Laurent Fousse et al. 2007. MPFR: A multiple-precision binary floating-point library with correct rounding.
       <i>ACM Trans. Math. Softw.</i>, <b>33</b>, 2.
       <a href="https://doi.org/10.1145/1236463.1236468">doi:10.1145/1236463.1236468</a>.
       The version referenced in this SRFI is 4.2.2.
