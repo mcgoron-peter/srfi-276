@@ -8,6 +8,10 @@ SPDX-License-Identifier: MIT
     <meta charset="utf-8">
     <title>SRFI 276: Type-specific Flonum Libraries</title>
     <style>
+            table {
+              border: 1px solid;
+              margin-bottom: 12pt;
+            }
             @media (prefers-color-scheme: light) {
               :root {
                 --background-color: white;
@@ -141,6 +145,7 @@ SPDX-License-Identifier: MIT
 <li><a href="#rationale">Rationale</a>
     <ol>
     <li><a href="#speed-portability-and-ease-of-use">Speed and Portability vs. Ease of Use</a></li>
+    <li><a href="#criteria">Criteria for inclusion</a></li>
     </ol>
 </li>
 <li><a href="#terminology">Terminology</a></li>
@@ -163,6 +168,7 @@ SPDX-License-Identifier: MIT
     <li><a href="#trigonometric">Trigonometric functions</a></li>
     <li><a href="#inverse-trigonometric">Inverse trigonometric functions</a></li>
     <li><a href="#hyperbolic">Hyperbolic functions</a></li>
+    <li><a href="#special">Special functions</a></li>
     </ol>
 </li>
 <li><a href="#implications">Implications of IEEE arithmetic for optimizers</a></li>
@@ -266,6 +272,26 @@ SPDX-License-Identifier: MIT
   or optimize expressions (for example, using the SSE2 instruction
   <code>RSQRTPS</code> for <code>(/ 1 (sqrt x))</code>) without worrying
   about strict reproducibility or the absolute fastest speed.
+</p>
+
+<h3 id="criteria"><a href="#criteria">&para;</a> Criteria for inclusion</h3>
+
+<p>
+  This SRFI defines procedures that mirror functions in C23’s math
+  library, which are in turn based off of IEEE 754-2019’s recommended
+  functions. These functions are expected to be widely available with
+  stable implementations.
+</p>
+
+<p>
+  There are many, many special functions that exist, such as
+  <a href="#tr24747">TR24747</a> and <a href="#scipy">SciPy</a>.
+  They are not included in this SRFI, as they are very specialized
+  and there might not be enough experience with them to standardize
+  an interface and domain.
+  Hopefully with this library as a standard component of Scheme
+  implementations, the entire range of special functions can be
+  implemented in pure Scheme.
 </p>
 
 <h2 id="terminology"><a href="#terminology">&para;</a> Terminology</h2>
@@ -2222,6 +2248,201 @@ infinity.</p>
 </tr>
 </table>
 
+<h3 id="special"><a href="#special">&para;</a> Special functions</h3>
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flerf">flerf</a> <var>fl</var>)</code>
+</div>
+
+<p>Calculate </p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+<mrow>
+  <mi>erf</mi>
+  <mrow>
+   <mo>(</mo>
+   <mi>x</mi>
+   <mo>)</mo>
+  </mrow>
+  <mo>=</mo>
+   <mfrac>
+    <mn>2</mn>
+    <msqrt><mi>π</mi></msqrt>
+   </mfrac>
+  <msubsup>
+    <mo> &int; </mo>
+    <mn> 0 </mn>
+    <mn> 1 </mn>
+  </msubsup>
+  <mrow>
+    <msup>
+      <mi> e </mi>
+      <mrow>
+        <mo>&minus;</mo>
+        <msup><mi>x</mi><mn>2</mn></msup>
+      </mrow>
+    </msup>
+    <mo> &InvisibleTimes; </mo>
+    <mrow>
+      <mo> d </mo>
+      <mi> x </mi>
+    </mrow>
+  </mrow>
+</math>
+
+<p>The following special cases apply:</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flerf ±0.0)</code></td>
+    <td></td>
+    <td><code>±0.0</code></td>
+</tr>
+<tr><td><code>(flerf ±inf.0)</code></td>
+    <td></td>
+    <td><code>±1.0</code></td>
+</tr>
+</table>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flerfc">flerfc</a> <var>fl</var>)</code>
+</div>
+
+<p>Calculate 1 &minus; erf(<var>fl</var>).
+   The following special cases apply:</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flerfc -inf.0)</code></td>
+    <td></td>
+    <td><code>+2.0</code></td>
+</tr>
+<tr><td><code>(flerf +inf.0)</code></td>
+    <td></td>
+    <td><code>+0.0</code></td>
+</tr>
+</table>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flgamma">flgamma</a> <var>fl</var>)</code>
+</div>
+
+<p> Computes </p>
+
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+<mi>Γ</mi>
+ <mrow>
+  <mo>(</mo>
+  <mi>x</mi>
+  <mo>)</mo>
+ </mrow>
+ <mo>=</mo>
+ <msubsup>
+   <mo> &int; </mo>
+   <mn> 0 </mn>
+   <mn> ∞ </mn>
+ </msubsup>
+ <mrow>
+   <msup>
+    <mi>t</mi>
+    <mrow><mi>z</mi> <mo>&minus;</mo> <mn>1</mn></mrow>
+   </msup>
+   <msup>
+    <mi>e</mi>
+    <mrow><mo>&minus;</mo><mi>t</mi></mrow>
+   </msup>
+   <mrow><mo>d</mo><mi>t</mi></mrow>
+  </mrow>
+</math>
+
+<p>The following special cases apply:</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flgamma ±0.0)</code></td>
+    <td></td>
+    <td>divideByZero</td>
+    <td><code>±inf.0</code><td>
+</tr>
+<tr><td><code>(flgamma <var>x</var>)</code></td>
+    <td><var>x</var> is a negative and an integer or infinity</td>
+    <td>invalidOperation</td>
+    <td>NaN<td>
+</tr>
+<tr><td><code>(flgamma +inf.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>+inf.0</code></td>
+</tr>
+</table>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#fllog-gamma">fllog-gamma</a> <var>fl</var>)</code>
+</div>
+
+<p>Returns two values: log<sub>e</sub>|Γ(<var>fl</var>)|
+   and the sign of Γ(<var>fl</var>) times 1.0.
+   The following special cases apply:</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(fllog-gamma 1.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>0.0</code></td>
+</tr>
+<tr><td><code>(fllog-gamma 2.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>0.0</code></td>
+</tr>
+<tr><td><code>(fllog-gamma <var>x</var>)</code></td>
+    <td><var>x</var> is a negative integer or 0</td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+<tr><td><code>(fllog-gamma ±inf.0)</code></td>
+    <td></td>
+    <td></td>
+    <td><code>+inf.0</code></td>
+</tr>
+</table>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flfirst-bessel">flfirst-bessel</a> <var>fl</var> <var>n</var>)</code><br>
+<code class="signature">(<a href="#flsecond-bessel">flsecond-bessel</a> <var>fl</var> <var>n</var>)</code>
+</div>
+
+<p>
+  Calculate the <var>n</var>th bessel function of the first/second kind,
+  respectively.
+</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flfirst-bessel +inf.0 <var>n</var>)</code></td>
+    <td></td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+<tr><td><code>(flsecond-bessel +inf.0 <var>n</var>)</code></td>
+    <td></td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+<tr><td><code>(flsecond-bessel <var>x</var> <var>n</var>)</code></td>
+    <td><var>x</var> is zero</td>
+    <td>divideByZero</td>
+    <td><code>-inf.0</code></td>
+</tr>
+<tr><td><code>(flsecond-bessel <var>x</var> <var>n</var>)</code></td>
+    <td><var>x</var> is negative</td>
+    <td>invalidOperation</td>
+    <td>NaN</td>
+</tr>
+</table>
+
 <div class="feature" id="rounding-mode">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#rounding-mode">:rounding-mode</a>)</code>
@@ -2725,6 +2946,7 @@ infinity.</p>
       <a href="https://dx.doi.org/10.1109/IEEESTD.2019.8766229"
          >doi:10.1109/IEEESTD.2019.8766229</a>.
       ISBN 978-1-5044-5924-2.</li>
+  <li id="tr24747">ISO. ISO/IEC 24747:2009 — Extensions to the C Library to support mathematical special functions. 2009. Latest publically available draft <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1292.pdf">N1292</a>.</li>
   <li id="JoldesMullerPopescu2017">
       Mioara Joldes, Jean-Michel Muller, Valentina Popescu. 2017.
       Tight and rigourous error bounds for basic building
@@ -2749,6 +2971,8 @@ infinity.</p>
      <a href="https://www.gnu.org/software/mit-scheme/documentation/stable/mit-scheme-ref/Fixnum-and-Flonum-Operations.html">
      https://www.gnu.org/software/mit-scheme/documentation/stable/mit-scheme-ref/Fixnum-and-Flonum-Operations.html     </a> on 2026-06-20.
   </li>
+  <li id="scipy">Scipy. Special functions (1.18.0).
+  Retrieved from <a href="https://docs.scipy.org/doc/scipy-1.18.0/reference/special.html">https://docs.scipy.org/doc/scipy-1.18.0/reference/special.html</a> on 2026-08-04.</li>
   <li id="zurstrassen2023">Niko Zurstraßen. 2023.
       Evaluation of the RISC-V Floating Point Extensions F/D.
       Retrieved from
