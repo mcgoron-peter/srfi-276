@@ -137,7 +137,7 @@ SPDX-License-Identifier: MIT
   Each flonum has its own separate library. Each library also has the
   ability to inspect properties of the flonum operations, such as rounding
   mode and deviations from IEEE 754 arithmetic. New flonum operations are
-  also available, such as random number generation, serialization, and
+  also available, such as serialization and
   operations corresponding to IEEE 754-2019 and C23.
 </p>
 
@@ -177,7 +177,7 @@ SPDX-License-Identifier: MIT
     <li><a href="#serialization">Serialization and deserialization</a></li>
     </ol>
 </li>
-<li><a href="#rounding-mode-library">Rounding mode library</a></li>
+<li><a href="#rounding-mode-library">Rounding mode libraries</a></li>
 <li><a href="#implications">Implications of IEEE arithmetic for optimizers</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#considerations">Considerations for inexact number vectors</a></li>
@@ -331,7 +331,7 @@ SPDX-License-Identifier: MIT
   <dfn>Signaling NaN</dfn> and <dfn>quiet NaN</dfn> are defined in the
   IEEE 754: implementations and representations should differentiate
   between the two. If an implementation or representation does not
-  differentiate between the two, then all NaNs should be considered quiet.
+  differentiate between the two, then all NaNs must be considered quiet.
   Thus, if an implementation has only quiet NaNs, then statements about
   the behavior of procedures on signaling NaNs do not apply.
 </p>
@@ -395,6 +395,8 @@ SPDX-License-Identifier: MIT
   It is an error if any <var>fl</var> argument is not a flonum. It is an
   error if any <var>ifl</var> argument is not an integer flonum,
   decided by <code><a href="#flintegerp">flinteger?</a></code>.
+  It is an error if any <var>rounding-mode</var> argument is not
+  <code><a href="#rounding-modep">rounding-mode?</a></code>.
 </p>
 
 <p>
@@ -477,8 +479,10 @@ SPDX-License-Identifier: MIT
 <dd>Procedures to query the rounding mode.</dd>
 <dt><code>(srfi 276 with-rounding-mode)</code></dt>
 <dd>Operation on the rounding mode in a dynamic extent.</dd>
-<dt><code>(srfi 276 set-rounding-mode!)</code></dt>
+<dt><code>(srfi 276 set-rounding-mode)</code></dt>
 <dd>Operation on the global rounding mode.</dd>
+<dt><code>(srfi 276 exceptions)</code></dt>
+<dd>Operation regarding floating-point exceptions.</dd>
 <dt><code>(srfi 276 environment)</code></dt>
 <dd>Operation on the floating point environment.</dd>
 </dl>
@@ -2603,21 +2607,19 @@ should round-trip NaNs.</p>
 </div>
 
 <h2 id="rounding-mode-library"><a href="#rounding-mode-library">&para;</a>
-    Rounding mode library</h3>
+    Rounding mode libraries</h2>
 
-<div class="feature" id="rounding-mode">
+<div class="feature" id="current-rounding-mode">
 <span class="category">(srfi 276 rounding-mode)<br>procedure</span>
-<code class="signature">(<a href="#flrounding-mode">flrounding-mode</a>)</code>
+<code class="signature">(<a href="#current-rounding-mode">current-rounding-mode</a>)</code>
 </div>
 
 <p>
   Returns the current rounding mode. This SRFI defines the following
-  symbols which can be returned from this procedure.  The SRFI defers
-  to the IEEE 754 standard for the complete definition of these
-  rounding modes.  An implementation may add other rounding modes,
-  which should be symbols. For example, an implementation with support
-  for <a href="#mpfr">GNU MPFR</a> may add MPFR's additional
-  rounding modes.
+  symbols which can be returned from this procedure. An implementation
+  may add other rounding modes, which should be symbols. For example,
+  an implementation with support for <a href="#mpfr">GNU MPFR</a> may
+  add MPFR's additional rounding modes.
 </p>
 
 <dl>
@@ -2643,10 +2645,171 @@ should round-trip NaNs.</p>
 <div class="boxed">
 <p>
   <span class="boxed-tag">Note</span>:
-  The rounding mode is independent of the behavior of the <code>round</code>
-  function, and all procedures that do some sort of rounding.
+  The rounding mode is independent of the behavior of the
+  integer rounding functions and the integer division functions.
 </p>
 </div>
+
+<div class="feature" id="rounding-modep">
+<span class="category">(srfi 276 rounding-mode)<br>procedure</span>
+<code class="signature">(<a href="#rounding-modep">rounding-mode?</a> <var>obj</var>)</code>
+</div>
+
+<p>Returns <code>#t</code> if <var>obj</var> is a valid rounding mode,
+   and <code>#f</code> otherwise.
+</p>
+
+<div class="feature" id="with-rounding-mode">
+<span class="category">(srfi 276 with-rounding-mode)<br>syntax</span>
+<code class="signature">(<a href="#with-rounding-mode">with-rounding-mode</a> <var>rounding-mode</var> <var>body</var> …)</code>
+</div>
+
+<p>
+  Evaluate <var>rounding-mode</var> to a rounding mode. Then evaluate
+  <var>body</var> … with that rounding mode in its dynamic extent. If
+  the dynamic extent is exited, the rounding mode is restored to what
+  it was previously. If the dynamic extent is re-entered, the rounding
+  mode is restored back to the value that <var>rounding-mode</var> was
+  evaluated to.
+</p>
+
+<p>
+  As an example, here is how a simplified form of
+  <code><a href="#fltruncate-quotient">fltruncate-quotient</a></code>
+  could be implemented:
+</p>
+
+<pre
+>(define (fltruncate-quotient fl1 fl2)
+  (let ((trial (fl/ fl1 fl2)))
+    (if (flinfinite? trial)
+        trial
+        (with-rounding-mode 'round-towards-zero
+          (fltruncate (fl/ fl1 fl2))))))</pre>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale:</span>
+  If the operations in the dynamic extent are just procedures from
+  this SRFI, then instead of setting the global rounding mode, then
+  implementations on certain processors like RISC-V can compile the
+  functions to instructions with specific rounding modes. See
+  <a href="#zurstrassen2023">Zurstraßen 2023</a>.
+</p>
+</div>
+
+<div class="feature" id="rounding-mode">
+<span class="category">(srfi 276 set-rounding-mode)<br>procedure</span>
+<code class="signature">(<a href="#set-rounding-mode">set-rounding-mode!</a> <var>rounding-mode</var>)</code>
+</div>
+
+<p>
+  Sets the global rounding mode to <var>rounding-mode</var>. On
+  implementations with multithreading, the rounding mode should be
+  specific to a thread and not to the whole program.
+</p>
+
+<p>
+  For example, <code><a href="#with-rounding-mode">with-rounding-mode</a></code>
+  could be implemented as
+</p>
+
+<pre
+>(define-syntax with-rounding-mode
+  (syntax-rules ()
+    ((_ rounding-mode body1 body2 ...)
+     (let ((r rounding-mode)
+           (p (flrounding-mode)))
+       (dynamic-wind
+        (lambda () (set-rounding-mode! r))
+        (lambda () body1 body2 ...)
+        (lambda () (set-rounding-mode! p)))))))</pre>
+
+<h2 id="exception-libraries"><a href="#exception-libraries">&para;</a>
+  Floating-point exception libraries</h2>
+<div class="feature" id="flexception-namep">
+<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<code class="signature">(<a href="#flexception-namep">flexception-name?</a> <var>obj</var>)</code>
+</div>
+
+<p>Returns <code>#t</code> if the object is a floating point exception,
+   and <code>#f</code> otherwise. The following are the standard
+   floating point exceptions:</p>
+<dl>
+<dt><code>invalid-operation</code></dt>
+<dd>Raised if an operation had no useful result in the extended real number
+    line.</dd>
+<dt><code>divide-by-zero</code></dt>
+<dd>Raised if an operation that produces an infinite result from finite
+    operands.</dd>
+<dt><code>overflow</code></dt>
+<dd>Raised if an operation would return a finite number, but it is larger
+    in magnitude than any flonum.</dd>
+<dt><code>underflow</code></dt>
+<dd>Raised if an operation returned an operation that was non-zero, lower
+    in magnitude than the smallest normal flonum.</dd>
+<dt><code>inexact</code></dt>
+<dd>Raised if an operation returned a rounded result that is different
+    from the exact result.</dd>
+</dl>
+
+<p>An implementation may add more exceptions, which should be symbols.</p>
+
+<div class="feature" id="current-flexceptions">
+<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<code class="signature">(<a href="#current-flexceptions">current-flexceptions</a>)</code>
+</div>
+
+<p>Returns an immutable list of the current raised exceptions.</p>
+
+<div class="feature" id="possible-flexceptions">
+<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<code class="signature">(<a href="#possible-flexceptions">possible-flexceptions</a>)</code>
+</div>
+
+<p>Returns an immutable list of the exceptions that could possibly be
+   raised.</p>
+
+<div class="feature" id="flexception-raisedp">
+<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<code class="signature">(<a href="#flexception-raisedp">flexception-raised?</a> <var>exception</var>)</code>
+</div>
+
+<p>Returns <code>#t</code> if <var>exception</var> was raised in the
+   current exception environment.
+</p>
+
+<div class="feature" id="raise-flexceptions">
+<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<code class="signature">(<a href="#raise-flexception">raise-flexceptions!</a> <var>exception</var> …)</code>
+</div>
+
+<p>
+  Raise each <var>exception</var>.
+</p>
+
+<div class="feature" id="lower-flexceptions">
+<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<code class="signature">(<a href="#lower-flexception">lower-flexceptions!</a> <var>exception</var> …)</code>
+</div>
+
+<p>
+  Lower each <var>exception</var>.
+</p>
+
+<div class="feature" id="with-flexceptions">
+<span class="category">(srfi 276 exceptions)<br>syntax</span>
+<code class="signature">(<a href="#with-flexceptions">with-flexceptions</a>
+<var>exception-list</var> <var>body<sub>1</sub></var> <var>body<sub>2</sub></var> …)</code>
+</div>
+
+<p>
+  Evaluate <var>exception-list</var> to a list of exceptions. The body is
+  evaluted in an environment that starts out with the exceptions that
+  were in the list of exceptions. Raising and lowering exceptions affects
+  the exceptions in the dynamic extent, and not the exceptions anywhere
+  else.
+</p>
 
 <h2 id="implications"><a href="#implications">&para;</a> Implications of IEEE arithmetic for optimizers</h2>
 
