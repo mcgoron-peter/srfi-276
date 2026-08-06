@@ -238,7 +238,7 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-  This SRFI also updates SRFI 144 to include the recommende procedures
+  This SRFI also updates SRFI 144 to include the recommended procedures
   described in IEEE 754-2019, which are further included in C23. An
   implementation of this library can implement the new procedures as an
   FFI to C23: the definitions between this SRFI and C23 are harmonized.
@@ -357,7 +357,7 @@ SPDX-License-Identifier: MIT
 <p>
   When an operation is <dfn>implementation defined</dfn>, then the
   implementation should document what choice or procedure they use for
-  that behavior. For example, the implementation shoud document the
+  that behavior. For example, the implementation should document the
   default rounding mode.
 </p>
 
@@ -545,7 +545,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  Throughout all code examples, when the floating point representatoin
+  Throughout all code examples, when the floating point representation
   is important, the identifiers will be prefixed with
   <code>f64:</code> for binary64 numbers, and <code>f32:</code> for
   binary32 numbers. All other prefixes will be defined by import
@@ -1427,9 +1427,9 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  When given one argument, computes the recoprical of the given argument.
-  The recoprical of infinity is the appropriately signed zero, and the
-  recoprical of zero is the appropriately signed infinity.
+  When given one argument, computes the reciprocal of the given argument.
+  The reciprocal of infinity is the appropriately signed zero, and the
+  reciprocal of zero is the appropriately signed infinity.
 </p>
 
 <p>
@@ -1658,7 +1658,7 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-  This procedure returns two values: a corretly signed integer whose
+  This procedure returns two values: a correctly signed integer whose
   magnitude is congruent to the magnitude of <var>q</var> modulo
   <var>k</var>, where <var>k</var> ≥ 3, and the correctly rounded
   remainder.
@@ -2023,7 +2023,7 @@ SPDX-License-Identifier: MIT
 
 <p>
   Returns √<var>fl</var>. This function always returns a correctly rounded
-  result. When passed a zero, returns that zero. When passed postivite
+  result. When passed a zero, returns that zero. When passed positive
   infinity, returns positive infinity. When passed a negative number,
   returns NaN and raises the invalidOperation floating-point exception.
 </p>
@@ -2870,7 +2870,7 @@ should round-trip NaNs.</p>
 
 <p>
   Evaluate <var>exception-list</var> to a list of exceptions. The body is
-  evaluted in an environment that starts out with the exceptions that
+  evaluated in an environment that starts out with the exceptions that
   were in the list of exceptions. Raising and lowering exceptions affects
   the exceptions in the dynamic extent, and not the exceptions anywhere
   else.
@@ -2893,7 +2893,7 @@ should round-trip NaNs.</p>
 </div>
 
 <p>Returns the current floating point environment. The floating point
-   environment encompasses all modificiations possible at runtime.
+   environment encompasses all modifications possible at runtime.
 </p>
 
 <div class="feature" id="flenvironmentp">
@@ -3542,12 +3542,12 @@ between this SRFI and other standards</h3>
     Information technology — Programming languages — C.
     <a href="https://www.iso.org/standard/82075.html">ISO/IEC 9899:2024</a>.
     <i>International Standards Organization.</i>
-    Latest publically avaiable draft
+    Latest publically available draft
     <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf">N3220.pdf</a>.</li>
 
   <li id="JoldesMullerPopescu2017">
       Mioara Joldes, Jean-Michel Muller, Valentina Popescu. 2017.
-      Tight and rigourous error bounds for basic building
+      Tight and rigorous error bounds for basic building
       blocks of double-word arithmetic.
       <i>ACM Trans. Math. Soft.</i>, <b>44</b>, 2, 15.
       <a href="https://doi.org/10.1145/3121432">doi:10.1145/3121432</a>.
