@@ -187,7 +187,7 @@ SPDX-License-Identifier: MIT
 <li><a href="#implementation">Implementation</a></li>
 <li><a href="#bibliography">Bibliography</a></li>
 <li><a href="#acknowledgements">Acknowledgements</a></li>
-<li><a href="#appendix1">Appendix 1: Relationship between this SRFI, C23, and IEEE 754</a></li>
+<li><a href="#appendix1">Appendix 1: Relationship between this SRFI and other standards</a></li>
 <li><a href="#copyright">Copyright</a></li>
 </ol>
 
@@ -2837,6 +2837,15 @@ should round-trip NaNs.</p>
 
 <h2 id="environment"><a href="#environment">&para;</a> Floating point environment library</h2>
 
+<p>
+  An implementation may add more objects to the floating
+  point environment.  For example, it may add a toggle to
+  signal Scheme exceptions when a floating-point exception
+  is raised. However, it must preserve the property that <a
+  href="#flenvironmenteqp"><code>flenvironment=?</code></a> decides the
+  equivalence of environments.
+</p>
+
 <div class="feature" id="current-flenvironment">
 <span class="category">(srfi 276 environment)<br>procedure</span>
 <code class="signature">(<a href="#current-flenvironment">current-flenvironment</a>)</code>
@@ -2869,6 +2878,40 @@ should round-trip NaNs.</p>
   Two environments are equal if, barring Scheme exceptions being signalled,
   two procedures in this SRFI given the same arguments would return the
   same results.
+</p>
+
+<div class="feature" id="flenvironment-rounding-mode">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#flenvironment-rounding-mode">flenvironment-rounding-mode</a>
+<var>flenvironment</var>)</code>
+</div>
+
+<p>
+  Returns the rounding mode in the <var>flenvironment</var>.
+</p>
+
+<div class="feature" id="flenvironment-raised-exceptions">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#flenvironment-raised-exceptions">flenvironment-raised-exceptions</a>
+<var>flenvironment</var>)</code>
+</div>
+
+<p>
+  Returns an immutable list of raised exceptions in the <var>flenvironment</var>.
+</p>
+
+<div class="feature" id="make-flenvironment">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#make-flenvironment">make-flenvironment</a>
+<var>rounding-mode</var> <var>exception-list</var>)</code>
+</div>
+
+<p>It is an error if <var>exception-list</var> is not a list of
+   exception names.</p>
+
+<p>
+  Constructs an environment with the <var>rounding-mode</var>, and with
+  the exceptions in <var>exception-list</var> raised.
 </p>
 
 <div class="feature" id="default-flenvironment">
@@ -3151,8 +3194,9 @@ should round-trip NaNs.</p>
 </p>
 
 <h2 id="appendix1"><a href="#appendix1">&para;</a> Appendix 1: Relationship
-between this SRFI, C23, and IEEE 754</h3>
+between this SRFI and other standards</h3>
 <p><em>This section is non-normative.</em></p>
+
 <table>
 <tr><th>SRFI</th><th>C23</th><th>IEEE 754</th></tr>
 <tr><td><a href="#round"><code>:round</code></a></td><td><code>roundeven</code></td><td>roundToIntegralTiesToEven</td></tr>
@@ -3166,7 +3210,13 @@ between this SRFI, C23, and IEEE 754</h3>
 <tr><td><a href="#integer-fraction"><code>:exponent</code></a></td><td><code>logb</code></td><td>logB</td></tr>
 </table>
 
-</table>
+<p>
+  In addition, some procedures and constants come from POSIX:
+</p>
+
+<p>
+  The following modifications were made to SRFI 144:
+</p>
 
 <h2 id="copyright"><a href="#copyright">&para;</a> Copyright</h2>
 <p>&copy; 2026 Peter McGoron.</p>
