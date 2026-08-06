@@ -178,6 +178,8 @@ SPDX-License-Identifier: MIT
     </ol>
 </li>
 <li><a href="#rounding-mode-library">Rounding mode libraries</a></li>
+<li><a href="#exception-libraries">Floating point exception library</a></li>
+<li><a href="#environment">Floating point environment library</a></li>
 <li><a href="#implications">Implications of IEEE arithmetic for optimizers</a></li>
 <li><a href="#examples">Examples</a></li>
 <li><a href="#considerations">Considerations for inexact number vectors</a></li>
@@ -341,12 +343,27 @@ SPDX-License-Identifier: MIT
   is raised if a floating point operation does something exceptional,
   such as overflow. They are not the same as Scheme exceptions.
   Some operations raise a floating-point exception on certain arguments.
-  If an implementation does not support the floating point environment
-  library, then it does not need to implement the exception behavior
-  as described in the library section.  Implementations that support
-  the floating point environment library shuold raise floating-point
+  Implementations that support
+  the floating point exception library should raise floating-point
   exceptions when generic arithmetic is done in such a way that would
   raise the exception when using the floating point library.
+</p>
+
+<p>
+  If an implementation does not support the floating point environment
+  library, then it does not need to implement the exception behavior as
+  described in the library section. Additionally, an implementation may
+  support other exception handling modes, such as raising a Scheme
+  exception when a floating-point exception is raised. However, every
+  implementation must support a <dfn>non-stop</dfn> mode, where all
+  operations return values when given the correct argument types.
+</p>
+
+<p>
+  When an operation is <dfn>implementation defined</dfn>, then the
+  implementation should document what choice or procedure they use for
+  that behavior. For example, the implementation shoud document the
+  default rounding mode.
 </p>
 
 <h2 id="precise"><a href="#precise">&para;</a> Precise representation of flonums</h2>
@@ -388,16 +405,25 @@ SPDX-License-Identifier: MIT
 <p>
   The argument names have the same meanings as the
   <span class="report-name">R<sup>7</sup>RS</span>; it is an error if
-  the wrong arguments are passed to a procedure.
+  the wrong arguments are passed to a procedure. It is an error if:
 </p>
 
-<p>
-  It is an error if any <var>fl</var> argument is not a flonum. It is an
-  error if any <var>ifl</var> argument is not an integer flonum,
-  decided by <code><a href="#flintegerp">flinteger?</a></code>.
-  It is an error if any <var>rounding-mode</var> argument is not
-  <code><a href="#rounding-modep">rounding-mode?</a></code>.
-</p>
+<ul>
+<li>any <var>fl</var> argument is not a flonum</li>
+<li>any <var>ifl</var> argument is not an integer flonum
+    (see <code><a href="#flintegerp">flinteger?</a></code>)
+</li>
+<li>any <var>rounding-mode</var> argument is not a rounding mode
+  (see <code><a href="#rounding-modep">rounding-mode?</a></code>)
+</li>
+<li>if <var>endianness</var> is not the
+  symbol <code>little</code>, <code>big</code>, or an endianness
+  supplied by the macro in <code>(rnrs bytevectors)</code></li>
+<li>if <var>exception</var> is not a floating point exception
+    (see <code><a href="#flexception-namep">flexception-name?</a></code>)</li>
+<li>if <var>flenvironment</var> is not a floating point environment
+    (see <code><a href="#flenvironmentp">flenvironment?</a></code>)</li>
+</ul>
 
 <p>
    Square brackets [] are used to denote a group of arguments that are
@@ -407,10 +433,8 @@ SPDX-License-Identifier: MIT
 </p>
 
 <p>
-  In procedure arguments, it is an error if <var>endianness</var> is not the
-  symbol <code>little</code>, <code>big</code>, or an endianness
-  supplied by the macro in <code>(rnrs bytevectors)</code>. When
-  <var>endianness</var> is not supplied, it is the native endianness.
+  When <var>endianness</var> is not supplied in a procedure, it is the
+  native endianness, which is an implementation-specified valid value.
 </p>
 
 <h2 id="library"><a href="#library">&para;</a> Library names</h2>
@@ -2726,7 +2750,7 @@ should round-trip NaNs.</p>
         (lambda () (set-rounding-mode! p)))))))</pre>
 
 <h2 id="exception-libraries"><a href="#exception-libraries">&para;</a>
-  Floating-point exception libraries</h2>
+  Floating-point exception library</h2>
 <div class="feature" id="flexception-namep">
 <span class="category">(srfi 276 exceptions)<br>procedure</span>
 <code class="signature">(<a href="#flexception-namep">flexception-name?</a> <var>obj</var>)</code>
@@ -2809,6 +2833,77 @@ should round-trip NaNs.</p>
   were in the list of exceptions. Raising and lowering exceptions affects
   the exceptions in the dynamic extent, and not the exceptions anywhere
   else.
+</p>
+
+<h2 id="environment"><a href="#environment">&para;</a> Floating point environment library</h2>
+
+<div class="feature" id="current-flenvironment">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#current-flenvironment">current-flenvironment</a>)</code>
+</div>
+
+<p>Returns the current floating point environment. The floating point
+   environment encompasses all modificiations possible at runtime.
+</p>
+
+<div class="feature" id="flenvironmentp">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#flenvironmentp">flenvironment?</a> <var>obj</var>)</code>
+</div>
+
+<p>
+  Returns <code>#t</code> if <var>obj</var> is an environment, and
+  <code>#f</code> otherwise.
+</p>
+
+<div class="feature" id="flenvironmenteqp">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#flenvironmenteqp">flenvironment=?</a>
+<var>flenvironment<sub>1</sub></var>
+<var>flenvironment<sub>2</sub></var>
+<var>flenvironment<sub>3</sub></var> …)</code>
+</div>
+
+<p>
+  Returns <code>#t</code> if all <var>flenvironment</var>s are equal.
+  Two environments are equal if, barring Scheme exceptions being signalled,
+  two procedures in this SRFI given the same arguments would return the
+  same results.
+</p>
+
+<div class="feature" id="default-flenvironment">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#default-flenvironment">default-flenvironment</a>)</code>
+</div>
+
+<p>
+  Return the default environment. At runtime this is an implementation-specified
+  environment, and it may be modified by
+  <a href="#with-flenvironment"><code>with-flenvironment</code></a>.
+</p>
+
+<div class="feature" id="restore-flenvironment">
+<span class="category">(srfi 276 environment)<br>procedure</span>
+<code class="signature">(<a href="#restore-flenvironment">restore-flenvironment!</a>
+<var>flenvironment</var>)</code>
+</div>
+
+<p>
+  Set <var>flenvironment</var> as the current floating-point environment.
+</p>
+
+<div class="feature" id="with-flenvironment">
+<span class="category">(srfi 276 environment)<br>syntax</span>
+<code class="signature">(<a href="#with-flenvironment">with-flenvironment</a>
+<var>flenvironment</var> <var>body<sub>1</sub></var> <var>body<sub>2</sub></var> …)</code>
+</div>
+
+<p>
+  Evaluate <var>flenvironment</var> to a floating point environment. When
+  the dynamic extent of the body is first entered, the floating point
+  environment is <var>flenvironment</var>. In addition, throughout the
+  extent of the floating-point environment, the default environment is
+  <var>flenvironment</var>.
 </p>
 
 <h2 id="implications"><a href="#implications">&para;</a> Implications of IEEE arithmetic for optimizers</h2>
