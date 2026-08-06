@@ -3113,7 +3113,7 @@ should round-trip NaNs.</p>
 
 <p>
   The simplest way to implement the inspection portion of this SRFI is an FFI to C’s
-  <a href="https://en.cppreference.com/w/c/numeric/fenv.html"><code>fenv.h</code></a>.
+  <a href="https://en.cppreference.com/c/numeric/fenv"><code>fenv.h</code></a>.
   Checking the FTZ/DAZ mode (for example, on Intel CPUs) requires intrinsics to
   check the MXCSR register.
 </p>
