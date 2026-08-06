@@ -812,7 +812,7 @@ SPDX-License-Identifier: MIT
 </p>
 
 <pre
-><code class="example-code">(f64:fladjacent 1.0 +inf.0)</code> ⇒ #fl(binary64 1.0000000000000002)</code>
+><code class="example-code">(f64:fladjacent 1.0 +inf.0) ⇒ #fl(binary64 1.0000000000000002)</code>
 </pre>
 
 <div class="feature" id="flcopysign">
@@ -831,8 +831,8 @@ SPDX-License-Identifier: MIT
 </p>
 
 <pre
-><code class="example-code">(flcopysign +inf.0 -1.0)</code> ⇒ -inf.0</code>
-<code class="example-code">(flcopysign +0.0 -1.0)</code> ⇒ -0.0</code>
+><code class="example-code">(flcopysign +inf.0 -1.0) ⇒ -inf.0</code>
+<code class="example-code">(flcopysign +0.0 -1.0) ⇒ -0.0</code>
 </pre>
 
 <div class="feature" id="make-flonum">
@@ -1194,7 +1194,7 @@ SPDX-License-Identifier: MIT
   <code>#f</code> otherwise.
 </p>
 <pre
-><code class="example-code">(flnegative? -0.0)</code> ⇒ #f</code>
+><code class="example-code">(flnegative? -0.0) ⇒ #f</code>
 </pre>
 
 <div class="feature" id="floddp">
@@ -1368,9 +1368,9 @@ SPDX-License-Identifier: MIT
 </p>
 
 <pre
-><code class="example-code">(fl+ 0.0 -0.0)</code> ⇒ +0.0</code>
-<code class="example-code">(fl+ -0.0 0.0)</code> ⇒ +0.0</code>
-<code class="example-code">(fl+ -0.0 -0.0)</code> ⇒ -0.0</code>
+><code class="example-code">(fl+ 0.0 -0.0) ⇒ +0.0</code>
+<code class="example-code">(fl+ -0.0 0.0) ⇒ +0.0</code>
+<code class="example-code">(fl+ -0.0 -0.0) ⇒ -0.0</code>
 </pre>
 
 <p>
@@ -1411,7 +1411,7 @@ SPDX-License-Identifier: MIT
 <ol>
 <li>If any argument is a NaN, NaN is returned.</li>
 <li>Infinity times a finite number returns an infinity.</li>
-<li>Infinity times a zero returns a NaN.</p>
+<li>Infinity times a zero returns a NaN.</li>
 </ol>
 
 <p>
@@ -1807,11 +1807,10 @@ SPDX-License-Identifier: MIT
     <td><code>-inf.0</code></td>
 </tr>
 <tr><td><code>(flexpt −inf.0 <var>y</var>)</code></td>
- <td><var>y</var> < 0, <var>y</var> finite, not odd</td>
+ <td><var>y</var> &lt; 0, <var>y</var> finite, not odd</td>
  <td></td>
  <td><code>+0.0</code></td>
 </tr>
-<tr>
 <tr><td><code>(flexpt −inf.0 <var>y</var>)</code></td>
  <td><var>y</var> &gt; 0, <var>y</var> finite, not odd</td>
  <td></td>
@@ -2331,6 +2330,7 @@ infinity.</p>
       <mi> x </mi>
     </mrow>
   </mrow>
+</mrow>
 </math>
 
 <p>The following special cases apply:</p>
@@ -3163,7 +3163,7 @@ should round-trip NaNs.</p>
 </p>
 
 <h2 id="appendix1"><a href="#appendix1">&para;</a> Appendix 1: Relationship
-between this SRFI and other standards</h3>
+between this SRFI and other standards</h2>
 <p><em>This section is non-normative.</em></p>
 
 <p>This table documents procedures and constants in this SRFI that are
@@ -3174,60 +3174,60 @@ between this SRFI and other standards</h3>
 
 <table>
 <tr><th>SRFI</th><th>C23</th><th>IEEE 754</th></tr>
-<tr><td><code><a href="#fl-radix">fl-radix</code></td>
+<tr><td><code><a href="#fl-radix">fl-radix</a></code></td>
     <td><code>FLT_RADIX</code> (5.2.5.3.3 &para; 31)</td>
     <td><var>b</var></td>
 </tr>
-<tr><td><code><a href="#fl-precision">fl-precision</code></td>
+<tr><td><code><a href="#fl-precision">fl-precision</a></code></td>
     <td><code>FLT_MANT_DIG</code> (5.2.5.3.3 &para; 31)</td>
     <td><var>p</var></td>
 </tr>
-<tr><td><code><a href="#fl-maximum-exponent">fl-maximum-exponent</code></td>
+<tr><td><code><a href="#fl-maximum-exponent">fl-maximum-exponent</a></code></td>
     <td><code>FLT_MAX_EXP</code> (5.2.5.3.3 &para; 31)</td>
     <td><var>emax</var></td>
 </tr>
-<tr><td><code><a href="#fl-minimum-normalized-exponent">fl-minimum-normalized-exponent</code></td>
+<tr><td><code><a href="#fl-minimum-normalized-exponent">fl-minimum-normalized-exponent</a></code></td>
     <td><code>FLT_MIN_EXP</code> (5.2.5.3.3 &para; 31)</td>
     <td><var>emin</var></td>
 </tr>
-<tr><td><code><a href="#fl-greatest">fl-greatest</code></td>
+<tr><td><code><a href="#fl-greatest">fl-greatest</a></code></td>
     <td><code>FLT_MAX</code> (5.2.5.3.3 &para; 32)</td></tr>
-<tr><td><code><a href="#fl-least">fl-least</code></td>
+<tr><td><code><a href="#fl-least">fl-least</a></code></td>
     <td><code>FLT_TRUE_MIN</code> (5.2.5.3.3 &para; 33)</td></tr>
-<tr><td><code><a href="#fl-least-normal">fl-least-normal</code></td>
+<tr><td><code><a href="#fl-least-normal">fl-least-normal</a></code></td>
     <td><code>FLT_MIN</code> (5.2.5.3.3 &para; 33)</td></tr>
-<tr><td><code><a href="#fl-epsilon">fl-epsilon</code></td>
+<tr><td><code><a href="#fl-epsilon">fl-epsilon</a></code></td>
     <td><code>FLT_EPSILON</code> (5.2.5.3.3 &para; 33)</td></tr>
-<tr><td><code><a href="#fl-byte-width">fl-byte-width</code></td>
+<tr><td><code><a href="#fl-byte-width">fl-byte-width</a></code></td>
     <td><code>sizeof float</code><td></tr>
-<tr><td><code><a href="#fladjacent">fladjacent</code></td>
+<tr><td><code><a href="#fladjacent">fladjacent</a></code></td>
     <td><code>nextafter</code> (7.12.11.3)</td>
     <td>nextUp, nextDown</td>
 </tr>
-<tr><td><code><a href="#flcopysign">flcopysign</code></td>
+<tr><td><code><a href="#flcopysign">flcopysign</a></code></td>
     <td><code>copysign</code> (7.12.11.1)</td>
 </tr>
-<tr><td><code><a href="#make-flonum">make-flonum</code></td>
+<tr><td><code><a href="#make-flonum">make-flonum</a></code></td>
     <td><code>scalbn</code> (7.12.7.19)</td>
     <td>scaleB</td></tr>
-<tr><td><code><a href="#flinteger-fraction">flinteger-fraction</code></td>
+<tr><td><code><a href="#flinteger-fraction">flinteger-fraction</a></code></td>
     <td><code>modf</code> (7.12.6.18)</td>
 </tr>
-<tr><td><code><a href="#flexponent">flexponent</code></td>
+<tr><td><code><a href="#flexponent">flexponent</a></code></td>
     <td><code>logb</code> (7.12.6.17)</td>
     <td>logB</td>
 </tr>
-<tr><td><code><a href="#flnormalized-fraction-exponent">flnormalized-fraction-exponent</code></td>
+<tr><td><code><a href="#flnormalized-fraction-exponent">flnormalized-fraction-exponent</a></code></td>
     <td><code>frexp</code> (7.12.6.7)</td>
 </tr>
-<tr><td><code><a href="#flinteger-exponent">flinteger-exponent</code></td>
+<tr><td><code><a href="#flinteger-exponent">flinteger-exponent</a></code></td>
     <td><code>ilogb</code> (7.12.6.8)</td>
     <td>logB</td></tr>
-<tr><td><code><a href="#fl-integer-exponent-zero">fl-integer-exponent-zero</code></td>
+<tr><td><code><a href="#fl-integer-exponent-zero">fl-integer-exponent-zero</a></code></td>
     <td><code>FP_ILOGB0</code> (7.12 &para; 18)</td></tr>
-<tr><td><code><a href="#fl-integer-exponent-nan">fl-integer-exponent-nan</code></td>
+<tr><td><code><a href="#fl-integer-exponent-nan">fl-integer-exponent-nan</a></code></td>
     <td><code>FP_ILOGBNAN</code> (7.12 &para; 18)</td></tr>
-<tr><td><code><a href="#flsign-negativep">flsign-negative?</code></td>
+<tr><td><code><a href="#flsign-negativep">flsign-negative?</a></code></td>
     <td><code>signbit</code> (7.12.3.7)</td>
     <td>isSignMinus</td></tr>
 <tr><td><code><a href="#flonum-comp">fl=?</a></code></td>
@@ -3237,34 +3237,33 @@ between this SRFI and other standards</h3>
         <code>fl&lt;=?</code>, etc.</td>
     <td><code>&lt;</code>, <code>&lt;=</code>, etc. (F.9.4)</td>
     <td>compareSignalingGreater,<br>compareSignalingGreaterEqual,<br> etc.</td></tr>
-</td>
 <tr><td><code><a href="#flonum-neq">fl!=?</a></code></td>
     <td><code>!=</code> (F.9.4)</td>
     <td>compareQuietNotEqual</td></tr>
 <tr><td><code><a href="#flonum-total-comp">total=?</a></code>, etc.</td>
     <td><code>totalorder</code> (F.10.12.2)</td>
     <td>totalOrder</td></tr>
-<tr><td><code><a href="#flunorderedp">flunordered?</code></td>
+<tr><td><code><a href="#flunorderedp">flunordered?</a></code></td>
     <td><code>isunordered</code> (7.12.17.6)</td>
     <td>compareQuietUnordered</td></tr>
-<tr><td><code><a href="#flzerop">flzero?</code></td>
+<tr><td><code><a href="#flzerop">flzero?</a></code></td>
     <td><code>iszero</code> (7.12.3.10)</td>
     <td>isZero</td></tr>
-<tr><td><code><a href="#flfinitep">flfinite?</code></td>
+<tr><td><code><a href="#flfinitep">flfinite?</a></code></td>
     <td><code>isfinite</code> (7.12.3.3)</td>
     <td>isFinite</td>
 </tr>
-<tr><td><code><a href="#flinfinitep">flinfinite?</code></td>
+<tr><td><code><a href="#flinfinitep">flinfinite?</a></code></td>
     <td><code>isinf</code> (7.12.3.4)</td>
     <td>isInfinite</td>
 </tr>
-<tr><td><code><a href="#flnanp">flnan?</code></td>
+<tr><td><code><a href="#flnanp">flnan?</a></code></td>
     <td><code>isnan</code> (7.12.3.5)</td>
     <td>isNaN</td></tr>
-<tr><td><code><a href="#flnormalp">flnormal?</code></td>
+<tr><td><code><a href="#flnormalp">flnormal?</a></code></td>
     <td><code>isnormal</code> (7.12.3.6)</td>
     <td>isNormal</td></tr>
-<tr><td><code><a href="#flsubnormalp">flsubnormal?</code></td>
+<tr><td><code><a href="#flsubnormalp">flsubnormal?</a></code></td>
     <td><code>issubnormal</code> (7.12.3.9)</td>
     <td>isSubnormal</td></tr>
 
@@ -3285,189 +3284,189 @@ between this SRFI and other standards</h3>
         (7.12.12.7)</td>
     <td>maximumMagnitudeNumber,<br> minimumMagnitudeNumber</td></tr>
 
-<tr><td><code><a href="#flplus">fl+</code></td>
+<tr><td><code><a href="#flplus">fl+</a></code></td>
     <td><code>+</code> (6.5.7)</td>
     <td>addition</td></tr>
-<tr><td><code><a href="#flminus">fl-</code></td>
+<tr><td><code><a href="#flminus">fl-</a></code></td>
     <td><code>-</code> (6.5.7)</td>
     <td>subtraction, negate</td></tr>
-<tr><td><code><a href="#fltimes">fl*</code></td>
+<tr><td><code><a href="#fltimes">fl*</a></code></td>
     <td><code>*</code> (6.5.6)</td>
     <td>multiplication</td></tr>
-<tr><td><code><a href="#fldivide">fl/</code></td>
+<tr><td><code><a href="#fldivide">fl/</a></code></td>
     <td><code>/</code> (6.5.6)</td>
     <td>multiplication</td></tr>
-<tr><td><code><a href="#flfma">fl+*</code></td>
+<tr><td><code><a href="#flfma">fl+*</a></code></td>
     <td><code>fma</code> (7.12.13.1)</td>
     <td>fusedMultiplyAdd</td></tr>
-<tr><td><code><a href="#flabs">flabs</code></td>
+<tr><td><code><a href="#flabs">flabs</a></code></td>
     <td><code>fabs</code> (7.12.7.3)</td>
     <td>abs</td></tr>
-<tr><td><code><a href="#flposdiff">flposdiff</code></td>
+<tr><td><code><a href="#flposdiff">flposdiff</a></code></td>
     <td><code>fdim</code> (7.12.12.1)</td>
 </tr>
-<tr><td><code><a href="#flfloor">flfloor</code></td>
+<tr><td><code><a href="#flfloor">flfloor</a></code></td>
     <td><code>floor</code> (7.12.9.2)</td>
     <td>roundToIntegralTowardNegative</td></tr>
-<tr><td><code><a href="#flceiling">flceiling</code></td>
+<tr><td><code><a href="#flceiling">flceiling</a></code></td>
     <td><code>ceil</code> (7.12.9.1)</td>
     <td>roundToIntegralTowardPositive</td></tr>
-<tr><td><code><a href="#fltruncate">fltruncate</code></td>
+<tr><td><code><a href="#fltruncate">fltruncate</a></code></td>
     <td><code>trunc</code> (7.12.9.9)</td>
     <td>roundToIntegralTowardZero</td></tr>
-<tr><td><code><a href="#flround">flround</code></td>
+<tr><td><code><a href="#flround">flround</a></code></td>
     <td><code>roundeven</code> (7.12.9.8)</td>
     <td>roundToIntegralTiesToEven</td></tr>
-<tr><td><code><a href="#flround-away">flround-away</code></td>
+<tr><td><code><a href="#flround-away">flround-away</a></code></td>
     <td><code>round</code> (7.12.9.6)</td>
     <td>roundToIntegralTiesToAway</td></tr>
-<tr><td><code><a href="#fltruncate-remainder">fltruncate-remainder</code></td>
+<tr><td><code><a href="#fltruncate-remainder">fltruncate-remainder</a></code></td>
     <td><code>fmod</code> (7.12.10.1)</td></tr>
-<tr><td><code><a href="#flremquo">flremquo</code></td>
+<tr><td><code><a href="#flremquo">flremquo</a></code></td>
     <td><code>remquo</code> (7.12.10.3)</td>
 </tr>
-<tr><td><code><a href="#flround-remainder">flround-remainder</code></td>
+<tr><td><code><a href="#flround-remainder">flround-remainder</a></code></td>
     <td><code>remainder</code> (7.12.10.2)</td>
     <td>remainder</td></tr>
-<tr><td><code><a href="#flexp">flexp</code></td>
+<tr><td><code><a href="#flexp">flexp</a></code></td>
     <td><code>exp</code> (7.12.6.1)</td>
     <td>exp</td></tr>
-<tr><td><code><a href="#flexp2">flexp2</code></td>
+<tr><td><code><a href="#flexp2">flexp2</a></code></td>
     <td><code>exp2</code> (7.12.6.4)</td>
     <td>exp2</td></tr>
-<tr><td><code><a href="#flexp10">flexp10</code></td>
+<tr><td><code><a href="#flexp10">flexp10</a></code></td>
     <td><code>exp10</code> (7.12.6.2)</td>
     <td>exp10</td></tr>
-<tr><td><code><a href="#flexpm1">flexp-1</code></td>
+<tr><td><code><a href="#flexpm1">flexp-1</a></code></td>
     <td><code>expm1</code> (7.12.6.6)</td>
     <td>expm1</td></tr>
-<tr><td><code><a href="#flexp2m1">flexp2-1</code></td>
+<tr><td><code><a href="#flexp2m1">flexp2-1</a></code></td>
     <td><code>exp2m1</code> (7.12.6.5)</td>
     <td>exp2m1</td></tr>
-<tr><td><code><a href="#flexp10m1">flexp10-1</code></td>
+<tr><td><code><a href="#flexp10m1">flexp10-1</a></code></td>
     <td><code>exp10m1</code> (7.12.6.3)</td>
     <td>exp10m1</td></tr>
-<tr><td><code><a href="#flexpt">flexpt</code></td>
+<tr><td><code><a href="#flexpt">flexpt</a></code></td>
     <td><code>pown</code> (7.12.7.6),<br>
         <code>pow</code> (7.12.7.5)</td>
     <td>pown, pow</td></tr>
-<tr><td><code><a href="#fllog">fllog</code></td>
+<tr><td><code><a href="#fllog">fllog</a></code></td>
     <td><code>log</code> (7.12.6.11)</td>
     <td>log</td></tr>
-<tr><td><code><a href="#fllog2">fllog2</code></td>
+<tr><td><code><a href="#fllog2">fllog2</a></code></td>
     <td><code>log2</code> (7.12.6.15)</td>
     <td>log2</td></tr>
-<tr><td><code><a href="#fllog10">fllog10</code></td>
+<tr><td><code><a href="#fllog10">fllog10</a></code></td>
     <td><code>log10</code> (7.12.6.12)</td>
     <td>log10</td></tr>
-<tr><td><code><a href="#fllogp1">fllog+1</code></td>
+<tr><td><code><a href="#fllogp1">fllog+1</a></code></td>
     <td><code>logp1</code> (7.12.6.14)</td>
     <td>logp1</td></tr>
-<tr><td><code><a href="#fllog2p1">fllog2+1</code></td>
+<tr><td><code><a href="#fllog2p1">fllog2+1</a></code></td>
     <td><code>log2p1</code> (7.12.6.16)</td>
     <td>log2p1</td></tr>
-<tr><td><code><a href="#fllog10p1">fllog10+1</code></td>
+<tr><td><code><a href="#fllog10p1">fllog10+1</a></code></td>
     <td><code>log10p1</code> (7.12.6.13)</td>
     <td>log10p1</td></tr>
-<tr><td><code><a href="#flcbrt">flcbrt</code></td>
+<tr><td><code><a href="#flcbrt">flcbrt</a></code></td>
     <td><code>cbrt</code> (7.12.7.1)</td></tr>
-<tr><td><code><a href="#flcompound">flcompound</code></td>
+<tr><td><code><a href="#flcompound">flcompound</a></code></td>
     <td><code>compoundn</code> (7.12.7.2)</td>
     <td>compound</td></tr>
-<tr><td><code><a href="#flhypot">flhypot</code></td>
+<tr><td><code><a href="#flhypot">flhypot</a></code></td>
     <td><code>hypot</code> (7.12.7.4)</td>
     <td>hypot</td></tr>
-<tr><td><code><a href="#flrsqrt">flrsqrt</code></td>
+<tr><td><code><a href="#flrsqrt">flrsqrt</a></code></td>
     <td><code>rsqrt</code> (7.12.7.9)</td>
     <td>rSqrt</td></tr>
-<tr><td><code><a href="#flsqrt">flsqrt</code></td>
+<tr><td><code><a href="#flsqrt">flsqrt</a></code></td>
     <td><code>sqrt</code> (7.12.7.10)</td>
     <td>squareRoot</td>
 </tr>
-<tr><td><code><a href="#flsin">flsin</code></td>
+<tr><td><code><a href="#flsin">flsin</a></code></td>
     <td><code>sin</code> (7.12.4.6)</td>
     <td>sin</td></tr>
-<tr><td><code><a href="#flcos">flcos</code></td>
+<tr><td><code><a href="#flcos">flcos</a></code></td>
     <td><code>cos</code> (7.12.4.5)</td>
     <td>cos</td></tr>
-<tr><td><code><a href="#fltan">fltan</code></td>
+<tr><td><code><a href="#fltan">fltan</a></code></td>
     <td><code>tan</code> (7.12.4.7)</td>
     <td>tan</td></tr>
-<tr><td><code><a href="#flsinpi">flsinpi</code></td>
+<tr><td><code><a href="#flsinpi">flsinpi</a></code></td>
     <td><code>sinpi</code> (7.12.4.6)</td>
     <td>sinPi</td></tr>
-<tr><td><code><a href="#flcospi">flcospi</code></td>
+<tr><td><code><a href="#flcospi">flcospi</a></code></td>
     <td><code>cospi</code> (7.12.4.5)</td>
     <td>cosPi</td></tr>
-<tr><td><code><a href="#fltanpi">fltanpi</code></td>
+<tr><td><code><a href="#fltanpi">fltanpi</a></code></td>
     <td><code>tanpi</code> (7.12.4.7)</td>
     <td>tanPi</td></tr>
-<tr><td><code><a href="#flasin">flasin</code></td>
+<tr><td><code><a href="#flasin">flasin</a></code></td>
     <td><code>asin</code> (7.12.4.2)</td>
     <td>asin</td></tr>
-<tr><td><code><a href="#flacos">flacos</code></td>
+<tr><td><code><a href="#flacos">flacos</a></code></td>
     <td><code>acos</code> (7.12.4.1)</td>
     <td>acos</td></tr>
-<tr><td><code><a href="#flatan">flatan</code></td>
+<tr><td><code><a href="#flatan">flatan</a></code></td>
     <td><code>atan</code> (7.12.4.3)</td>
     <td>atan</td></tr>
-<tr><td><code><a href="#flasinpi">flasinpi</code></td>
+<tr><td><code><a href="#flasinpi">flasinpi</a></code></td>
     <td><code>asinpi</code> (7.12.4.9)</td>
     <td>asinPi</td></tr>
-<tr><td><code><a href="#flacospi">flacospi</code></td>
+<tr><td><code><a href="#flacospi">flacospi</a></code></td>
     <td><code>acospi</code> (7.12.4.8)</td>
     <td>acosPi</td></tr>
-<tr><td><code><a href="#flatanpi">flatanpi</code></td>
+<tr><td><code><a href="#flatanpi">flatanpi</a></code></td>
     <td><code>atanpi</code> (7.12.4.10)</td>
     <td>atanPi</td></tr>
-<tr><td><code><a href="#flsinh">flsinh</code></td>
+<tr><td><code><a href="#flsinh">flsinh</a></code></td>
     <td><code>sinh</code> (7.12.5.5)</td>
     <td>sinh</td></tr>
-<tr><td><code><a href="#flcosh">flcosh</code></td>
+<tr><td><code><a href="#flcosh">flcosh</a></code></td>
     <td><code>cosh</code> (7.12.4.4)</td>
     <td>cosh</td></tr>
-<tr><td><code><a href="#fltanh">fltanh</code></td>
+<tr><td><code><a href="#fltanh">fltanh</a></code></td>
     <td><code>tanh</code> (7.12.4.6)</td>
     <td>tanh</td></tr>
-<tr><td><code><a href="#flasinh">flasinh</code></td>
+<tr><td><code><a href="#flasinh">flasinh</a></code></td>
     <td><code>asinh</code> (7.12.5.2)</td>
     <td>asinh</td></tr>
-<tr><td><code><a href="#flacosh">flacosh</code></td>
+<tr><td><code><a href="#flacosh">flacosh</a></code></td>
     <td><code>acosh</code> (7.12.5.1)</td>
     <td>acosh</td></tr>
-<tr><td><code><a href="#flatanh">flatanh</code></td>
+<tr><td><code><a href="#flatanh">flatanh</a></code></td>
     <td><code>atanh</code> (7.12.5.3)</td>
     <td>atanh</td></tr>
-<tr><td><code><a href="#flerf">flerf</code></td>
+<tr><td><code><a href="#flerf">flerf</a></code></td>
     <td><code>erf</code> (7.12.8.1)</td>
 </tr>
-<tr><td><code><a href="#flerfc">flerfc</code></td>
+<tr><td><code><a href="#flerfc">flerfc</a></code></td>
     <td><code>erfc</code> (7.12.8.2)</td>
 </tr>
-<tr><td><code><a href="#flgamma">flgamma</code></td>
+<tr><td><code><a href="#flgamma">flgamma</a></code></td>
     <td><code>tgamma</code> (7.12.8.4)</td>
 </tr>
-<tr><td><code><a href="#fllog-gamma">fllog-gamma</code></td>
+<tr><td><code><a href="#fllog-gamma">fllog-gamma</a></code></td>
     <td><code>lgamma</code> (7.12.8.3)</td>
 </tr>
-<tr><td><code><a href="#current-rounding-mode">current-rounding-mode</code></td>
+<tr><td><code><a href="#current-rounding-mode">current-rounding-mode</a></code></td>
     <td><code>fegetmode</code> (7.6.5.1)</td>
     <td>saveModes</td>
 </tr>
-<tr><td><code><a href="#set-rounding-mode">set-rounding-mode!</code></td>
+<tr><td><code><a href="#set-rounding-mode">set-rounding-mode!</a></code></td>
     <td><code>fesetmode</code> (7.6.5.4)</td>
     <td>restoreModes</td>
 </tr>
-<tr><td><code><a href="#current-flexceptions">current-flexceptions</code>,<br>
+<tr><td><code><a href="#current-flexceptions">current-flexceptions</a></code>,<br>
         <code><a href="#flexception-raisedp">flexception-raised?</a></code>
 </td>
     <td><code>fetestexcept</code> (7.6.4.7)</td>
     <td>testFlags</td></tr>
-<tr><td><code><a href="#raise-flexceptions">raise-flexceptions!</code></td>
+<tr><td><code><a href="#raise-flexceptions">raise-flexceptions!</a></code></td>
     <td><code>fesetexcept</code> (7.6.4.4)</td>
     <td>raiseFlags</td>
 </tr>
-<tr><td><code><a href="#lower-flexceptions">lower-flexceptions!</code>
+<tr><td><code><a href="#lower-flexceptions">lower-flexceptions!</a></code>
     </td>
     <td><code>feclearexcept</code> (7.6.4.1)</td>
     <td>lowerFlags</td>
