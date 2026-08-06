@@ -730,7 +730,7 @@ SPDX-License-Identifier: MIT
 
 <div class="feature" id="fl-epsilon">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#epsilon">fl-epsilon</a></code>
+<code class="signature"><a href="#epsilon" id="epsilon">fl-epsilon</a></code>
 </div>
 
 <p>
@@ -748,7 +748,7 @@ SPDX-License-Identifier: MIT
 
 <div class="feature" id="fl-byte-width">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#fl-byte-width">fl-byte-width</a></code>
+<code class="signature"><a href="#fl-byte-width" id="flbyte-width">fl-byte-width</a></code>
 </div>
 <p>Size of the flonum in bytes as an exact integer. For the binary64 representation, this
    is 8.</p>
@@ -1052,7 +1052,7 @@ SPDX-License-Identifier: MIT
 
 <div class="feature" id="flneq">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flneq">fl!=?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(<a href="#flneq" id="flonum-neq">fl!=?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
 </div>
 
 <p>
@@ -1295,7 +1295,7 @@ SPDX-License-Identifier: MIT
 <code class="signature">(<a href="#flmax-abs-filter-nans" id="flmax-abs-filter-nans">flmax-abs-filter-nans</a> <var>fl</var> …)</code><br>
 <code class="signature">(<a href="#flmin" id="flmin">flmin</a> <var>fl</var> …)</code><br>
 <code class="signature">(<a href="#flmin-abs" id="flmin-abs">flmin-abs</a> <var>fl</var> …)</code><br>
-<code class="signature">(<a href="#flmin-abs-filter-nans" id="flmin-abs-filter-nans">flmin-filter-nans</a> <var>fl</var> …)</code>
+<code class="signature">(<a href="#flmin-filter-nans" id="flmin-filter-nans">flmin-filter-nans</a> <var>fl</var> …)</code>
 <code class="signature">(<a href="#flmin-abs-filter-nans" id="flmin-abs-filter-nans">flmin-abs-filter-nans</a> <var>fl</var> …)</code>
 </div>
 
@@ -1512,7 +1512,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  Equivalent to <code>(<a href="flcopysign">flcopysign</a> 1.0 <var>fl</var>)</code>.
+  Equivalent to <code>(<a href="#flcopysign">flcopysign</a> 1.0 <var>fl</var>)</code>.
 </p>
 
 <div class="feature">
@@ -2031,9 +2031,9 @@ SPDX-License-Identifier: MIT
 <h3 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flsin" id="#flsin">flsin</a> <var>fl</var>)</code><br>
-<code class="signature">(<a href="#flcos" id="#flcos">flcos</a> <var>fl</var>)</code><br>
-<code class="signature">(<a href="#fltan" id="#fltan">fltan</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flsin" id="flsin">flsin</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flcos" id="flcos">flcos</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fltan" id="fltan">fltan</a> <var>fl</var>)</code><br>
 </div>
 
 <p>
@@ -2050,9 +2050,9 @@ SPDX-License-Identifier: MIT
   When sin or tan are given zero, return that zero.
 </p>
 
-<div class="feature">
+<div class="feature" id="flsinpi">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#sinpi" id="#sinpi">flsinpi</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#sinpi" id="sinpi">flsinpi</a> <var>fl</var>)</code><br>
 </div>
 
 <p>Return sin(π<var>fl</var>).</p>
@@ -2067,9 +2067,9 @@ SPDX-License-Identifier: MIT
   the invalidOperation floating point exception is raised.
 </p>
 
-<div class="feature">
+<div class="feature" id="flcospi">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#cospi" id="#cospi">flcospi</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#cospi" id="cospi">flcospi</a> <var>fl</var>)</code><br>
 </div>
 
 <p>Return cos(π<var>fl</var>).</p>
@@ -2084,9 +2084,9 @@ SPDX-License-Identifier: MIT
   the invalidOperation floating point exception is raised.
 </p>
 
-<div class="feature">
+<div class="feature" id="fltanpi">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#tanpi" id="#tanpi">fltanpi</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#tanpi" id="tanpi">fltanpi</a> <var>fl</var>)</code><br>
 </div>
 
 <p>
@@ -2126,8 +2126,8 @@ SPDX-License-Identifier: MIT
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flasin" id="#flasin">flasin</a> <var>fl</var>)</code><br>
-<code class="signature">(<a href="#flasinpi" id="#flasinpi">flasinpi</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flasin" id="flasin">flasin</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flasinpi" id="flasinpi">flasinpi</a> <var>fl</var>)</code><br>
 </div>
 
 <p>
@@ -2141,8 +2141,8 @@ SPDX-License-Identifier: MIT
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flacos" id="#flacos">flacos</a> <var>fl</var>)</code><br>
-<code class="signature">(<a href="#flacospi" id="#flacospi">flacospi</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flacos" id="flacos">flacos</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flacospi" id="flacospi">flacospi</a> <var>fl</var>)</code><br>
 </div>
 
 <p>
@@ -2157,8 +2157,8 @@ SPDX-License-Identifier: MIT
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flatan" id="#flatan">flatan</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
-<code class="signature">(<a href="#flatanpi" id="#flatanpi">flatanpi</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
+<code class="signature">(<a href="#flatan" id="flatan">flatan</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
+<code class="signature">(<a href="#flatanpi" id="flatanpi">flatanpi</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
 </div>
 
 <p>
@@ -2204,7 +2204,7 @@ SPDX-License-Identifier: MIT
 <h3 id="hyperbolic"><a href="#hyperbolic">&para;</a> Hyperbolic functions</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flsinh">flsinh</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flsinh" id="flsinh">flsinh</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -2216,7 +2216,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flcosh">flcosh</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flcosh" id="flcosh">flcosh</a> <var>fl</var>)</code>
 </div>
 <p>
   Return cosh(<var>fl</var>).
@@ -2227,7 +2227,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#fltanh">fltanh</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#fltanh" id="fltanh">fltanh</a> <var>fl</var>)</code>
 </div>
 <p>
   Return tanh(<var>fl</var>).
@@ -2238,7 +2238,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flasinh">flasinh</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flasinh" id="flasinh">flasinh</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -2250,7 +2250,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flacosh">flacosh</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flacosh" id="flacosh">flacosh</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -2268,7 +2268,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flatanh">flatanh</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flatanh" id="flatanh">flatanh</a> <var>fl</var>)</code>
 </div>
 <p>
   Return acosh(<var>fl</var>). The following special cases apply:
@@ -2295,7 +2295,7 @@ infinity.</p>
 <h3 id="special"><a href="#special">&para;</a> Special functions</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flerf">flerf</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flerf" id="flerf">flerf</a> <var>fl</var>)</code>
 </div>
 
 <p>Calculate </p>
@@ -2349,7 +2349,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flerfc">flerfc</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flerfc" id="flerfc">flerfc</a> <var>fl</var>)</code>
 </div>
 
 <p>Calculate 1 &minus; erf(<var>fl</var>).
@@ -2368,7 +2368,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flgamma">flgamma</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flgamma" id="flgamma">flgamma</a> <var>fl</var>)</code>
 </div>
 
 <p> Computes </p>
@@ -2493,7 +2493,7 @@ infinity.</p>
 
 <div class="feature" id="features">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flfeatures">flfeatures</a>)</code>
+<code class="signature">(<a href="#flfeatures" id="flfeatures">flfeatures</a>)</code>
 </div>
 
 <p>
@@ -2846,7 +2846,7 @@ should round-trip NaNs.</p>
 
 <div class="feature" id="raise-flexceptions">
 <span class="category">(srfi 276 exceptions)<br>procedure</span>
-<code class="signature">(<a href="#raise-flexception">raise-flexceptions!</a> <var>exception</var> …)</code>
+<code class="signature">(<a href="#raise-flexception" id="raise-flexception">raise-flexceptions!</a> <var>exception</var> …)</code>
 </div>
 
 <p>
@@ -2855,7 +2855,7 @@ should round-trip NaNs.</p>
 
 <div class="feature" id="lower-flexceptions">
 <span class="category">(srfi 276 exceptions)<br>procedure</span>
-<code class="signature">(<a href="#lower-flexception">lower-flexceptions!</a> <var>exception</var> …)</code>
+<code class="signature">(<a href="#lower-flexception" id="lower-flexception">lower-flexceptions!</a> <var>exception</var> …)</code>
 </div>
 
 <p>
@@ -3285,102 +3285,102 @@ between this SRFI and other standards</h3>
         (7.12.12.7)</td>
     <td>maximumMagnitudeNumber,<br> minimumMagnitudeNumber</td></tr>
 
-<tr><td><code><a href="flplus">fl+</code></td>
+<tr><td><code><a href="#flplus">fl+</code></td>
     <td><code>+</code> (6.5.7)</td>
     <td>addition</td></tr>
-<tr><td><code><a href="flminus">fl-</code></td>
+<tr><td><code><a href="#flminus">fl-</code></td>
     <td><code>-</code> (6.5.7)</td>
     <td>subtraction, negate</td></tr>
-<tr><td><code><a href="fltimes">fl*</code></td>
+<tr><td><code><a href="#fltimes">fl*</code></td>
     <td><code>*</code> (6.5.6)</td>
     <td>multiplication</td></tr>
-<tr><td><code><a href="fldivide">fl/</code></td>
+<tr><td><code><a href="#fldivide">fl/</code></td>
     <td><code>/</code> (6.5.6)</td>
     <td>multiplication</td></tr>
-<tr><td><code><a href="flfma">fl+*</code></td>
+<tr><td><code><a href="#flfma">fl+*</code></td>
     <td><code>fma</code> (7.12.13.1)</td>
     <td>fusedMultiplyAdd</td></tr>
-<tr><td><code><a href="flabs">flabs</code></td>
+<tr><td><code><a href="#flabs">flabs</code></td>
     <td><code>fabs</code> (7.12.7.3)</td>
     <td>abs</td></tr>
-<tr><td><code><a href="flposdiff">flposdiff</code></td>
+<tr><td><code><a href="#flposdiff">flposdiff</code></td>
     <td><code>fdim</code> (7.12.12.1)</td>
 </tr>
-<tr><td><code><a href="flfloor">flfloor</code></td>
+<tr><td><code><a href="#flfloor">flfloor</code></td>
     <td><code>floor</code> (7.12.9.2)</td>
     <td>roundToIntegralTowardNegative</td></tr>
-<tr><td><code><a href="flceiling">flceiling</code></td>
+<tr><td><code><a href="#flceiling">flceiling</code></td>
     <td><code>ceil</code> (7.12.9.1)</td>
     <td>roundToIntegralTowardPositive</td></tr>
-<tr><td><code><a href="fltruncate">fltruncate</code></td>
+<tr><td><code><a href="#fltruncate">fltruncate</code></td>
     <td><code>trunc</code> (7.12.9.9)</td>
     <td>roundToIntegralTowardZero</td></tr>
-<tr><td><code><a href="flround">flround</code></td>
+<tr><td><code><a href="#flround">flround</code></td>
     <td><code>roundeven</code> (7.12.9.8)</td>
     <td>roundToIntegralTiesToEven</td></tr>
-<tr><td><code><a href="flround-away">flround-away</code></td>
+<tr><td><code><a href="#flround-away">flround-away</code></td>
     <td><code>round</code> (7.12.9.6)</td>
     <td>roundToIntegralTiesToAway</td></tr>
-<tr><td><code><a href="fltruncate-remainder">fltruncate-remainder</code></td>
+<tr><td><code><a href="#fltruncate-remainder">fltruncate-remainder</code></td>
     <td><code>fmod</code> (7.12.10.1)</td></tr>
-<tr><td><code><a href="flremquo">flremquo</code></td>
+<tr><td><code><a href="#flremquo">flremquo</code></td>
     <td><code>remquo</code> (7.12.10.3)</td>
 </tr>
-<tr><td><code><a href="flround-remainder">flround-remainder</code></td>
+<tr><td><code><a href="#flround-remainder">flround-remainder</code></td>
     <td><code>remainder</code> (7.12.10.2)</td>
     <td>remainder</td></tr>
-<tr><td><code><a href="flexp">flexp</code></td>
+<tr><td><code><a href="#flexp">flexp</code></td>
     <td><code>exp</code> (7.12.6.1)</td>
     <td>exp</td></tr>
-<tr><td><code><a href="flexp2">flexp2</code></td>
+<tr><td><code><a href="#flexp2">flexp2</code></td>
     <td><code>exp2</code> (7.12.6.4)</td>
     <td>exp2</td></tr>
-<tr><td><code><a href="flexp10">flexp10</code></td>
+<tr><td><code><a href="#flexp10">flexp10</code></td>
     <td><code>exp10</code> (7.12.6.2)</td>
     <td>exp10</td></tr>
-<tr><td><code><a href="flexpm1">flexp-1</code></td>
+<tr><td><code><a href="#flexpm1">flexp-1</code></td>
     <td><code>expm1</code> (7.12.6.6)</td>
     <td>expm1</td></tr>
-<tr><td><code><a href="flexp2m1">flexp2-1</code></td>
+<tr><td><code><a href="#flexp2m1">flexp2-1</code></td>
     <td><code>exp2m1</code> (7.12.6.5)</td>
     <td>exp2m1</td></tr>
-<tr><td><code><a href="flexp10m1">flexp10-1</code></td>
+<tr><td><code><a href="#flexp10m1">flexp10-1</code></td>
     <td><code>exp10m1</code> (7.12.6.3)</td>
     <td>exp10m1</td></tr>
-<tr><td><code><a href="flexpt">flexpt</code></td>
+<tr><td><code><a href="#flexpt">flexpt</code></td>
     <td><code>pown</code> (7.12.7.6),<br>
         <code>pow</code> (7.12.7.5)</td>
     <td>pown, pow</td></tr>
-<tr><td><code><a href="fllog">fllog</code></td>
+<tr><td><code><a href="#fllog">fllog</code></td>
     <td><code>log</code> (7.12.6.11)</td>
     <td>log</td></tr>
-<tr><td><code><a href="fllog2">fllog2</code></td>
+<tr><td><code><a href="#fllog2">fllog2</code></td>
     <td><code>log2</code> (7.12.6.15)</td>
     <td>log2</td></tr>
-<tr><td><code><a href="fllog10">fllog10</code></td>
+<tr><td><code><a href="#fllog10">fllog10</code></td>
     <td><code>log10</code> (7.12.6.12)</td>
     <td>log10</td></tr>
-<tr><td><code><a href="fllogp1">fllog+1</code></td>
+<tr><td><code><a href="#fllogp1">fllog+1</code></td>
     <td><code>logp1</code> (7.12.6.14)</td>
     <td>logp1</td></tr>
-<tr><td><code><a href="fllog2p1">fllog2+1</code></td>
+<tr><td><code><a href="#fllog2p1">fllog2+1</code></td>
     <td><code>log2p1</code> (7.12.6.16)</td>
     <td>log2p1</td></tr>
-<tr><td><code><a href="fllog10p1">fllog10+1</code></td>
+<tr><td><code><a href="#fllog10p1">fllog10+1</code></td>
     <td><code>log10p1</code> (7.12.6.13)</td>
     <td>log10p1</td></tr>
-<tr><td><code><a href="flcbrt">flcbrt</code></td>
+<tr><td><code><a href="#flcbrt">flcbrt</code></td>
     <td><code>cbrt</code> (7.12.7.1)</td></tr>
-<tr><td><code><a href="flcompound">flcompound</code></td>
+<tr><td><code><a href="#flcompound">flcompound</code></td>
     <td><code>compoundn</code> (7.12.7.2)</td>
     <td>compound</td></tr>
-<tr><td><code><a href="flhypot">flhypot</code></td>
+<tr><td><code><a href="#flhypot">flhypot</code></td>
     <td><code>hypot</code> (7.12.7.4)</td>
     <td>hypot</td></tr>
-<tr><td><code><a href="flrsqrt">flrsqrt</code></td>
+<tr><td><code><a href="#flrsqrt">flrsqrt</code></td>
     <td><code>rsqrt</code> (7.12.7.9)</td>
     <td>rSqrt</td></tr>
-<tr><td><code><a href="flsqrt">flsqrt</code></td>
+<tr><td><code><a href="#flsqrt">flsqrt</code></td>
     <td><code>sqrt</code> (7.12.7.10)</td>
     <td>squareRoot</td>
 </tr>
@@ -3450,24 +3450,24 @@ between this SRFI and other standards</h3>
 <tr><td><code><a href="#fllog-gamma">fllog-gamma</code></td>
     <td><code>lgamma</code> (7.12.8.3)</td>
 </tr>
-<tr><td><code><a href="current-rounding-mode">current-rounding-mode</code></td>
+<tr><td><code><a href="#current-rounding-mode">current-rounding-mode</code></td>
     <td><code>fegetmode</code> (7.6.5.1)</td>
     <td>saveModes</td>
 </tr>
-<tr><td><code><a href="set-current-rounding">set-rounding-mode!</code></td>
+<tr><td><code><a href="#set-rounding-mode">set-rounding-mode!</code></td>
     <td><code>fesetmode</code> (7.6.5.4)</td>
     <td>restoreModes</td>
 </tr>
-<tr><td><code><a href="current-flexceptions">current-flexceptions</code>,<br>
-        <code><a href="flexception-raisedp">flexception-raised?</a></code>
+<tr><td><code><a href="#current-flexceptions">current-flexceptions</code>,<br>
+        <code><a href="#flexception-raisedp">flexception-raised?</a></code>
 </td>
     <td><code>fetestexcept</code> (7.6.4.7)</td>
     <td>testFlags</td></tr>
-<tr><td><code><a href="raise-flexceptions">raise-flexceptions!</code></td>
+<tr><td><code><a href="#raise-flexceptions">raise-flexceptions!</code></td>
     <td><code>fesetexcept</code> (7.6.4.4)</td>
     <td>raiseFlags</td>
 </tr>
-<tr><td><code><a href="lower-flexceptions">lower-flexceptions!</code>
+<tr><td><code><a href="#lower-flexceptions">lower-flexceptions!</code>
     </td>
     <td><code>feclearexcept</code> (7.6.4.1)</td>
     <td>lowerFlags</td>
