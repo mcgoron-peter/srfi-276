@@ -185,9 +185,9 @@ SPDX-License-Identifier: MIT
 <li><a href="#considerations">Considerations for inexact number vectors</a></li>
 <li><a href="#reader-syntax">Reader syntax suggestions</a></li>
 <li><a href="#implementation">Implementation</a></li>
-<li><a href="#bibliography">Bibliography</a></li>
 <li><a href="#acknowledgements">Acknowledgements</a></li>
 <li><a href="#appendix1">Appendix 1: Relationship between this SRFI and other standards</a></li>
+<li><a href="#bibliography">Bibliography</a></li>
 <li><a href="#copyright">Copyright</a></li>
 </ol>
 
@@ -294,6 +294,7 @@ SPDX-License-Identifier: MIT
 
 <p>
   There are many, many special functions that exist, such as
+  the functions in
   <a href="#tr24747">TR24747</a> and <a href="#scipy">SciPy</a>.
   They are not included in this SRFI, as they are very specialized
   and there might not be enough experience with them to standardize
@@ -321,12 +322,6 @@ SPDX-License-Identifier: MIT
   the same as if the operation were calculated to infinite precision, and
   then rounded to fit in the resulting representation according to the
   current rounding mode.
-</p>
-
-<p>
-  Operations are <dfn>non-stop</dfn> if all functions return a flonum
-  in the same format as the input, even if the result is a subnormal,
-  infinity, or NaN.
 </p>
 
 <p>
@@ -526,7 +521,7 @@ SPDX-License-Identifier: MIT
 <p>
   The floating-point libraries are an extension of
   <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a>.
-  However, this library can be used for representations of any radix, in
+  Unlike SRFI 144, this library can be used for representations of any radix, in
   particular 2 and 10. However, this library does not define quantization
   or reencoding procedures for decimal numbers. This library assumes that
   the floating point format is similar to the IEEE formats.
@@ -644,9 +639,9 @@ SPDX-License-Identifier: MIT
 
 <h3 id="implementation-constants"><a href="#implementation-constants">&para;</a> Implementation constants</h3>
 
-<div class="feature" id="flradix">
+<div class="feature" id="fl-radix">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#flradix">fl-radix</a></code>
+<code class="signature"><a href="#fl-radix">fl-radix</a></code>
 </div>
 
 <p>
@@ -655,9 +650,9 @@ SPDX-License-Identifier: MIT
   value throughout this SRFI.
 </p>
 
-<div class="feature" id="flprecision">
+<div class="feature" id="fl-precision">
 <span class="category">(srfi 276 ⟨library⟩)<br>value</span>
-<code class="signature"><a href="#flprecision">fl-precision</a></code>
+<code class="signature"><a href="#fl-precision">fl-precision</a></code>
 </div>
 
 <p>
@@ -693,7 +688,7 @@ SPDX-License-Identifier: MIT
   The minimum exponent a normalized floating point number,
   represented as (-1)<sup>s</sup>(<var>s</var><sub>0</sub>.<var>s</var><sub>1</sub>…)×2<sup>e</sup>
   can have, represented as an exact integer. For IEEE 754 representations, this is
-  <code>(- 1 :maximum-exponent)</code>.
+  <code>(- 1 fl-maximum-exponent)</code>.
 </p>
 
 <div class="feature" id="fl-minimum-exponent">
@@ -830,6 +825,11 @@ SPDX-License-Identifier: MIT
   the sign of <var>fl</var><sub>2</sub>.
 </p>
 
+<p>
+  Even when <var>fl<sub>1</sub></var> is a signaling NaN, this procedure
+  does not signal invalidOperation.
+</p>
+
 <pre
 ><code class="example-code">(flcopysign +inf.0 -1.0)</code> ⇒ -inf.0</code>
 <code class="example-code">(flcopysign +0.0 -1.0)</code> ⇒ -0.0</code>
@@ -844,7 +844,7 @@ SPDX-License-Identifier: MIT
   Return <var>fl</var>×<var>b</var><sup><var>n</var></sup> correctly rounded.
   The allowed values of <var>n</var> are implementation-dependent and
   may depend on <var>fl</var>. However, this procedure must round-trip
-  with <a href="#flnormalized-fraction-exponent"><code>normalized-fraction-exponent</code></a>.
+  with <a href="#flnormalized-fraction-exponent"><code>flnormalized-fraction-exponent</code></a>.
 </p>
 
 <p>
@@ -1050,9 +1050,9 @@ SPDX-License-Identifier: MIT
   Negative infinity compares less than any finite number.
 </p>
 
-<div class="feature" id="flonum-comp">
+<div class="feature" id="flneq">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flonum-comp">fl!=?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(<a href="#flneq">fl!=?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
 </div>
 
 <p>
@@ -1248,9 +1248,9 @@ SPDX-License-Identifier: MIT
   and <code>#f</code> otherwise.
 </p>
 
-<div class="feature" id="flnormalizedp">
+<div class="feature" id="flnormalp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flnormalizedp">flnormalized?</a> <var>fl</var>)</code>
+<code class="signature">(<a href="#flnormalp">flnormal?</a> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -1259,9 +1259,25 @@ SPDX-License-Identifier: MIT
   otherwise.
 </p>
 
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note:</span>
+  This procedure was renamed from <code>flnormalized?</code>
+  in SRFI 144.
+</p>
+</div>
+
 <div class="feature" id="flsubnormalp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flsubnormalp">flsubnormal?</a> <var>fl</var>)</code>
+</div>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note:</span>
+  This procedure was renamed from <code>fldenormalized?</code>
+  in SRFI 144.
+</p>
 </div>
 
 <p>
@@ -1614,6 +1630,13 @@ SPDX-License-Identifier: MIT
   is always correctly rounded.
 </p>
 
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Rationale:</span>
+  These procedures are renamed from
+  <code>flquotient</code> and <code>flremainder</code> in SRFI 144.
+</p></div>
+
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flremquo" id="flremquo">flremquo</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
@@ -1865,6 +1888,14 @@ SPDX-License-Identifier: MIT
   raised.
 </p>
 
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note:</span>
+  The procedure <code>fllog+1</code> is renamed from the procedure
+  <code>fllog1+</code> in SRFI 144.
+</p>
+</div>
+
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#make-fllog-base"   id="make-fllog-base">make-fllog-base</a> <var>fl</var>)</code><br>
@@ -1990,9 +2021,9 @@ SPDX-License-Identifier: MIT
 <h3 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h3>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#sin" id="#sin">flsin</a> <var>fl</var>)</code><br>
-<code class="signature">(<a href="#cos" id="#cos">flcos</a> <var>fl</var>)</code><br>
-<code class="signature">(<a href="#tan" id="#tan">fltan</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flsin" id="#flsin">flsin</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#flcos" id="#flcos">flcos</a> <var>fl</var>)</code><br>
+<code class="signature">(<a href="#fltan" id="#fltan">fltan</a> <var>fl</var>)</code><br>
 </div>
 
 <p>
@@ -2380,7 +2411,7 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#fllog-gamma">fllog-gamma</a> <var>fl</var>)</code>
+<code class="signature">(<a id="fllog-gamma" href="#fllog-gamma">fllog-gamma</a> <var>fl</var>)</code>
 </div>
 
 <p>Returns two values: log<sub>e</sub>|Γ(<var>fl</var>)|
@@ -2413,8 +2444,8 @@ infinity.</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flfirst-bessel">flfirst-bessel</a> <var>fl</var> <var>n</var>)</code><br>
-<code class="signature">(<a href="#flsecond-bessel">flsecond-bessel</a> <var>fl</var> <var>n</var>)</code>
+<code class="signature">(<a id="flfirst-bessel" href="#flfirst-bessel">flfirst-bessel</a> <var>fl</var> <var>n</var>)</code><br>
+<code class="signature">(<a id="flsecond-bessel" href="#flsecond-bessel">flsecond-bessel</a> <var>fl</var> <var>n</var>)</code>
 </div>
 
 <p>
@@ -2521,7 +2552,7 @@ infinity.</p>
    <a href="#flbyte-width"><code>flbyte-width</code></a>
    are not valid indices of <var>bv</var>.
    If <var>endianness</var> is not supplied, it is an error if
-   <var>k</var> is not a multiple of <code>:byte-width</code>.
+   <var>k</var> is not a multiple of <code>flbyte-width</code>.
 </p>
 
 <p>Read the bytes in <var>bv</var> at <var>k</var> as a flonum of this
@@ -2722,7 +2753,7 @@ should round-trip NaNs.</p>
 </p>
 </div>
 
-<div class="feature" id="rounding-mode">
+<div class="feature" id="set-rounding-mode">
 <span class="category">(srfi 276 set-rounding-mode)<br>procedure</span>
 <code class="signature">(<a href="#set-rounding-mode">set-rounding-mode!</a> <var>rounding-mode</var>)</code>
 </div>
@@ -2953,9 +2984,9 @@ should round-trip NaNs.</p>
 
 <p>
   When an implementation advertises that it implements,
-  e.g. <code>:sqrt</code> with one rounding, then it <strong>must
+  e.g. <code>flsqrt</code> with one rounding, then it <strong>must
   not</strong> reorder or optimize the program if it would return
-  a different result. For example, <code>(:/ 1.0 (:sqrt x))</code>
+  a different result. For example, <code>(fl/ 1.0 (flsqrt x))</code>
   may return a different result if implemented as two operations
   literally, versus as one inverse square root operation. Implementations
   <strong>may</strong> offer modes that optimize mathematical
@@ -2982,28 +3013,28 @@ should round-trip NaNs.</p>
         (rnrs bytevectors) ; for bytevector serialization operations
 )
 
-(unless (member 'ieee-754-2019 (f32:features))
+(unless (member 'ieee-754-2019 (f32:flfeatures))
   (error "requires IEEE 754 arithmetic"))
 
 (define (f32:kahan-sum lst)
-  (do ((sum 0.0s0)
-       (c 0.0s0)
+  (do ((sum #fl(binary32 0.0))
+       (c #fl(binary32 0.0))
        (lst lst (cdr lst)))
       ((null? lst) sum)
-    (let* ((y (fl32:- (car lst) c))
-           (t (fl32:+ sum y)))
-      (set! c (fl32:- (fl32:- t sum) y))
+    (let* ((y (fl32:fl- (car lst) c))
+           (t (fl32:fl+ sum y)))
+      (set! c (fl32:fl- (fl32:fl- t sum) y))
       (set! sum t))))
 
 (define (f32:fast-inverse-square-root number)
-  (let ((bv (make-bytevector f32:byte-width))
-        (x2 (f32:* number 0.5s0)))
+  (let ((bv (make-bytevector f32:flbyte-width))
+        (x2 (f32:fl* number #fl(binary32 0.5))))
     (f32:bytevector-flonum-set! bv 0 number)
     (let* ((i (bytevector-u32-native-ref bv 0))
            (i (- #x5f3759df (arithmetic-shift i -1))))
       (bytevector-u32-native-set! bv 0)
       (let ((y (f32:bytevector-flonum-ref bv 0)))
-        (f32:* y (f32:- 1.5s0 (f32:* x2 y y)))))))
+        (f32:fl* y (f32:fl- #fl(binary32 1.5) (f32:fl* x2 y y)))))))
 </code></pre>
 
 <p>
@@ -3079,11 +3110,11 @@ should round-trip NaNs.</p>
 
 <p>
   Although it is possible to implement
-  <a href="#bytevector-flonum-ref"><code>:bytevector-flonum-ref</code></a>
+  <a href="#bytevector-flonum-ref"><code>bytevector-flonum-ref</code></a>
   and
-  <a href="#bytevector-flonum-set"><code>:bytevector-flonum-set!</code></a>
-  in terms of <code>:normalized-fraction-exponent</code> and
-  <code>:make-flonum</code>, it is much easier to manipulate the byte
+  <a href="#bytevector-flonum-set"><code>bytevector-flonum-set!</code></a>
+  in terms of <code><a href="#flnormalized-fraction-exponent">flnormalized-fraction-exponent</a></code> and
+  <code><a href="#make-flonum">make-flonum</a></code>, it is much easier to manipulate the byte
   representation of the flonum directly.
 </p>
 
@@ -3096,6 +3127,359 @@ should round-trip NaNs.</p>
   Implementations that implement SRFI 276 are encouraged to also export
   SRFI 144 as a compatability library.
 </p>
+
+<h2 id="acknowledgements"><a href="#acknowledgements">&para;</a> Acknowledgements</h2>
+
+<p>
+  Thanks to those in Working Group 2 for discussing the semantics of
+  this SRFI.
+  In particular, I would like to thank Zhu Zihao for lots of information
+  gathering.
+</p>
+
+<p>
+  I thank Bradley Lucier for his input.
+</p>
+
+<p>
+  I thank the authors of SRFI 144, as this work builds on theirs.
+</p>
+
+<p>
+  I also thank William Kahan, whose work on IEEE 754 and his many complaints
+  about how programming language designers fail to understand it influenced
+  the design of this SRFI (even if I could not incorporate all of his
+  suggestions).
+</p>
+
+<h2 id="appendix1"><a href="#appendix1">&para;</a> Appendix 1: Relationship
+between this SRFI and other standards</h3>
+<p><em>This section is non-normative.</em></p>
+
+<p>This table documents procedures and constants in this SRFI that are
+   based off of functions and constants in C23 and IEEE 754.
+   The section and paragraph number of each function/constant in the
+   latest C23 draft (see <a href="#c23">Meneide 2024</a>) is given.
+</p>
+
+<table>
+<tr><th>SRFI</th><th>C23</th><th>IEEE 754</th></tr>
+<tr><td><code><a href="#fl-radix">fl-radix</code></td>
+    <td><code>FLT_RADIX</code> (5.2.5.3.3 &para; 31)</td>
+    <td><var>b</var></td>
+</tr>
+<tr><td><code><a href="#fl-precision">fl-precision</code></td>
+    <td><code>FLT_MANT_DIG</code> (5.2.5.3.3 &para; 31)</td>
+    <td><var>p</var></td>
+</tr>
+<tr><td><code><a href="#fl-maximum-exponent">fl-maximum-exponent</code></td>
+    <td><code>FLT_MAX_EXP</code> (5.2.5.3.3 &para; 31)</td>
+    <td><var>emax</var></td>
+</tr>
+<tr><td><code><a href="#fl-minimum-normalized-exponent">fl-minimum-normalized-exponent</code></td>
+    <td><code>FLT_MIN_EXP</code> (5.2.5.3.3 &para; 31)</td>
+    <td><var>emin</var></td>
+</tr>
+<tr><td><code><a href="#fl-greatest">fl-greatest</code></td>
+    <td><code>FLT_MAX</code> (5.2.5.3.3 &para; 32)</td></tr>
+<tr><td><code><a href="#fl-least">fl-least</code></td>
+    <td><code>FLT_TRUE_MIN</code> (5.2.5.3.3 &para; 33)</td></tr>
+<tr><td><code><a href="#fl-least-normal">fl-least-normal</code></td>
+    <td><code>FLT_MIN</code> (5.2.5.3.3 &para; 33)</td></tr>
+<tr><td><code><a href="#fl-epsilon">fl-epsilon</code></td>
+    <td><code>FLT_EPSILON</code> (5.2.5.3.3 &para; 33)</td></tr>
+<tr><td><code><a href="#fl-byte-width">fl-byte-width</code></td>
+    <td><code>sizeof float</code><td></tr>
+<tr><td><code><a href="#fladjacent">fladjacent</code></td>
+    <td><code>nextafter</code> (7.12.11.3)</td>
+    <td>nextUp, nextDown</td>
+</tr>
+<tr><td><code><a href="#flcopysign">flcopysign</code></td>
+    <td><code>copysign</code> (7.12.11.1)</td>
+</tr>
+<tr><td><code><a href="#make-flonum">make-flonum</code></td>
+    <td><code>scalbn</code> (7.12.7.19)</td>
+    <td>scaleB</td></tr>
+<tr><td><code><a href="#flinteger-fraction">flinteger-fraction</code></td>
+    <td><code>modf</code> (7.12.6.18)</td>
+</tr>
+<tr><td><code><a href="#flexponent">flexponent</code></td>
+    <td><code>logb</code> (7.12.6.17)</td>
+    <td>logB</td>
+</tr>
+<tr><td><code><a href="#flnormalized-fraction-exponent">flnormalized-fraction-exponent</code></td>
+    <td><code>frexp</code> (7.12.6.7)</td>
+</tr>
+<tr><td><code><a href="#flinteger-exponent">flinteger-exponent</code></td>
+    <td><code>ilogb</code> (7.12.6.8)</td>
+    <td>logB</td></tr>
+<tr><td><code><a href="#fl-integer-exponent-zero">fl-integer-exponent-zero</code></td>
+    <td><code>FP_ILOGB0</code> (7.12 &para; 18)</td></tr>
+<tr><td><code><a href="#fl-integer-exponent-nan">fl-integer-exponent-nan</code></td>
+    <td><code>FP_ILOGBNAN</code> (7.12 &para; 18)</td></tr>
+<tr><td><code><a href="#flsign-negativep">flsign-negative?</code></td>
+    <td><code>signbit</code> (7.12.3.7)</td>
+    <td>isSignMinus</td></tr>
+<tr><td><code><a href="#flonum-comp">fl=?</a></code></td>
+    <td><code>=</code> (F.9.4)</td>
+    <td>compareQuietEqual</td></tr>
+<tr><td><code><a href="#flonum-comp">fl&lt;?</a></code>
+        <code>fl&lt;=?</code>, etc.</td>
+    <td><code>&lt;</code>, <code>&lt;=</code>, etc. (F.9.4)</td>
+    <td>compareSignalingGreater,<br>compareSignalingGreaterEqual,<br> etc.</td></tr>
+</td>
+<tr><td><code><a href="#flonum-neq">fl!=?</a></code></td>
+    <td><code>!=</code> (F.9.4)</td>
+    <td>compareQuietNotEqual</td></tr>
+<tr><td><code><a href="#flonum-total-comp">total=?</a></code>, etc.</td>
+    <td><code>totalorder</code> (F.10.12.2)</td>
+    <td>totalOrder</td></tr>
+<tr><td><code><a href="#flunorderedp">flunordered?</code></td>
+    <td><code>isunordered</code> (7.12.17.6)</td>
+    <td>compareQuietUnordered</td></tr>
+<tr><td><code><a href="#flzerop">flzero?</code></td>
+    <td><code>iszero</code> (7.12.3.10)</td>
+    <td>isZero</td></tr>
+<tr><td><code><a href="#flfinitep">flfinite?</code></td>
+    <td><code>isfinite</code> (7.12.3.3)</td>
+    <td>isFinite</td>
+</tr>
+<tr><td><code><a href="#flinfinitep">flinfinite?</code></td>
+    <td><code>isinf</code> (7.12.3.4)</td>
+    <td>isInfinite</td>
+</tr>
+<tr><td><code><a href="#flnanp">flnan?</code></td>
+    <td><code>isnan</code> (7.12.3.5)</td>
+    <td>isNaN</td></tr>
+<tr><td><code><a href="#flnormalp">flnormal?</code></td>
+    <td><code>isnormal</code> (7.12.3.6)</td>
+    <td>isNormal</td></tr>
+<tr><td><code><a href="#flsubnormalp">flsubnormal?</code></td>
+    <td><code>issubnormal</code> (7.12.3.9)</td>
+    <td>isSubnormal</td></tr>
+<tr><td><code><a href="max">max</code>, <code>min</code></td>
+    <td><code>fmaximum</code>,<br> <code>fminimum</code><br>
+        (7.12.12.4, F.10.9.4)</td>
+    <td><code>maximum</code>,<br> <code>minimum</code></td></tr>
+<tr><td><code><a href="max">max-filter-nans</code>,<br> <code>min-filter-nans</code></td>
+    <td><code>fmaximum_num</code>,<br> <code>fminimum_num</code><br>
+        (7.12.12.5, F.10.9.5)</td>
+    <td><code>maximumNumber</code>,<br> <code>minimumNumber</code></td></tr>
+<tr><td><code><a href="flplus">fl+</code></td>
+    <td><code>+</code> (6.5.7)</td>
+    <td>addition</td></tr>
+<tr><td><code><a href="flminus">fl-</code></td>
+    <td><code>-</code> (6.5.7)</td>
+    <td>subtraction, negate</td></tr>
+<tr><td><code><a href="fltimes">fl*</code></td>
+    <td><code>*</code> (6.5.6)</td>
+    <td>multiplication</td></tr>
+<tr><td><code><a href="fldivide">fl/</code></td>
+    <td><code>/</code> (6.5.6)</td>
+    <td>multiplication</td></tr>
+<tr><td><code><a href="flfma">fl+*</code></td>
+    <td><code>fma</code> (7.12.13.1)</td>
+    <td>fusedMultiplyAdd</td></tr>
+<tr><td><code><a href="flabs">flabs</code></td>
+    <td><code>fabs</code> (7.12.7.3)</td>
+    <td>abs</td></tr>
+<tr><td><code><a href="flposdiff">flposdiff</code></td>
+    <td><code>fdim</code> (7.12.12.1)</td>
+</tr>
+<tr><td><code><a href="flfloor">flfloor</code></td>
+    <td><code>floor</code> (7.12.9.2)</td>
+    <td>roundToIntegralTowardNegative</td></tr>
+<tr><td><code><a href="flceiling">flceiling</code></td>
+    <td><code>ceil</code> (7.12.9.1)</td>
+    <td>roundToIntegralTowardPositive</td></tr>
+<tr><td><code><a href="fltruncate">fltruncate</code></td>
+    <td><code>trunc</code> (7.12.9.9)</td>
+    <td>roundToIntegralTowardZero</td></tr>
+<tr><td><code><a href="flround">flround</code></td>
+    <td><code>roundeven</code> (7.12.9.8)</td>
+    <td>roundToIntegralTiesToEven</td></tr>
+<tr><td><code><a href="flround-away">flround-away</code></td>
+    <td><code>round</code> (7.12.9.6)</td>
+    <td>roundToIntegralTiesToAway</td></tr>
+<tr><td><code><a href="fltruncate-remainder">fltruncate-remainder</code></td>
+    <td><code>fmod</code> (7.12.10.1)</td></tr>
+<tr><td><code><a href="flremquo">flremquo</code></td>
+    <td><code>remquo</code> (7.12.10.3)</td>
+</tr>
+<tr><td><code><a href="flround-remainder">flround-remainder</code></td>
+    <td><code>remainder</code> (7.12.10.2)</td>
+    <td>remainder</td></tr>
+<tr><td><code><a href="flexp">flexp</code></td>
+    <td><code>exp</code> (7.12.6.1)</td>
+    <td>exp</td></tr>
+<tr><td><code><a href="flexp2">flexp2</code></td>
+    <td><code>exp2</code> (7.12.6.4)</td>
+    <td>exp2</td></tr>
+<tr><td><code><a href="flexp10">flexp10</code></td>
+    <td><code>exp10</code> (7.12.6.2)</td>
+    <td>exp10</td></tr>
+<tr><td><code><a href="flexpm1">flexp-1</code></td>
+    <td><code>expm1</code> (7.12.6.6)</td>
+    <td>expm1</td></tr>
+<tr><td><code><a href="flexp2m1">flexp2-1</code></td>
+    <td><code>exp2m1</code> (7.12.6.5)</td>
+    <td>exp2m1</td></tr>
+<tr><td><code><a href="flexp10m1">flexp10-1</code></td>
+    <td><code>exp10m1</code> (7.12.6.3)</td>
+    <td>exp10m1</td></tr>
+<tr><td><code><a href="flexpt">flexpt</code></td>
+    <td><code>pown</code> (7.12.7.6),<br>
+        <code>pow</code> (7.12.7.5)</td>
+    <td>pown, pow</td></tr>
+<tr><td><code><a href="fllog">fllog</code></td>
+    <td><code>log</code> (7.12.6.11)</td>
+    <td>log</td></tr>
+<tr><td><code><a href="fllog2">fllog2</code></td>
+    <td><code>log2</code> (7.12.6.15)</td>
+    <td>log2</td></tr>
+<tr><td><code><a href="fllog10">fllog10</code></td>
+    <td><code>log10</code> (7.12.6.12)</td>
+    <td>log10</td></tr>
+<tr><td><code><a href="fllogp1">fllog+1</code></td>
+    <td><code>logp1</code> (7.12.6.14)</td>
+    <td>logp1</td></tr>
+<tr><td><code><a href="fllog2p1">fllog2+1</code></td>
+    <td><code>log2p1</code> (7.12.6.16)</td>
+    <td>log2p1</td></tr>
+<tr><td><code><a href="fllog10p1">fllog10+1</code></td>
+    <td><code>log10p1</code> (7.12.6.13)</td>
+    <td>log10p1</td></tr>
+<tr><td><code><a href="flcbrt">flcbrt</code></td>
+    <td><code>cbrt</code> (7.12.7.1)</td></tr>
+<tr><td><code><a href="flcompound">flcompound</code></td>
+    <td><code>compoundn</code> (7.12.7.2)</td>
+    <td>compound</td></tr>
+<tr><td><code><a href="flhypot">flhypot</code></td>
+    <td><code>hypot</code> (7.12.7.4)</td>
+    <td>hypot</td></tr>
+<tr><td><code><a href="flrsqrt">flrsqrt</code></td>
+    <td><code>rsqrt</code> (7.12.7.9)</td>
+    <td>rSqrt</td></tr>
+<tr><td><code><a href="flsqrt">flsqrt</code></td>
+    <td><code>sqrt</code> (7.12.7.10)</td>
+    <td>squareRoot</td>
+</tr>
+<tr><td><code><a href="#flsin">flsin</code></td>
+    <td><code>sin</code> (7.12.4.6)</td>
+    <td>sin</td></tr>
+<tr><td><code><a href="#flcos">flcos</code></td>
+    <td><code>cos</code> (7.12.4.5)</td>
+    <td>cos</td></tr>
+<tr><td><code><a href="#fltan">fltan</code></td>
+    <td><code>tan</code> (7.12.4.7)</td>
+    <td>tan</td></tr>
+<tr><td><code><a href="#flsinpi">flsinpi</code></td>
+    <td><code>sinpi</code> (7.12.4.6)</td>
+    <td>sinPi</td></tr>
+<tr><td><code><a href="#flcospi">flcospi</code></td>
+    <td><code>cospi</code> (7.12.4.5)</td>
+    <td>cosPi</td></tr>
+<tr><td><code><a href="#fltanpi">fltanpi</code></td>
+    <td><code>tanpi</code> (7.12.4.7)</td>
+    <td>tanPi</td></tr>
+<tr><td><code><a href="#flasin">flasin</code></td>
+    <td><code>asin</code> (7.12.4.2)</td>
+    <td>asin</td></tr>
+<tr><td><code><a href="#flacos">flacos</code></td>
+    <td><code>acos</code> (7.12.4.1)</td>
+    <td>acos</td></tr>
+<tr><td><code><a href="#flatan">flatan</code></td>
+    <td><code>atan</code> (7.12.4.3)</td>
+    <td>atan</td></tr>
+<tr><td><code><a href="#flasinpi">flasinpi</code></td>
+    <td><code>asinpi</code> (7.12.4.9)</td>
+    <td>asinPi</td></tr>
+<tr><td><code><a href="#flacospi">flacospi</code></td>
+    <td><code>acospi</code> (7.12.4.8)</td>
+    <td>acosPi</td></tr>
+<tr><td><code><a href="#flatanpi">flatanpi</code></td>
+    <td><code>atanpi</code> (7.12.4.10)</td>
+    <td>atanPi</td></tr>
+<tr><td><code><a href="#flsinh">flsinh</code></td>
+    <td><code>sinh</code> (7.12.5.5)</td>
+    <td>sinh</td></tr>
+<tr><td><code><a href="#flcosh">flcosh</code></td>
+    <td><code>cosh</code> (7.12.4.4)</td>
+    <td>cosh</td></tr>
+<tr><td><code><a href="#fltanh">fltanh</code></td>
+    <td><code>tanh</code> (7.12.4.6)</td>
+    <td>tanh</td></tr>
+<tr><td><code><a href="#flasinh">flasinh</code></td>
+    <td><code>asinh</code> (7.12.5.2)</td>
+    <td>asinh</td></tr>
+<tr><td><code><a href="#flacosh">flacosh</code></td>
+    <td><code>acosh</code> (7.12.5.1)</td>
+    <td>acosh</td></tr>
+<tr><td><code><a href="#flatanh">flatanh</code></td>
+    <td><code>atanh</code> (7.12.5.3)</td>
+    <td>atanh</td></tr>
+<tr><td><code><a href="#flerf">flerf</code></td>
+    <td><code>erf</code> (7.12.8.1)</td>
+</tr>
+<tr><td><code><a href="#flerfc">flerfc</code></td>
+    <td><code>erfc</code> (7.12.8.2)</td>
+</tr>
+<tr><td><code><a href="#flgamma">flgamma</code></td>
+    <td><code>tgamma</code> (7.12.8.4)</td>
+</tr>
+<tr><td><code><a href="#fllog-gamma">fllog-gamma</code></td>
+    <td><code>lgamma</code> (7.12.8.3)</td>
+</tr>
+<tr><td><code><a href="current-rounding-mode">current-rounding-mode</code></td>
+    <td><code>fegetmode</code> (7.6.5.1)</td>
+    <td>saveModes</td>
+</tr>
+<tr><td><code><a href="set-current-rounding">set-rounding-mode!</code></td>
+    <td><code>fesetmode</code> (7.6.5.4)</td>
+    <td>restoreModes</td>
+</tr>
+<tr><td><code><a href="current-flexceptions">current-flexceptions</code>,<br>
+        <code><a href="flexception-raisedp">flexception-raised?</a></code>
+</td>
+    <td><code>fetestexcept</code> (7.6.4.7)</td>
+    <td>testFlags</td></tr>
+<tr><td><code><a href="raise-flexceptions">raise-flexceptions!</code></td>
+    <td><code>fesetexcept</code> (7.6.4.4)</td>
+    <td>raiseFlags</td>
+</tr>
+<tr><td><code><a href="lower-flexceptions">lower-flexceptions!</code>
+    </td>
+    <td><code>feclearexcept</code> (7.6.4.1)</td>
+    <td>lowerFlags</td>
+</tr>
+</table>
+
+<p>
+  In addition, some procedures and constants come from POSIX:
+</p>
+
+<table>
+<tr><th>SRFI</th><th>POSIX</th></tr>
+<tr><td><code>fl-e</code></td><td><code>M_E</code></td></tr>
+<tr><td><code>fl-log2-e</code></td><td><code>M_LOG2E</code></td></tr>
+<tr><td><code>fl-log10-e</code></td><td><code>M_LOG10E</code></td></tr>
+<tr><td><code>fl-log-2</code></td><td><code>M_LN2</code></td></tr>
+<tr><td><code>fl-log10</code></td><td><code>M_LN10</code></td></tr>
+<tr><td><code>fl-pi</code></td><td><code>M_PI</code></td></tr>
+<tr><td><code>fl-pi/2</code></td><td><code>M_PI_2</code></td></tr>
+<tr><td><code>fl-pi/4</code></td><td><code>M_PI_4</code></td></tr>
+<tr><td><code>fl-1/pi</code></td><td><code>M_1_PI</code></td></tr>
+<tr><td><code>fl-2/pi</code></td><td><code>M_2_PI</code></td></tr>
+<tr><td><code>fl-2/sqrt-pi</code></td><td><code>M_2_SQRTPI</code></td></tr>
+<tr><td><code>fl-sqrt-2</code></td><td><code>M_SQRT2</code></td></tr>
+<tr><td><code>fl-1/sqrt-2</code></td><td><code>M_SQRT1_2</code></td></tr>
+<tr><td><code><a href="#flfirst-bessel">flfirst-bessel</a></code></td>
+    <td><code>j0</code>, <code>j1</code>, <code>jn</code></td></tr>
+<tr><td><code><a href="#flsecond-bessel">flsecond-bessel</a></code></td>
+    <td><code>y0</code>, <code>y1</code>, <code>yn</code></td></tr>
+<tr><td><code><a href="#fllog-gamma">fllog-gamma</a></code></td>
+    <td><code>lgamma</code>, <code>signgam</code></td></tr>
+</table>
 
 <h2 id="bibliography"><a href="#bibliography">&para;</a> Bibliography</h2>
 
@@ -3134,6 +3518,13 @@ should round-trip NaNs.</p>
          >doi:10.1109/IEEESTD.2019.8766229</a>.
       ISBN 978-1-5044-5924-2.</li>
   <li id="tr24747">ISO. ISO/IEC 24747:2009 — Extensions to the C Library to support mathematical special functions. 2009. Latest publically available draft <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1292.pdf">N1292</a>.</li>
+  <li id="c23">Jean Heyd Meneide and Freek Wiedijk (editors).
+    Information technology — Programming languages — C.
+    <a href="https://www.iso.org/standard/82075.html">ISO/IEC 9899:2024</a>.
+    <i>International Standards Organization.</i>
+    Latest publically avaiable draft
+    <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf">N3220.pdf</a>.</li>
+
   <li id="JoldesMullerPopescu2017">
       Mioara Joldes, Jean-Michel Muller, Valentina Popescu. 2017.
       Tight and rigourous error bounds for basic building
@@ -3169,54 +3560,6 @@ should round-trip NaNs.</p>
       on 2026-06-20.</li>
 </ol>
 
-<h2 id="acknowledgements"><a href="#acknowledgements">&para;</a> Acknowledgements</h2>
-
-<p>
-  Thanks to those in Working Group 2 for discussing the semantics of
-  this SRFI.
-  In particular, I would like to thank Zhu Zihao for lots of information
-  gathering.
-</p>
-
-<p>
-  I thank Bradley Lucier for his input.
-</p>
-
-<p>
-  I thank the authors of SRFI 144, as this work builds on theirs.
-</p>
-
-<p>
-  I also thank William Kahan, whose work on IEEE 754 and his many complaints
-  about how programming language designers fail to understand it influenced
-  the design of this SRFI (even if I could not incorporate all of his
-  suggestions).
-</p>
-
-<h2 id="appendix1"><a href="#appendix1">&para;</a> Appendix 1: Relationship
-between this SRFI and other standards</h3>
-<p><em>This section is non-normative.</em></p>
-
-<table>
-<tr><th>SRFI</th><th>C23</th><th>IEEE 754</th></tr>
-<tr><td><a href="#round"><code>:round</code></a></td><td><code>roundeven</code></td><td>roundToIntegralTiesToEven</td></tr>
-<tr><td><a href="#round-away"><code>:round-away</code></a></td><td><code>round</code></td><td>roundToIntegralTiesToAway</td></tr>
-<tr><td><a href="#truncate"><code>:truncate</code></a></td><td><code>trunc</code></td><td>roundToIntegralTowardZero</td></tr>
-<tr><td><a href="#ceiling"><code>:ceiling</code></a></td><td><code>ceil</code></td><td>roundToIntegralTowardPositive</td></tr>
-<tr><td><a href="#floor"><code>:floor</code></a></td><td><code>floor</code></td><td>roundToIntegralTowardNegative</td></tr>
-<tr><td><a href="#adjacent"><code>:adjacent</code></a></td><td><code>copysign</code></td><td></td></tr>
-<tr><td><a href="#make-flonum"><code>:make-flonum</code></a></td><td><code>scalbn</code></td><td></td></tr>
-<tr><td><a href="#integer-fraction"><code>:integer-fraction</code></a></td><td><code>modf</code></td><td></td></tr>
-<tr><td><a href="#integer-fraction"><code>:exponent</code></a></td><td><code>logb</code></td><td>logB</td></tr>
-</table>
-
-<p>
-  In addition, some procedures and constants come from POSIX:
-</p>
-
-<p>
-  The following modifications were made to SRFI 144:
-</p>
 
 <h2 id="copyright"><a href="#copyright">&para;</a> Copyright</h2>
 <p>&copy; 2026 Peter McGoron.</p>
