@@ -1289,10 +1289,14 @@ SPDX-License-Identifier: MIT
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flmax" id="max">flmax</a> <var>fl</var> …)</code><br>
-<code class="signature">(<a href="#flmax-filter-nans" id="max-filter-nans">flmax-filter-nans</a> <var>fl</var> …)</code><br>
-<code class="signature">(<a href="#flmin" id="min">flmin</a> <var>fl</var> …)</code><br>
-<code class="signature">(<a href="#flmin-filter-nans" id="min-filter-nans">flmin-filter-nans</a> <var>fl</var> …)</code>
+<code class="signature">(<a href="#flmax" id="flmax">flmax</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmax-abs" id="flmax-abs">flmax-abs</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmax-filter-nans" id="flmax-filter-nans">flmax-filter-nans</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmax-abs-filter-nans" id="flmax-abs-filter-nans">flmax-abs-filter-nans</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmin" id="flmin">flmin</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmin-abs" id="flmin-abs">flmin-abs</a> <var>fl</var> …)</code><br>
+<code class="signature">(<a href="#flmin-abs-filter-nans" id="flmin-abs-filter-nans">flmin-filter-nans</a> <var>fl</var> …)</code>
+<code class="signature">(<a href="#flmin-abs-filter-nans" id="flmin-abs-filter-nans">flmin-abs-filter-nans</a> <var>fl</var> …)</code>
 </div>
 
 <p>
@@ -1316,6 +1320,12 @@ SPDX-License-Identifier: MIT
   If either <code>flmax-filter-nans</code> or <code>flmin-filter-nans</code>
   have a NaN in its arguments, it is ignored unless all inputs are NaNs,
   in which case a NaN is returned.
+</p>
+
+<p>The procedures with <code>abs</code> in the name compare two non-NaN
+   arguments by absolute value. If the two arguments are equal in magnitude,
+   they are then compared by the procedure without <code>abs</code> in
+   the name.
 </p>
 
 <div class="boxed">
@@ -3257,14 +3267,24 @@ between this SRFI and other standards</h3>
 <tr><td><code><a href="#flsubnormalp">flsubnormal?</code></td>
     <td><code>issubnormal</code> (7.12.3.9)</td>
     <td>isSubnormal</td></tr>
-<tr><td><code><a href="max">max</code>, <code>min</code></td>
+
+<tr><td><code><a href="#flmax">flmax</a></code>, <code>flmin</code></td>
     <td><code>fmaximum</code>,<br> <code>fminimum</code><br>
         (7.12.12.4, F.10.9.4)</td>
-    <td><code>maximum</code>,<br> <code>minimum</code></td></tr>
-<tr><td><code><a href="max">max-filter-nans</code>,<br> <code>min-filter-nans</code></td>
+    <td>maximum,<br> minimum</td></tr>
+<tr><td><code><a href="#flmax">max-abs</a></code>, <code>min-abs</code></td>
+    <td><code>fmaximum_mag</code>,<br> <code>fminimum_mag</code><br>
+        (7.12.2.8)</td>
+    <td>maximumMagnitude,<br> minimumMagnitude</td></tr>
+<tr><td><code><a href="#flmax">max-filter-nans</a></code>,<br> <code>min-filter-nans</code></td>
     <td><code>fmaximum_num</code>,<br> <code>fminimum_num</code><br>
         (7.12.12.5, F.10.9.5)</td>
-    <td><code>maximumNumber</code>,<br> <code>minimumNumber</code></td></tr>
+    <td>maximumNumber,<br> minimumNumber</td></tr>
+<tr><td><code><a href="#flmax">max-abs-filter-nans</a></code>,<br> <code>min-abs-filter-nans</code></td>
+    <td><code>fmaximum_num_mag</code>,<br> <code>fminimum_num_mag</code><br>
+        (7.12.12.7)</td>
+    <td>maximumMagnitudeNumber,<br> minimumMagnitudeNumber</td></tr>
+
 <tr><td><code><a href="flplus">fl+</code></td>
     <td><code>+</code> (6.5.7)</td>
     <td>addition</td></tr>
