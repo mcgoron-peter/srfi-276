@@ -661,7 +661,7 @@ SPDX-License-Identifier: MIT
 </p>
 
 <div class="boxed">
-  <span class="boxed-tag">Note:</span> This is not the same as the
+  <span class="boxed-tag">Note</span>: This is not the same as the
   fixed number of bits in the machine format of the floating point
   representation. For example, binary64 numbers have a precision of 53,
   because the underlying number is 1 plus the 52 bits stored in the
@@ -804,7 +804,7 @@ SPDX-License-Identifier: MIT
 </div>
 <p>
   If <var>fl</var><sub>1</sub> = <var>fl</var><sub>2</sub>, returns
-  <var>fl</var><sub>2</sub>.
+  <var>fl</var><sub>2</sub>. If any argument is NaN, return a NaN.
 </p>
 
 <p>
@@ -814,6 +814,8 @@ SPDX-License-Identifier: MIT
 
 <pre
 ><code class="example-code">(f64:fladjacent 1.0 +inf.0) ⇒ #fl(binary64 1.0000000000000002)</code>
+<code class="example-code">(fladjacent -0.0 +0.0) ⇒ +0.0</code>
+<code class="example-code">(fladjacent +0.0 -0.0) ⇒ -0.0</code>
 </pre>
 
 <div class="feature" id="flcopysign">
