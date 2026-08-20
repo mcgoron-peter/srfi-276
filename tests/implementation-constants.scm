@@ -25,12 +25,21 @@
     (test-predicate (flonum? fl-greatest))
     (test-predicate (flonum? fl-least))
     (test-predicate (flonum? fl-least-normal))
-    (test-predicate (fl<=? fl-least fl-least-normal fl-greatest))))
+    (test-predicate "fl-least is consistent with fl-adjacent"
+                    (fl=? (fladjacent 0.0 +inf.0)
+                          fl-least))
+    (test-predicate (flnormal? fl-least-normal))
+    (test-values "fl-least-normal is the least normal value"
+                 (flnormal? (fladjacent fl-least-normal 0.0))
+                 '(#f))
+    (test-predicate "expected order relationship"
+                    (fl<=? fl-least fl-least-normal fl-greatest))))
 
 (define (test-fl-epsilon)
   (test-group "fl-epsilon"
     (test-predicate (flonum? fl-epsilon))
-    (test-predicate (fl=? (fl- (fladjacent (flonum 1.0) +inf.0)
+    (test-predicate "matches normal definition of C machine epsilon"
+                    (fl=? (fl- (fladjacent (flonum 1.0) +inf.0)
                                (flonum 1.0))
                           fl-epsilon))))
 

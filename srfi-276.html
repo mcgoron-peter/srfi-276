@@ -553,6 +553,64 @@ SPDX-License-Identifier: MIT
   statements in the example code.
 </p>
 
+<h3 id="model"><a href="#model">&para;</a> Floating-point model</h3>
+
+<p>
+Finite nonzero flonums are modeled as the numbers </p>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>x</mi><mo>=</mo><mi>s</mi><mo>⁢</mo><msup><mi>b</mi><mi>e</mi></msup><msubsup><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mi>0</mi></mrow><mrow><mi>p</mi><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>f</mi><mn>k</mn></msub><mo>⁢</mo><msup><mi>b</mi><mrow><mo>−</mo><mi>k</mi></mrow></msup></math><p>
+The variable <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mi>b</mi></math> is the <dfn>base</dfn> (defined as the value of <code><a href="#fl-radix">fl-radix</a></code>) and the variable <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mi>p</mi></math> is the <dfn>precision</dfn> (defined as the value of <code><a href="#fl-precision">fl-precision</a></code>), both of which only depend on the flonum type.
+The variables <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mi>s</mi></math> (the <dfn>sign</dfn>, which
+is either −1 or +1), <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mi>e</mi></math> (the <dfn>exponent</dfn>, which  is between
+<code><a href="#fl-minimum-normalized-exponent">fl-minimum-normalized-exponent</a></code> inclusive and
+<code><a href="#fl-maximum-exponent">fl-maximum-exponent</a></code> inclusive),
+and <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><msub><mi>f</mi><mi>k</mi></msub></math> (which make up the <dfn>significand</dfn> and whose values
+are the integers in the range <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mo>[</mo><mn>0</mn><mo>,</mo><mn>b</mn><mo>)</mo></math>), vary for different
+flonums.</p>
+<p>
+  When <math xmlns="http://www.w3.org/1998/Math/MathML"
+  display="inline"><msub><mi>f</mi><mn>0</mn></msub><mo>&gt;</mo><mn>0</mn></math>,
+  the number is <dfn>normal</dfn>. When
+  <math xmlns="http://www.w3.org/1998/Math/MathML"
+  display="inline"><msub><mi>f</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn></math>
+  and <math xmlns="http://www.w3.org/1998/Math/MathML"
+  display="inline"><mi>e</mi></math> is the smallest possible normal
+  exponent, the number is <dfn>subnormal</dfn>.
+</p>
+
+<p>
+  When a number is <dfn>treated as normalized</dfn>, it is treated as if
+  it was represented in the model above, but without any limit on the
+  value of <math><mi>e</mi></math>.
+</p>
+
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note:</span>
+  The significand of a non-zero normal flonum has a integer component
+  less than <math><mi>b</mi></math> and an fractional component. This make
+  the exponent <math><mi>e</mi></math> equal to
+  <math><mo>⌊</mo>
+        <msub><mi>log</mi><mi>b</mi></msub>
+        <mo>&#x2061;</mo><!--Invisible application-->
+        <mrow>
+         <mo>|</mo>
+         <mi>x</mi>
+         <mo>|</mo>
+        </mrow>
+        <mo>⌋</mo>
+  </math>.
+  This is different than C99’s model, where the significand only
+  has fractional components and the exponent is shifted up by one.
+</p>
+<p>
+  Accessors such as
+  <a href="#flnormalized-fraction-exponent"><code
+  >flnormalized-fraction-exponent</code></a>
+  and <a href="#flexponent"><code>flexponent</code></a> return values
+  that are normalized in a different manner than this model.
+</p>
+</div>
+
 <h3 id="nan-conventions"><a href="#nan-conventions">&para;</a> NaN conventions</h3>
 
 <p>
@@ -675,9 +733,8 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  The maximum exponent a normalized floating point number,
-  represented as (-1)<sup>s</sup>(<var>s</var><sub>0</sub>.<var>s</var><sub>1</sub>…)×2<sup>e</sup>
-  can have, represented as an exact integer. For binary64 numbers, this is 1023.
+  The maximum exponent a normalized floating point number can have,
+  represented as an exact integer. For binary64 numbers, this is 1023.
 </p>
 
 <div class="feature" id="fl-minimum-normalized-exponent">
@@ -686,9 +743,7 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  The minimum exponent a normalized floating point number,
-  represented as (-1)<sup>s</sup>(<var>s</var><sub>0</sub>.<var>s</var><sub>1</sub>…)×2<sup>e</sup>
-  can have, represented as an exact integer. For IEEE 754 representations, this is
+  The minimum exponent a normalized floating point number can have, represented as an exact integer. For IEEE 754 representations, this is
   <code>(- 1 fl-maximum-exponent)</code>.
 </p>
 
@@ -893,8 +948,19 @@ SPDX-License-Identifier: MIT
 </div>
 
 <p>
-  Returns the exponent of <var>fl</var> as a flonum. If <var>fl</var>
-  is subnormal, it is treated as though it were normalized.
+  Returns
+  <math><mo>⌊</mo>
+        <msub><mi>log</mi><mi>b</mi></msub>
+        <mo>&#x2061;</mo><!--Invisible application-->
+        <mrow>
+         <mo>|</mo>
+         <mi>fl</mi>
+         <mo>|</mo>
+        </mrow>
+        <mo>⌋</mo>
+  </math>,
+  i.e the exponent of <var>fl</var> as an integer flonum. The argument
+  <var>fl</var> is always treated as if it was normalized.
 </p>
 
 <p>
