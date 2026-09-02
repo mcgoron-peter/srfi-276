@@ -47,7 +47,7 @@
      (lambda (nan)
        (or (fltotal<? nan -inf.0)
 	   (fltotal<? +inf.0 nan)))
-     (list (make-nan-generator)))))
+     (list random-nan))))
 
 (define (test-total-order-special-cases)
   (test-group "total order special cases"
@@ -55,3 +55,5 @@
     (test-assert (fltotal>? +0.0 -0.0))
     (test-assert (not (fltotal=? -0.0 +0.0)))
     (test-assert (fltotal<? -inf.0 +inf.0))))
+
+
