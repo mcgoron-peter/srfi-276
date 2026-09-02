@@ -1,0 +1,18 @@
+(define (test-flnormalized-fraction-exponent)
+  (test-values (flnormalized-fraction-exponent 1.0)
+	       '(0.5 1))
+  (test-values (flnormalized-fraction-exponent 1.5)
+	       '(0.75 1))
+  (test-values (flnormalized-fraction-exponent 2.0)
+	       '(0.5 2))
+  (test-values (flnormalized-fraction-exponent 0.5)
+	       '(0.5 0))
+  (test-values (flnormalized-fraction-exponent 0.25)
+	       '(0.5 -1))
+  (test-values (flnormalized-fraction-exponent fl-least)
+	       `(0.5 ,(+ fl-minimum-exponent 1)))
+  (test-values (flnormalized-fraction-exponent fl-greatest)
+	       `(,(fladjacent 1.0 -inf.0)
+		 ,(+ fl-maximum-exponent 1))))
+
+
