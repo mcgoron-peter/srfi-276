@@ -76,6 +76,11 @@
 (test-nans-are-ordered-beyond-finite-values)
 (test-total-order-special-cases)
 
+(load "lib/srfi/276.flordered.scm")
+(load "tests/flunordered.scm")
+(test-nans-are-unordered)
+(test-non-nans-are-ordered)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")

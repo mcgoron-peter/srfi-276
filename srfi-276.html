@@ -1050,7 +1050,8 @@ flonums.</p>
 </div>
 
 <p>Returns true if the sign of <var>fl</var> is negative, and false
-   otherwise.
+   otherwise. Note that signed zero is not negative, but has a negative
+   sign.
 </p>
 
 <div class="boxed">
@@ -1058,6 +1059,17 @@ flonums.</p>
   In SRFI-144, the similar procedure <code>flsignbit</code> returned 1
   for a negative sign and 0 otherwise.
 </div>
+
+<div class="feature" id="flsign-positivep">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#flsign-positivep">flsign-positive?</a> <var>fl</var>)</code>
+</div>
+
+<p>Returns true if the sign of <var>fl</var> is positive, and false
+   otherwise. Note that signed zero is not positive, but has a positive
+   sign. This procedure is the opposite of
+   <a href="#flsign-negativep"><code>flsign-negative</code></a>.
+</p>
 
 <h3 id="predicates"><a href="#predicates">&para;</a> Predicates</h3>
 
@@ -1225,6 +1237,17 @@ flonums.</p>
 <p>
   This procedure returns <code>#t</code> if one of its arguments is
   a NaN, and <code>#f</code> otherwise.
+</p>
+
+<div class="feature" id="florderedp">
+<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
+<code class="signature">(<a href="#florderedp">flordered?</a> <var>fl</var><sub>1</sub> <var>fl</var><sub>2</sub>)</code>
+</div>
+
+<p>
+  This procedure returns <code>#t</code> if neither argument is NaN,
+   and <code>#f</code> otherwise. This procedure is the inverse of
+   <a href="#flunorderedp"><code>flunordered?</code></a>.
 </p>
 
 <div class="feature" id="flintegerp">

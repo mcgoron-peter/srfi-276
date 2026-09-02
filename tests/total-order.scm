@@ -55,5 +55,3 @@
     (test-assert (fltotal>? +0.0 -0.0))
     (test-assert (not (fltotal=? -0.0 +0.0)))
     (test-assert (fltotal<? -inf.0 +inf.0))))
-
-
