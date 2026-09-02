@@ -13,3 +13,10 @@
     (test-assert (let ((v (flonum (+ 1 (exact fl-greatest)))))
                    (or (flinfinite? v) (fl=? v fl-greatest))))
     (test-predicate (flnan? (flonum 1+2i)))))
+
+(define (test-flonum-property)
+  (test-group "random generation of flonums"
+    (test-property
+     flonum?
+     (list (make-random-flonum-generator)))))
+

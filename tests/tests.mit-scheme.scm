@@ -178,7 +178,7 @@
 		 (map call generators))
 	 (i 0 (+ i 1)))
 	((= i (default-property-tests)))
-      (apply tester values))))
+      (test-assert (apply tester values)))))
 
 
 
