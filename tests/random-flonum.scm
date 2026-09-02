@@ -16,6 +16,12 @@
 	    (set! fixed (cdr fixed))
 	    x)))))
 
+(define (make-random-finite-flonum-generator)
+  (gfilter flfinite? (make-random-flonum-generator)))
+
+(define (make-random-ordered-flonum-generator)
+  (gremove flnan? (make-random-flonum-generator)))
+
 (define (random-nan)
   (cond-expand
     ((library (srfi 208))
