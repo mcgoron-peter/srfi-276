@@ -136,6 +136,11 @@
     ((_ name (predicate args ...))
      (test-values name (predicate args ...) '(#t)))))
 
+(define-syntax test-equal
+  (syntax-rules ()
+    ((_ expected got)
+     (test-values (equal? expected got) '(#t)))))
+
 (define-syntax test-not-predicate
   (syntax-rules ()
     ((_ (predicate args ...))
@@ -165,9 +170,14 @@
          (display (tests-run-in-group))
          (newline))))))
 
-(define (test-property name generator tester)
-  (test-group name
-    (do ((i 0 (+ i 1)))
-        ((= i 100))
-      (tester (generator)))))
+(define (test-property tester generators)
+  (let ((call (lambda (x) (x))))
+    (do ((values (map call generators)
+		 (map call generators))
+	 (i 0 (+ i 1)))
+	((= i 100))
+      (apply tester values))))
+
+
+
 
