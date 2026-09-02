@@ -170,7 +170,7 @@
          (display (tests-run-in-group))
          (newline))))))
 
-(define default-property-tests (make-parameter 10))
+(define default-property-tests (make-parameter 30))
 
 (define (test-property tester generators)
   (let ((call (lambda (x) (x))))
@@ -178,6 +178,11 @@
 		 (map call generators))
 	 (i 0 (+ i 1)))
 	((= i (default-property-tests)))
+      (display "test #")
+      (display i)
+      (display " ")
+      (write values)
+      (newline)
       (test-assert (apply tester values)))))
 
 
