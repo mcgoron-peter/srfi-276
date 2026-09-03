@@ -185,6 +185,9 @@
       (newline)
       (test-assert (apply tester values)))))
 
-
+(define (list-generator-of subgenerator)
+  (lambda ()
+    (map (lambda (ignored) (subgenerator))
+	 (iota (random-integer 30)))))
 
 

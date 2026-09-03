@@ -99,6 +99,8 @@
 (test-flnormal?)
 (test-flsubnormal?)
 
+(load "lib/srfi/276.maxmin.scm")
+
 ;;;; Property tests
 
 (load "tests/properties.scm")

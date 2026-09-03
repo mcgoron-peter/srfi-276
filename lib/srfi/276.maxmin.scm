@@ -22,8 +22,8 @@
    ((and (fl=? x -0.0)
 	 (fl=? y +0.0))
     -0.0)
-   ((fl<? x y) y)
-   (else x)))
+   ((fl<? x y) x)
+   (else y)))
 
 (define (flmin-filter-nans . args)
   (if (null? args)
@@ -37,14 +37,20 @@
     ((flunordered? x y) +nan.0)
     ((and (eqv? x -0.0)
 	  (eqv? y +0.0))
-     +0.0))
+     +0.0)
     ((fl<? x y) y)
     (else x)))
+
+(define (fold-nan f x l)
+  (cond
+    ((null? l) x)
+    ((flnan? x) x)
+    (else (fold-nan f (f x (car l)) (cdr l)))))
 
 (define (flmax . args)
   (if (null? args)
       -inf.0
-      (fold flmax-binary (car args) (car args))))
+      (fold-nan flmax-binary (car args) (cdr args))))
 
 (define (flmin-binary x y)
   (cond
@@ -57,7 +63,7 @@
 (define (flmin . args)
   (if (null? args)
       +inf.0
-      (fold flmin-binary (car args) (car args))))
+      (fold-nan flmin-binary (car args) (cdr args))))
 
 ;;; XXX: What should the base case of flmax-abs and flmin-abs be?
 ;;; The base should probably be +0.0 for both of them.
@@ -114,7 +120,7 @@
 (define (flmax-abs . args)
   (if (null? args)
       +0.0
-      (fold flmax-abs-binary (car args) (cdr args))))
+      (fold-nan flmax-abs-binary (car args) (cdr args))))
 
 (define (flmin-abs-binary x y)
   (cond
@@ -123,11 +129,11 @@
      (let ((abs-x (flabs x))
 	   (abs-y (flabs y)))
        (cond
-	 ((fl<? abs-x abs-y) y)
-	 ((fl>? abs-x abs-y) x)
+	 ((fl<? abs-x abs-y) x)
+	 ((fl>? abs-x abs-y) y)
 	 (else (flmin-binary x y)))))))
 
 (define (flmin-abs . args)
   (if (null? args)
       +0.0
-      (fold flmax-abs-binary (car args) (cdr args))))5~
+      (fold-nan flmin-abs-binary (car args) (cdr args))))
