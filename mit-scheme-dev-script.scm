@@ -1,7 +1,11 @@
 ,(import (rename (except (srfi 144)
                           fl-integer-exponent-zero
                           fl-integer-exponent-nan
-                          flmax flmin)
+			  flmax flmin)
+		  (fl+ srfi-144:fl+)
+		  (fl- srfi-144:fl-)
+		  (fl/ srfi-144:fl/)
+		  (fl* srfi-144:fl*)
 		  (flonum srfi-144:flonum)
                   (flsign-bit srfi-144:flsign-bit)
                   (flinteger-exponent srfi-144:flinteger-exponent)
@@ -10,6 +14,8 @@
 ,(import (rename (only (srfi 143) fx-greatest fx-least)
                      (fx-greatest large-positive-integer)
                      (fx-least large-negative-integer)))
+
+;;;; NOTE: This test suite assumes round toward nearest behavior.
 
 (load "tests/tests.mit-scheme.scm")
 
@@ -100,6 +106,22 @@
 (test-flsubnormal?)
 
 (load "lib/srfi/276.maxmin.scm")
+(load "tests/maxmin.scm")
+(test-flmax)
+(test-flmax-filter-nans)
+(test-flmin)
+(test-flmin-filter-nans)
+(test-flmax-abs)
+(test-flmax-abs-filter-nans)
+(test-flmin-abs)
+(test-flmin-abs-filter-nans)
+
+(load "lib/srfi/276.arith.scm")
+(load "tests/arith.scm")
+(test-fl+)
+(test-fl-)
+(test-fl*)
+(test-fl/)
 
 ;;;; Property tests
 

@@ -30,11 +30,11 @@ SPDX-License-Identifier: MIT
                 --link-color: SkyBlue;
                 --text-color: #e0e0e0;
                 --visited-link-color: Orchid;
-              }
+B              }
               code {
                 background-color: #2b2b2b;
               }
-            }
+ B           }
 
     .never-break-inside > a {
       white-space: nowrap;
@@ -1476,9 +1476,13 @@ flonums.</p>
 
 <p>
   When one argument is given, the value is returned with the sign bit
-  flipped. When one argument is given, the action on a NaN is implementation-defined.
-  When more than one argument is given, the procedure is the equivalent
-  of <code>(fl+ <var>fl<sub>1</sub></var> (fl- <var>fl<sub>2</sub></var>) …)</code>.
+  flipped. When one argument is given, the action on a NaN is
+  implementation-defined.
+</p>
+<p>
+  When two or more arguments are given, calculates the difference of those
+  arguments. The result is equivalent to <code>(fl+ <var>fl<sub>1</sub></var>
+(fl- <var>fl<sub>2</sub></var>) &hellip;)</code>.
 </p>
 
 <div class="feature">

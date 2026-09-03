@@ -60,7 +60,7 @@
 		 '(3.0))
     (test-values (flmax-abs 1.0 2.0 3.0 -4.0 -3.0)
 		 '(-4.0))
-    (test-predicate (flnan? (flmax-abs 1.0 2.0 3.0 -4.0 -3.0 +nan.0)))))
+    (test-predicate (flnan? (flmax-abs 1.0 2.0 3.0 -4.0 -3.0 +nan.0))))))
 
 (define (test-flmax-abs-filter-nans)
   (test-group "flmax-abs-filter-nans"
