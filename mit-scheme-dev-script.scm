@@ -123,6 +123,9 @@
 (test-fl*)
 (test-fl/)
 
+(load "tests/fma.scm")
+(test-fl+*)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")

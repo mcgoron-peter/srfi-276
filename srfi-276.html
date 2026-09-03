@@ -1532,11 +1532,14 @@ flonums.</p>
 
 <ol>
 <li>If any argument is a NaN, NaN is returned.</li>
-<li>Infinity divided by a finite number returns an infinity.</li>
-<li>Infinity divided by a finite number returns an infinity and
-    signals the invalid operation exception.</li>
-<li>Zero divided by zero returns a NaN.</li>
-<li>Infinity divided by infinity returns a NaN.</li>
+<li>Infinity divided by a finite number returns an infinity with the
+    appropriate sign.</li>
+<li>A finite number divided by zero will return an appropriately signed
+    infinity and raises the invalid operation exception.</li>
+<li>Zero divided by zero returns a NaN and signals the invalid
+operation exception.</li>
+<li>Infinity divided by infinity returns a NaN and signals the invalid
+operation exception.</li>
 </ol>
 
 <p>
@@ -1551,12 +1554,13 @@ flonums.</p>
 </div>
 
 <p>
-  Return <var>fl<sub>1</sub></var>*<var>fl<sub>2</sub></var>+<var>fl<sub>3</sub></var>
+  Return <var>fl<sub>1</sub></var>&times;<var>fl<sub>2</sub></var>+<var>fl<sub>3</sub></var>
   correctly rounded.
 </p>
 
 <p>
-  When the value of the operation is exactly zero, it has the same rule
+  When the value of the operation when operated on exact versions of the
+  input arguments evaluates to zero, it has the same rule
   for the sign of zero as the sum operation. If the value is rounded to
   zero, it takes the sign of the exact result.
 </p>
