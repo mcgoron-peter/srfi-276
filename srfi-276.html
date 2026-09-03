@@ -1398,20 +1398,18 @@ flonums.</p>
 </p>
 
 <p>
-  For the maximum procedures, if no value is given, they return
-  negative infinity. For the minimum procedures, if no value is
-  given, they return positive infinity.
+  For <code>flmax</code> and <code>flmax-filter-nans</code>, if no
+  value is given, they return negative infinity. For <code>flmin</code>
+  and <code>flmin-filter-nans</code> procedures, if no value is given,
+  they return positive infinity. For the procedures with <code>abs</code>
+  in them, if they are given no values, they return positive zero.
 </p>
 
 <p>
-  If <code>flmax</code> or <code>flmin</code> have a NaN in any of its
-  arguments, then a NaN is returned.
-</p>
-
-<p>
-  If either <code>flmax-filter-nans</code> or <code>flmin-filter-nans</code>
-  have a NaN in its arguments, it is ignored unless all inputs are NaNs,
-  in which case a NaN is returned.
+  If the procedure has <code>filter-nans</code> in its name, then any
+  NaN arguments in the input are ignored, unless the input are all NaNs,
+  in which case a NaN is returned. If the procedure doesn't ahve that, then
+  the procedure will return a NaN when any argument is a NaN.
 </p>
 
 <p>The procedures with <code>abs</code> in the name compare two non-NaN
