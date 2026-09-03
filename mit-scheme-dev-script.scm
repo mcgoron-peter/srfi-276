@@ -126,6 +126,18 @@
 (load "tests/fma.scm")
 (test-fl+*)
 
+(load "tests/abs.scm")
+(test-flabs)
+(test-flabs-sign-positive)
+
+(load "tests/flabsdiff.scm")
+(test-flabsdiff)
+(test-flabsdiff-defining-property)
+
+(load "tests/flposdiff.scm")
+(test-flposdiff)
+(test-flabsdiff-defining-property)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")
