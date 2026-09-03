@@ -68,6 +68,7 @@
 (test-trichotomy-of-order)
 (test-weak-order)
 
+
 (load "tests/total-order.scm")
 (test-fl<?-implies-fltotal<?)
 (test-eqv?-implies-fltotal?)
@@ -80,6 +81,23 @@
 (load "tests/flunordered.scm")
 (test-nans-are-unordered)
 (test-non-nans-are-ordered)
+
+(load "lib/srfi/276.fl-not-equal.scm")
+(load "tests/fl-not-equal.scm")
+(test-fl!=?)
+
+(load "tests/subtype-predicates.scm")
+(test-flinteger?)
+(test-flzero?)
+(test-flpositive?)
+(test-flnegative?)
+(test-flodd?)
+(test-fleven?)
+(test-flfinite?)
+(test-flinfinite?)
+(test-property-nans)
+(test-flnormal?)
+(test-flsubnormal?)
 
 ;;;; Property tests
 
