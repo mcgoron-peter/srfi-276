@@ -16,6 +16,17 @@
 	    (set! fixed (cdr fixed))
 	    x)))))
 
+(define (make-random-integer+fraction-flonum-generator)
+  ;; Return a flonum whose exponent is in between
+  ;; 52 and -52.
+  (lambda ()
+    (let ((exponent (- (random-integer 53) 52))
+	  (sign (zero? (random-integer 2)))
+	  (mantissa (random-integer (expt 2 53))))
+      (flcopysign (make-flonum (flonum mantissa) 
+			       exponent)
+		  (if sign -1.0 1.0)))))
+
 (define (make-random-finite-flonum-generator)
   (gfilter flfinite? (make-random-flonum-generator)))
 

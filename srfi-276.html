@@ -1645,7 +1645,8 @@ operation exception.</li>
 <p>
   These procedures find an integer near <var>fl</var>.
   When given an infinity or zero, these procedures always return that value.
-  When given a NaN, they return a NaN.
+  When given a NaN, they return a NaN. The sign of the returned value is
+  the sign of the input value, when the input is not a NaN.
 </p>
 
 <p>

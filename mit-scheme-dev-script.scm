@@ -146,6 +146,31 @@
 (test-fldenominator)
 (test-flnumerator-and-fldenominator-property)
 
+(load "tests/flfloor.scm")
+(test-flfloor)
+(test-flfloor-is-integer)
+(test-flfloor-not-larger)
+
+(load "tests/flceiling.scm")
+(test-flceiling)
+(test-flceiling-is-integer)
+(test-flceiling-not-smaller)
+
+(load "tests/fltruncate.scm")
+(test-fltruncate)
+(test-fltruncate-is-integer)
+(test-fltruncate-closer-to-zero)
+
+(load "tests/flround.scm")
+(test-flround)
+(test-flround-is-integer)
+(test-flround-property)
+
+(load "lib/srfi/276.round-away.scm")
+(load "tests/flround-away.scm")
+(test-flround-away)
+(test-flround-away-is-integer)
+(test-flround-away-property)
 ;;;; Property tests
 
 (load "tests/properties.scm")
