@@ -138,6 +138,14 @@
 (test-flposdiff)
 (test-flabsdiff-defining-property)
 
+(load "tests/flsgn.scm")
+(test-flsgn-defining-property)
+
+(load "tests/flnumerator-and-fldenominator.scm")
+(test-flnumerator)
+(test-fldenominator)
+(test-flnumerator-and-fldenominator-property)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")
