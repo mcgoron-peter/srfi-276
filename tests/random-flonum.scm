@@ -43,7 +43,12 @@
        (make-nan sign? quiet? payload (flonum 0.0))))
     (else +nan.0)))
 
-
+(cond-expand
+  ((not (library (srfi 252)))
+   (define (boolean-generator)
+     (gcons* #t #f (lambda ()
+		     (zero? (random-integer 2))))))
+  (else))
 
 
 
