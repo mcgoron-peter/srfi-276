@@ -19,6 +19,14 @@ SPDX-License-Identifier: MIT
                 --text-color: black;
                 --visited-link-color: purple;
               }
+
+              pre {
+                  border: 1px solid;
+                  padding: 7.5px;
+                  background-color: #f0f0f0;
+                  margin-bottom: 18pt;
+              }
+
               code {
                   background-color: #f0f0f0;
               }
@@ -30,11 +38,19 @@ SPDX-License-Identifier: MIT
                 --link-color: SkyBlue;
                 --text-color: #e0e0e0;
                 --visited-link-color: Orchid;
-B              }
+              }
+
+              pre {
+                  border: 1px solid;
+                  padding: 7.5px;
+                  background-color: #2b2b2b;
+                  margin-bottom: 18pt;
+              }
+
               code {
                 background-color: #2b2b2b;
               }
- B           }
+            }
 
     .never-break-inside > a {
       white-space: nowrap;
@@ -45,9 +61,6 @@ B              }
 
             .normal-font {
               font-family: sans-serif;
-            }
-            .no-bg {
-              background-color: var(--background-color);
             }
 
             .feature {
@@ -75,7 +88,7 @@ B              }
             }
 
             .example-code {
-              background-color: var(--background-color);
+              /* background-color: var(--background-color); */
               display: inline-block;
               min-width: 46ch;
             }
@@ -901,8 +914,9 @@ flonums.</p>
 <p>
   Return <var>fl</var>×<var>b</var><sup><var>n</var></sup> correctly rounded.
   The allowed values of <var>n</var> are implementation-dependent and
-  may depend on <var>fl</var>. However, this procedure must round-trip
-  with <a href="#flnormalized-fraction-exponent"><code>flnormalized-fraction-exponent</code></a>.
+  may depend on <var>fl</var>. However, applying the values returned from
+  <a href="#flnormalized-fraction-exponent"><code>flnormalized-fraction-exponent</code></a>
+  to this procedure must return the same flonum (in the sense of <code>eqv?</code>).
 </p>
 
 <p>
@@ -928,19 +942,24 @@ flonums.</p>
   Returns two values, the integral part of <var>fl</var> as a flonum
   and the fractional part of <var>fl</var> as a flonum.
 </p>
-<p>
-  If <var>fl</var> is zero, the procedure returns <var>fl</var> for both
-  values.
-</p>
 
-<p>
-  If <var>fl</var> is infinity, the integral part is <var>fl</var>, and
-  the fractional part is <code>(flcopysign 0.0 <var>fl</var>)</code>.
-</p>
-
-<p>
-  If <var>fl</var> is a NaN, then a NaN is returned for both values.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flinteger-fraction <var>x</var>)</code></td>
+    <td><var>x</var> = ±0.0</td>
+    <td></td>
+    <td><var>x</var>, <var>x</var></td>
+</tr>
+<tr><td><code>(flinteger-fraction <var>x</var>)</code></td>
+    <td><var>x</var> infinite</td>
+    <td></td>
+    <td><var>x</var>, <code>(flcopysign 0.0 <var>x</var>)</td>
+</tr>
+<tr><td><code>(flinteger-fraction <var>x</var>)</code></td>
+    <td><var>x</var> NaN</td>
+    <td></td>
+    <td>NaN, NaN</td></tr>
+</table>
 
 <div class="feature" id="flexponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -963,14 +982,16 @@ flonums.</p>
   <var>fl</var> is always treated as if it was normalized.
 </p>
 
-<p>
-  If <var>fl</var> is zero, then negative infinity is returned and a
-  divide-by-zero floating point exception is signalled.
-</p>
-
-<p>
-  If <var>fl</var> is infinity, return <var>fl</var>.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flinteger-fraction ±0.0)</code></td>
+    <td></td>
+    <td>DivideByZero</td>
+    <td>&minus;∞</td></tr>
+<tr><td><code>(flinteger-fraction <var>x</var>)</code></td>
+    <td><var>x</var> infinite</td>
+    <td></td>
+    <td><var>x</var></td></tr></table>
 
 <div class="feature" id="flnormalized-fraction-exponent">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -982,18 +1003,21 @@ flonums.</p>
   <var>e</var> such that <var>fl</var> = <var>y</var>×<var>b</var><sup>n</sup>.
 </p>
 
-<p>
-  If <var>fl</var> is zero, returns <var>fl</var> and exact zero.
-</p>
-
-<p>
-  If <var>fl</var> is infinite, returns <var>fl</var> and an unspecified
-  integer.
-</p>
-
-<p>
-  If <var>fl</var> is NaN, returns a NaN and an unspecified integer.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flnormalized-fraction-exponent <var>x</var>)</code></td>
+    <td><var>x</var> = ±0.0</td>
+    <td></td>
+    <td><var>x</var>, 0</td></tr>
+<tr><td><code>(flnormalized-fraction-exponent <var>x</var>)</code></td>
+    <td><var>x</var> infinite</td>
+    <td></td>
+    <td><var>x</var>, unspecified integer</td></tr>
+<tr><td><code>(flnormalized-fraction-exponent <var>x</var>)</code></td>
+    <td><var>x</var> NaN</td>
+    <td></td>
+    <td>NaN, unspecified integer</td></tr>
+</table>
 
 <div class="boxed">
   <span class="boxed-tag">Note:</span>
@@ -1068,7 +1092,7 @@ flonums.</p>
 <p>Returns true if the sign of <var>fl</var> is positive, and false
    otherwise. Note that signed zero is not positive, but has a positive
    sign. This procedure is the opposite of
-   <a href="#flsign-negativep"><code>flsign-negative</code></a>.
+   <a href="#flsign-negativep"><code>flsign-negative?</code></a>.
 </p>
 
 <h3 id="predicates"><a href="#predicates">&para;</a> Predicates</h3>
@@ -2672,7 +2696,7 @@ infinity.</p>
    another NaN.
 </p>
 
-<pre><code class="no-bg">(import (scheme base) (prefix (srfi 276 binary64) f64:))
+<pre><code>(import (scheme base) (prefix (srfi 276 binary64) f64:))
 
 (define bv (make-bytevector f64:flbyte-width))
 (bytevector-u8-set! bv 0 #b01000000)
@@ -2730,7 +2754,7 @@ infinity.</p>
 <p>always evaluates to <code>#t</code>. These procedures
 should round-trip NaNs.</p>
 
-<pre><code class="no-bg"
+<pre><code
 >(import (scheme base) (prefix (srfi 276 binary32) f32))
 
 (define bv (make-bytevector f32:flbyte-width))
@@ -2749,7 +2773,7 @@ should round-trip NaNs.</p>
 <p>Read <var>string</var> as a number in that representation. This
    procedure must round-trip with <code>number-&gt;string</code>.</p>
 
-<pre><code class="no-bg"
+<pre><code
 >(import (scheme base)
         (prefix (srfi 276 binary64) f64)
         (prefix (srfi 276 binary128) f128))</code>
@@ -3114,7 +3138,7 @@ should round-trip NaNs.</p>
 <p>
   <em>This section is non-normative.</em>
 </p>
-<pre><code class="no-bg"
+<pre><code
 >(import (scheme base)
         (prefix (srfi 276 binary32) f32)
         (srfi 151)

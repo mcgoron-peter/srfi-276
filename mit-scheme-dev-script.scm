@@ -9,6 +9,8 @@
 		  (flonum srfi-144:flonum)
                   (flsign-bit srfi-144:flsign-bit)
                   (flinteger-exponent srfi-144:flinteger-exponent)
+		  (flquotient fltruncate-quotient)
+		  (flremainder fltruncate-remainder)
                   (flnormalized? flnormal?)
                   (fldenormalized? flsubnormal?)))
 ,(import (rename (only (srfi 143) fx-greatest fx-least)
@@ -73,7 +75,6 @@
 (test-positive-infinity-is-greater-than-all-ordered)
 (test-trichotomy-of-order)
 (test-weak-order)
-
 
 (load "tests/total-order.scm")
 (test-fl<?-implies-fltotal<?)
@@ -171,6 +172,7 @@
 (test-flround-away)
 (test-flround-away-is-integer)
 (test-flround-away-property)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")
