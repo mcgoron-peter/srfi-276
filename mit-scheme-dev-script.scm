@@ -173,9 +173,12 @@
 (test-flround-away-is-integer)
 (test-flround-away-property)
 
-(load "lib/tests/test-fltruncate-quotient.scm")
+(load "tests/test-fltruncate-quotient.scm")
 (test-fltruncate-quotient-for-infinite-denominator)
 (test-fltruncate-quotient-finite-sign)
+
+(load "tests/test-flremquo.scm")
+(test-flremquo)
 
 ;;;; Property tests
 

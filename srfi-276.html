@@ -1780,10 +1780,17 @@ operation exception.</li>
 </p>
 
 <p>
-  This procedure returns two values: a correctly signed integer whose
-  magnitude is congruent to the magnitude of <var>q</var> modulo
-  <var>k</var>, where <var>k</var> ≥ 3, and the correctly rounded
-  remainder.
+  This procedure returns two values: the first is the correctly rounded
+  remainder as a flonum, and the second is a correctly signed exact integer
+  whose magnitude is congruent to the magnitude of <var>q</var> modulo
+  <var>k</var>, where <var>k</var> ≥ 3.
+</p>
+
+<p>
+  If the arguments to this procedure are a special case of the remainder
+  functions, then the remainder argument is the value specified by that
+  special case. In addition, if the remainder part is a NaN, then the
+  integer part is an unspecified integer.
 </p>
 
 <div class="feature">
