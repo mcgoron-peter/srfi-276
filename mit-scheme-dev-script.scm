@@ -20,6 +20,7 @@
 ;;;; NOTE: This test suite assumes round toward nearest behavior.
 
 (load "tests/tests.mit-scheme.scm")
+(load "tests/random-flonum.scm")
 
 (load "lib/srfi/276.sign-negative.scm")
 (load "tests/flsign-negative.scm")
@@ -41,6 +42,11 @@
   (test-fl-epsilon)
   (test-fl-byte-width))
 
+(load "lib/srfi/276.serialization.scm")
+(load "tests/bytevector.scm")
+(test-binary64-bytevector-on-basic-numbers)
+(test-binary64-bytevector-flonum-ref)
+
 (load "lib/srfi/276.flonum.scm")
 (load "tests/flonum.scm")
 (test-flonum)
@@ -58,16 +64,13 @@
 (load "tests/flexponent.scm")
 (test-flexponent)
 
-(load "lib/srfi/276.serialization.scm")
-(load "tests/bytevector.scm")
-(test-binary64-bytevector-on-basic-numbers)
-(test-binary64-bytevector-flonum-ref)
-
 (load "tests/flnormalized-fraction-exponent.scm")
 (test-flnormalized-fraction-exponent)
 (load "tests/make-flonum.scm")
 (test-make-flonum)
 
+(load "lib/srfi/276.fl-not-equal.scm")
+(load "lib/srfi/276.total.scm")
 (load "tests/order.scm")
 (test-flonum-order)
 (test-negative-infinity-less-than-all-ordered)
@@ -78,7 +81,7 @@
 
 (load "tests/total-order.scm")
 (test-fl<?-implies-fltotal<?)
-(test-eqv?-implies-fltotal?)
+(test-eqv?-implies-fltotal=?)
 (test-trichotomy-of-total-order)
 (test-weak-total-order)
 (test-nans-are-ordered-beyond-finite-values)
@@ -173,12 +176,40 @@
 (test-flround-away-is-integer)
 (test-flround-away-property)
 
-(load "tests/test-fltruncate-quotient.scm")
+(load "tests/fltruncate-quotient.scm")
 (test-fltruncate-quotient-for-infinite-denominator)
 (test-fltruncate-quotient-finite-sign)
 
 (load "tests/test-flremquo.scm")
 (test-flremquo)
+
+(load "lib/srfi/276.exp.scm")
+(load "tests/flexp.scm")
+(test-flexp)
+(test-flexp-1)
+(test-flexp2)
+(test-flexp2-1)
+(test-flexp10)
+(test-flexp10-1)
+(test-flexpt-to-the-power-of-zero)
+(test-flexpt-0.0-negative-odd)
+(test-flexpt-0.0-negative-not-odd)
+(test-flexpt-finite-non-integer)
+(test-flexpt-special-cases)
+(test-flexpt-0.0-positive-odd)
+(test-flexpt-0.0-positive-non-odd)
+(test-flexpt-1.0-power)
+(test-flexpt-below-unity-to-infinity)
+(test-flexpt-below-unity-for-minus-infinity)
+(test-flexpt-above-unity-for-infinity)
+(test-flexpt-above-unity-for-minus-infinity)
+(test-flexpt-infinity-to-negative)
+(test-flexpt-infinity-to-positive)
+(test-flexpt-minus-infinity-to-positive-odd)
+(test-flexpt-minus-infinity-to-negative-odd)
+(test-flexpt-minus-infinity-to-positive-non-odd)
+(test-flexpt-minus-infinity-to-negative-non-odd)
+(test-flexpt-nan-rules)
 
 ;;;; Property tests
 

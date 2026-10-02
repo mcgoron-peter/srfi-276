@@ -1823,10 +1823,17 @@ operation exception.</li>
   <var>a</var> is respectively the mathematical constant <var>e</var>, 2, or 10.
 </p>
 
+
 <p>
-  If the argument is positive infinity, the result is positive infinity.
-  If the argument is negative infinity, the result is positive 1.
+  The table uses <code>E</code> to stand for any of
+  <code>flexp</code>, <code>flexp2</code>, or <code>flexp10</code>.
 </p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(E +inf.0)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+<tr><td><code>(E -inf.0)</code></td><td></td><td></td><td><code>0</code></td></tr>
+<tr><td><code>(E ±0.0)</code></td><td></td><td></td><td><code>1</code></td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -1844,9 +1851,15 @@ operation exception.</li>
 </p>
 
 <p>
-  If the argument is positive infinity, the result is positive infinity.
-  If the argument is negative infinity, the result is positive 0.
+  The table uses <code>E-1</code> to stand for any of
+  <code>flexp-1</code>, <code>flexp2-1</code>, or <code>flexp10-1</code>.
 </p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(E-1 +inf.0)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+<tr><td><code>(E-1 -inf.0)</code></td><td></td><td></td><td><code>-1</code></td></tr>
+<tr><td><code>(E-1 ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -1870,6 +1883,16 @@ operation exception.</li>
     <td>divideByZero</td>
     <td><code>±inf.0</code></td>
 </tr>
+<tr><td><code>(flexpt ±0.0 <var>y</var>)</code></td>
+    <td><var>y</var> &lt; 0 and <var>y</var> finite, not odd</td>
+    <td>divideByZero</td>
+    <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(flexpt <var>x</var> <var>y</var>)</code></td>
+    <td>finite <var>x</var> &lt; 0, finite non-integer <var>y</var></td>
+    <td>invalid operation</td>
+    <td>NaN</td>
+</tr>
 <tr><td><code>(flexpt ±0.0 −inf.0)</code></td>
     <td></td>
     <td></td>
@@ -1883,7 +1906,12 @@ operation exception.</li>
 <tr><td><code>(flexpt ±0.0 <var>y</var>)</code></td>
     <td><var>y</var> &gt; 0, <var>y</var> odd</td>
     <td></td>
-    <td><code>±inf.0</code></td>
+    <td><code>±0.0</code></td>
+</tr>
+<tr><td><code>(flexpt ±0.0 y)</code></td>
+<td><var>y</var> &gt; 0, <var>y</var> finite and not odd</td>
+<td></td>
+<td><code>+0.0</code></td>
 </tr>
 <tr><td><code>(flexpt −1.0 ±inf.0)</code></td>
     <td></td>
@@ -1944,21 +1972,6 @@ operation exception.</li>
  <td><var>y</var> &gt; 0, <var>y</var> finite, not odd</td>
  <td></td>
  <td><code>+inf.0</code></td>
-</tr>
-<tr><td><code>(flexpt ±0.0 <var>y</var>)</code></td>
-    <td><var>y</var> &lt; 0 and <var>y</var> finite, not odd</td>
-    <td>divideByZero</td>
-    <td><code>+inf.0</code></td>
-</tr>
-<tr><td><code>(flexpt ±0.0 y)</code></td>
-<td><var>y</var> &gt; 0, <var>y</var> finite and not odd</td>
-<td></td>
-<td><code>+0.0</code></td>
-</tr>
-<tr><td><code>(flexpt <var>x</var>, <var>y</var>)</code></td>
-    <td>finite <var>x</var> &lt; 0, finite non-integer <var>y</var></td>
-    <td>invalid operation</td>
-    <td>NaN</td>
 </tr>
 </table>
 

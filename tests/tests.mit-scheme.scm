@@ -170,6 +170,16 @@
          (display (tests-run-in-group))
          (newline))))))
 
+(define-syntax test-approximate
+  (syntax-rules ()
+    ((_ expected expr error)
+     (test-approximate #f expected expr error))
+    ((_ name expected expr error)
+     (test-predicate name
+		     (<= (- expected (abs error))
+			 expr
+			 (+ expected (abs error)))))))
+
 (define default-property-tests (make-parameter 30))
 
 (define (test-property tester generators)
@@ -189,5 +199,3 @@
   (lambda ()
     (map (lambda (ignored) (subgenerator))
 	 (iota (random-integer 30)))))
-
-

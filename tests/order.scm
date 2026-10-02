@@ -24,7 +24,7 @@
      (lambda (fl) (fl<=? fl fl-greatest))
      (list (make-random-finite-flonum-generator)))))
 
-(define (test-positive-infinity-greater-than-all-ordered)
+(define (test-positive-infinity-is-greater-than-all-ordered)
   (test-group "-inf.0 is less than all ordered numbers"
     (test-property
      (lambda (fl) (fl>=? +inf.0 fl))

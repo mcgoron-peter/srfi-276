@@ -1,4 +1,6 @@
 ;;;; NOTE: SRFI 26 specific.
+;;;;
+;;;; FIXME: Many of these generators are definitely not uniform.
 
 (define (random-flonum)
   (do ((bv (make-bytevector fl-byte-width))
@@ -16,17 +18,82 @@
 	    (set! fixed (cdr fixed))
 	    x)))))
 
+(define (flquantum x)
+  (flmax (fl- (fladjacent x +inf.0) x)
+	 (fl- x (fladjacent x -inf.0))))
+
 (define (make-random-integer+fraction-flonum-generator)
   ;; Return a flonum whose exponent is in between
-  ;; 52 and -52.
+  ;; 52 and 0. This is the range of values that can have
+  ;; nonzero fractional and integer parts.
   (lambda ()
-    (let ((exponent (- (random-integer 53) 52))
+    (let ((exponent (- (random-integer
+			fl-precision)
+		       fl-precision
+		       ))
 	  (sign (zero? (random-integer 2)))
-	  (mantissa (random-integer (expt 2 53))))
+	  (mantissa (random-integer (expt 2 fl-precision))))
       (flcopysign (make-flonum (flonum mantissa) 
 			       exponent)
 		  (if sign -1.0 1.0)))))
 
+(define (make-random-inexact-integer-generator)
+  (lambda ()
+    (let ((sign (random-integer 2)))
+      (* (if (zero? sign)
+	     1.0
+	     -1.0)
+	 (random-integer (expt 2 fl-precision))))))
+
+(define (sign-generator)
+  (gmap (lambda (b)
+	  (if b
+	      -1.0
+	      1.0))
+	(boolean-generator)))
+
+(define (zero-generator)
+  (gmap (lambda (b)
+	  (if b -0.0 0.0))
+	(boolean-generator)))
+
+(define (make-random-flonum-below-unity-generator)
+  (gcons*
+   1e-30 0.1 0.5
+   (fladjacent 1.0 -inf.0)
+   (fladjacent 1.0 +inf.0)
+   (gremove
+    flzero?
+    (gmap (lambda (fl)
+	    (let-values (((ipart fpart) (flinteger-fraction fl)))
+	      fpart))
+	  (make-random-finite-flonum-generator)))))
+
+(define (make-random-flonum-above-unity-generator)
+  (gcons*
+   1.1 -1.1 2.0 -2.0
+   (fladjacent 1.0 +inf.0)
+   (fladjacent -1.0 -inf.0)
+   (gmap (lambda (fl)
+	   (if (fl>? (flabs fl) 1.0)
+	       fl
+	       (fl/ fl)))
+	 (gfilter (lambda (x)
+		    (and (not (flzero? x))
+			 (not (fl=? (flabs x) 1.0))))
+		  (make-random-finite-flonum-generator)))))
+
+#|
+(define (make-random-inexact-integer-generator)
+  (lambda ()
+    (let* ((exponent (random-integer (+ 1 fl-maximum-exponent)))
+	   (mantissa-width (min exponent (- fl-precision 1)))
+	   (mantissa-bits (+ (expt 2 53)
+			     (random-integer
+			      (expt 2 (+ mantissa-width 1)))))
+	   (mantissa
+|#
+    
 (define (make-random-finite-flonum-generator)
   (gfilter flfinite? (make-random-flonum-generator)))
 
@@ -49,14 +116,4 @@
      (gcons* #t #f (lambda ()
 		     (zero? (random-integer 2))))))
   (else))
-
-
-
-
-
-
-
-
-
-
 
