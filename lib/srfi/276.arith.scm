@@ -18,4 +18,4 @@
 (define (fl/ x . rest)
   (cond
     ((null? rest) (srfi-144:fl/ x))
-    (else (fold srfi-144:fl/ x rest))))
+    (else (apply srfi-144:fl/ x rest))))

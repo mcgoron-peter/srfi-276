@@ -2081,6 +2081,12 @@ operation exception.</li>
 <p>Calculate <var>fl</var><sup>1/3</sup>. When passed a zero or an
    infinity, returns the argument.</p>
 
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flcbrt ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(flcbrt ±inf.0)</code></td><td></td><td></td><td><code>±inf.0</code></td></tr>
+</table>
+
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flcompound"   id="flcompound">flcompound</a> <var>fl</var> <var>n</var>)</code><br>

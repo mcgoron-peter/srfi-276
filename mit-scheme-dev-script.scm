@@ -222,6 +222,9 @@
 (test-fllog2+1)
 (test-fllog10+1)
 
+(load "lib/srfi/276.cbrt.scm")
+(load "tests/flcbrt.scm")
+(test-flcbrt)
 ;;;; Property tests
 
 (load "tests/properties.scm")
