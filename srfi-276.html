@@ -427,7 +427,9 @@ SPDX-License-Identifier: MIT
 </li>
 <li>if <var>endianness</var> is not the
   symbol <code>little</code>, <code>big</code>, or an endianness
-  supplied by the macro in <code>(rnrs bytevectors)</code></li>
+  supplied by the macro in <code>(rnrs bytevectors)</code>
+  or <a href="https://srfi.schemers.org/srfi-281">SRFI 281</a>
+  </li>
 <li>if <var>exception</var> is not a floating point exception
     (see <code><a href="#flexception-namep">flexception-name?</a></code>)</li>
 <li>if <var>flenvironment</var> is not a floating point environment
@@ -2010,11 +2012,17 @@ operation exception.</li>
 </p>
 
 <p>
-  If the argument is positive infinity, the result is positive infinity.
-  If the argument is negative 1, the result is negative infinity, and
-  a divide-by-zero exception is raised.  If the argument is less than
-  negative 1, NaN is returned, and an invalid exception is raised.
+  The following special case apply, where <code>L</code> is
+  <code>fllog</code>, <code>fllog2</code>, or
+  <code>fllog10</code>.
 </p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(L +inf.0)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+<tr><td><code>(L ±0.0)</code></td><td></td><td>divideByZero</td><td><code>-inf.0</code></td></tr>
+<tr><td><code>(L x)</code></td><td><var>x</var> &lt; 0</td><td>invalidOperation</td><td>NaN</td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2032,12 +2040,17 @@ operation exception.</li>
 </p>
 
 <p>
-  If the argument is positive infinity, the result is positive infinity.
-  If the argument is zero, the result is negative infinity, and a divide-by-zero
-  exception is raised.
-  If the argument is negative, NaN is returned, and an invalid exception is
-  raised.
+  The following special case apply, where <code>L+1</code> is
+  <code>fllog+1</code>, <code>fllog2+1</code>, or
+  <code>fllog10+1</code>.
 </p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(L+1 +inf.0)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+<tr><td><code>(L+1 -1.0)</code></td><td></td><td>divideByZero</td><td><code>-inf.0</code></td></tr>
+<tr><td><code>(L+1 x)</code></td><td><var>x</var> &lt; &minus;1</td><td>invalidOperation</td><td>NaN</td></tr>
+</table>
 
 <div class="boxed">
 <p>
@@ -3162,8 +3175,7 @@ should round-trip NaNs.</p>
 >(import (scheme base)
         (prefix (srfi 276 binary32) f32)
         (srfi 151)
-        (rnrs bytevectors) ; for bytevector serialization operations
-)
+        (srfi 281))
 
 (unless (member 'ieee-754-2019 (f32:flfeatures))
   (error "requires IEEE 754 arithmetic"))

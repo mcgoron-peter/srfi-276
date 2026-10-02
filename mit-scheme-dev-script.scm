@@ -6,6 +6,7 @@
 		  (fl- srfi-144:fl-)
 		  (fl/ srfi-144:fl/)
 		  (fl* srfi-144:fl*)
+		  (fllog1+ fllog+1)
 		  (flonum srfi-144:flonum)
                   (flsign-bit srfi-144:flsign-bit)
                   (flinteger-exponent srfi-144:flinteger-exponent)
@@ -210,6 +211,16 @@
 (test-flexpt-minus-infinity-to-positive-non-odd)
 (test-flexpt-minus-infinity-to-negative-non-odd)
 (test-flexpt-nan-rules)
+
+(load "lib/srfi/276.fllog.scm")
+(load "tests/fllog.scm")
+
+(test-fllog)
+(test-fllog2)
+(test-fllog10)
+(test-fllog+1)
+(test-fllog2+1)
+(test-fllog10+1)
 
 ;;;; Property tests
 
