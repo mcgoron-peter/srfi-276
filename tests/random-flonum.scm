@@ -37,6 +37,16 @@
 			       exponent)
 		  (if sign -1.0 1.0)))))
 
+(define (make-random-integer-generator)
+  (gcons*
+   0 1 -1 2 -2
+   (gmap (lambda (b)
+	   (let ((value (random-integer #x100000000)))
+	     (if b
+		 (* -1 value)
+		 value)))
+	 (boolean-generator))))
+
 (define (make-random-inexact-integer-generator)
   (lambda ()
     (let ((sign (random-integer 2)))

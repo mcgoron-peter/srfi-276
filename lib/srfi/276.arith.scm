@@ -13,9 +13,25 @@
 (define (fl- x . rest)
   (cond
     ((null? rest) (srfi-144:fl- x))
-    (else (fold srfi-144:fl- x rest))))
+    (else
+     (let loop ((x x)
+		(y (car rest))
+		(rest (cdr rest)))
+       (if (null? rest)
+	   (srfi-144:fl- x y)
+	   (loop (srfi-144:fl- x y)
+		 (car rest)
+		 (cdr rest)))))))
 
 (define (fl/ x . rest)
   (cond
     ((null? rest) (srfi-144:fl/ x))
-    (else (apply srfi-144:fl/ x rest))))
+    (else
+     (let loop ((x x)
+		(y (car rest))
+		(rest (cdr rest)))
+       (if (null? rest)
+	   (srfi-144:fl/ x y)
+	   (loop (srfi-144:fl/ x y)
+		 (car rest)
+		 (cdr rest)))))))

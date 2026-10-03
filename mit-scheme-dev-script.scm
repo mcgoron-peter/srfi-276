@@ -22,6 +22,7 @@
 
 (load "tests/tests.mit-scheme.scm")
 (load "tests/random-flonum.scm")
+(load "lib/srfi/276.utils.scm")
 
 (load "lib/srfi/276.sign-negative.scm")
 (load "tests/flsign-negative.scm")
@@ -225,6 +226,10 @@
 (load "lib/srfi/276.cbrt.scm")
 (load "tests/flcbrt.scm")
 (test-flcbrt)
+
+(load "lib/srfi/276.compound.scm")
+(load "tests/flcompound.scm")
+
 ;;;; Property tests
 
 (load "tests/properties.scm")
