@@ -230,6 +230,13 @@
 (load "lib/srfi/276.compound.scm")
 (load "tests/flcompound.scm")
 
+(load "tests/flhypot.scm")
+(test-flhypot)
+(test-flhypot-0.0)
+(test-flhypot-0.0-symmetric)
+(test-flhypot-inf.0)
+(test-flhypot-inf.0-symmetric)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")

@@ -2147,14 +2147,14 @@ operation exception.</li>
 </p>
 
 <p>
-  If one argument is zero, the returned value is the absolute value of the
-  other argument.
+  The following special cases also apply when the arguments are flipped.
 </p>
 
-<p>
-  If one argument is infinity, then the returned value is infinity, even if
-  another value is NaN.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flhypot ±0.0 x)</code></td><td></td><td></td><td><code>(flabs x)</code></td></tr>
+<tr><td><code>(flhypot ±inf.0 x)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
