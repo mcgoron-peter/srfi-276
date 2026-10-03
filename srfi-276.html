@@ -2185,11 +2185,15 @@ operation exception.</li>
 </div>
 
 <p>
-  Returns √<var>fl</var>. This function always returns a correctly rounded
-  result. When passed a zero, returns that zero. When passed positive
-  infinity, returns positive infinity. When passed a negative number,
-  returns NaN and raises the invalidOperation floating-point exception.
+  Returns √<var>fl</var>.
 </p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flsqrt ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(flsqrt +inf.0)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+<tr><td><code>(flsqrt x)</code></td><td><var>x</var> &lt; 0</td><td></td><td>NaN</td>
+</table>
 
 <h3 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h3>
 <div class="feature">

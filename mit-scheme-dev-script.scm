@@ -239,6 +239,9 @@
 
 (load "lib/srfi/276.rsqrt.scm")
 (load "tests/flrsqrt.scm")
+(test-flrsqrt)
+
+(load "tests/flsqrt.scm")
 (test-flsqrt)
 
 ;;;; Property tests
