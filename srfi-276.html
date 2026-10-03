@@ -2162,12 +2162,15 @@ operation exception.</li>
 </div>
 
 <p>
-  Calculates 1/√<var>fl</var>. When passed zero, returns the appropriately
-  signed infinity and raises the divideByZero floating point exception.
-  When passed positive infinity, returns positive zero. When passed a
-  negative number, returns a NaN and raises the invalidOperation floating
-  point exception.
+  Calculates 1/√<var>fl</var>.
 </p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flrsqrt ±0.0)</code></td><td></td><td>divdeByZero</td><td><code>±inf.0</code></td></tr>
+<tr><td><code>(flrsqrt +inf.0)</code></td><td></td><td></td><td><code>0.0</code></td></tr>
+<tr><td><code>(flrsqrt x)</code></td><td><var>x</var> &lt; 0</td><td></td><td>NaN</td>
+</table>
 
 <div class="boxed">
 <p>

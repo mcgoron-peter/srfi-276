@@ -237,6 +237,10 @@
 (test-flhypot-inf.0)
 (test-flhypot-inf.0-symmetric)
 
+(load "lib/srfi/276.rsqrt.scm")
+(load "tests/flrsqrt.scm")
+(test-flsqrt)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")
