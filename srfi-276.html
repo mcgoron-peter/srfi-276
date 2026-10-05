@@ -379,7 +379,8 @@ SPDX-License-Identifier: MIT
   If a procedure <var>f</var> is <dfn>odd</dfn>, then for each non-NaN
   flonum <var>fl</var> that the procedure will return a non-NaN flonum
   for, then <code>(fl=? (<var>f</var> <var>fl</var>) (fl- (<var>f</var> (fl- <var>fl</var>))))</code>
-  returns true always.
+  returns true when the rounding mode is
+  roundTiesToEven, roundTiesToAway, and roundTowardsZero.
 </p>
 
 <p>
@@ -2406,33 +2407,42 @@ operation exception.</li>
 </div>
 
 <p>
-  Return sinh(<var>fl</var>).
+  Return sinh(<var>fl</var>). This function should be odd.
 </p>
 
-<p>When passed zero, return that zero. When passed infinity, return that
-infinity.</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flsinh ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(flsinh ±inf.0)</code></td><td></td><td></td><td><code>±inf.0</code></td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flcosh" id="flcosh">flcosh</a> <var>fl</var>)</code>
 </div>
 <p>
-  Return cosh(<var>fl</var>).
+  Return cosh(<var>fl</var>). This function should be even.
 </p>
 
-<p>When passed zero, return 1. When passed infinity, return positive
-infinity.</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flcosh ±0.0)</code></td><td></td><td></td><td><code>1.0</code></td></tr>
+<tr><td><code>(flcosh ±inf.0)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#fltanh" id="fltanh">fltanh</a> <var>fl</var>)</code>
 </div>
 <p>
-  Return tanh(<var>fl</var>).
+  Return tanh(<var>fl</var>). This function should be odd.
 </p>
 
-<p>When passed zero, return that zero. When passed infinity, return
-<code>(flcopysign 1.0 <var>fl</var>)</code>.</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(fltanh ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(fltanh ±inf.0)</code></td><td></td><td></td><td><code>±1.0</code></td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2440,11 +2450,14 @@ infinity.</p>
 </div>
 
 <p>
-  Return asinh(<var>fl</var>).
+  Return asinh(<var>fl</var>). This function should be odd.
 </p>
 
-<p>When passed zero, return that zero. When passed infinity, return that
-infinity.</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flasinh ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(flasinh ±inf.0)</code></td><td></td><td></td><td><code>±inf.0</code></td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2455,21 +2468,19 @@ infinity.</p>
   Return acosh(<var>fl</var>).
 </p>
 
-<p>When passed 1, return positive zero. When passed positive infinity,
-   return positive infinity.
-</p>
-
-<p>
-  When passed a value less than 1, return a NaN and raise the
-  invalidOperation floating-point exception.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flacosh 1.0)</code></td><td></td><td></td><td><code>0.0</code></td></tr>
+<tr><td><code>(flacosh +inf.0)</code></td><td></td><td></td><td><code>+inf.0</code></td></tr>
+<tr><td><code>(flacosh x)</code></td><td><var>x</var> &lt; 1.0</td><td>invalidOperation</td><td>NaN</td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flatanh" id="flatanh">flatanh</a> <var>fl</var>)</code>
 </div>
 <p>
-  Return acosh(<var>fl</var>). The following special cases apply:
+  Return atanh(<var>fl</var>). The function should be odd. The following special cases apply:
 </p>
 <table>
 <tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>

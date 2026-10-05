@@ -316,6 +316,22 @@
 (test-flatanpi-x=+inf.0)
 (test-flatanpi-y-infinite-x-finite)
 
+(load "tests/flhyp.scm")
+(test-flsinh)
+(test-flsinh-odd)
+(test-flcosh)
+(test-flcosh-even)
+(test-fltanh)
+(test-fltanh-odd)
+
+(test-flasinh)
+(test-flasinh-odd)
+(test-flacosh)
+(test-flacosh-below-one)
+(test-flatanh)
+(test-flatanh-nan)
+(test-flatanh-odd)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")
