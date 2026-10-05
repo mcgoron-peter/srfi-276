@@ -51,6 +51,18 @@
 		      1e-10)
     (test-approximate (fl- fl-pi)
 		      (flatan -0.0 -0.0)
+		      1e-10)
+    (test-approximate (fl+ fl-pi/2 fl-pi/4)
+		      (flatan +inf.0 -inf.0)
+		      1e-10)
+    (test-approximate (fl- (fl+ fl-pi/2 fl-pi/4))
+		      (flatan -inf.0 -inf.0)
+		      1e-10)
+    (test-approximate fl-pi/4
+		      (flatan +inf.0 +inf.0)
+		      1e-10)
+    (test-approximate (fl- fl-pi/4)
+		      (flatan -inf.0 +inf.0)
 		      1e-10)))
 
 (define (test-flatan-odd)
@@ -135,3 +147,27 @@
        (fl<=? (fl- fl-pi/2) (flatan y x) 0.0))
      (list (gfilter flnegative? (make-random-ordered-flonum-generator))
 	   (gfilter flpositive? (make-random-ordered-flonum-generator))))))
+
+(define (test-flatan-x=-inf.0)
+  (test-group "(flatan y -inf.0) for finite nonzero y"
+    (test-property
+     (lambda (y)
+       (fl=? (flatan y -inf.0) (flcopysign fl-pi y)))
+     (list (gremove flzero? (make-random-finite-flonum-generator))))))
+
+(define (test-flatan-x=+inf.0)
+  (test-group "(flatan y +inf.0) for finite nonzero y"
+    (test-property
+     (lambda (y)
+       (fl=? (flatan y +inf.0) (flcopysign 0.0 y)))
+     (list (gremove flzero? (make-random-finite-flonum-generator))))))
+
+(define (test-flatan-y-infinite-x-finite)
+  (test-group "flatan with y infinite and x finite"
+    (test-property
+     (lambda (sign x)
+       (fl=? (flatan (flcopysign +inf.0 sign)
+		       x)
+	     (flcopysign fl-pi/2 sign)))
+     (list (sign-generator)
+	   (make-random-finite-flonum-generator)))))

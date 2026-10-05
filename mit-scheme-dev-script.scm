@@ -290,6 +290,31 @@
 (test-flatan-negative-y-negative-x)
 (test-flatan-negative-y-zero-x)
 (test-flatan-negative-y-positive-x)
+(test-flatan-x=-inf.0)
+(test-flatan-x=+inf.0)
+(test-flatan-y-infinite-x-finite)
+
+(load "lib/srfi/276.flinverse-trigpi.scm")
+(test-flasinpi)
+(test-flasinpi-is-odd)
+(test-flasinpi-inversion)
+
+(test-flacospi)
+(test-flacospi-inversion)
+
+(test-flatanpi)
+(test-flatanpi-odd)
+(test-flatanpi-zero-y)
+(test-flatanpi-first-quadrant)
+(test-flatanpi-positive-y-zero-x)
+(test-flatanpi-positive-y-negative-x)
+(test-flatanpi-zero-y-negative-x)
+(test-flatanpi-negative-y-negative-x)
+(test-flatanpi-negative-y-zero-x)
+(test-flatanpi-negative-y-positive-x)
+(test-flatanpi-x=-inf.0)
+(test-flatanpi-x=+inf.0)
+(test-flatanpi-y-infinite-x-finite)
 
 ;;;; Property tests
 
