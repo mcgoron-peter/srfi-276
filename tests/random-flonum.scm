@@ -55,6 +55,16 @@
 	     -1.0)
 	 (random-integer (expt 2 fl-precision))))))
 
+(define (make-random-inexact-integer+0.5-generator)
+  (lambda ()
+    (let ((sign (random-integer 2))
+	  (i (random-integer (expt 2 (- fl-precision 2)))))
+      (+ (* (if (zero? sign)
+		1.0
+		-1.0)
+	    i)
+	 0.5))))
+
 (define (sign-generator)
   (gmap (lambda (b)
 	  (if b
@@ -92,17 +102,6 @@
 		    (and (not (flzero? x))
 			 (not (fl=? (flabs x) 1.0))))
 		  (make-random-finite-flonum-generator)))))
-
-#|
-(define (make-random-inexact-integer-generator)
-  (lambda ()
-    (let* ((exponent (random-integer (+ 1 fl-maximum-exponent)))
-	   (mantissa-width (min exponent (- fl-precision 1)))
-	   (mantissa-bits (+ (expt 2 53)
-			     (random-integer
-			      (expt 2 (+ mantissa-width 1)))))
-	   (mantissa
-|#
     
 (define (make-random-finite-flonum-generator)
   (gfilter flfinite? (make-random-flonum-generator)))

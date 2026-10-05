@@ -157,16 +157,25 @@ to preserve correct behavior at +-0.0, that point must be special-cased.
 (define (flsinpi fl)
   (if (not (flfinite? fl))
       +nan.0
-      (let* ((arg (fold-arguments fl))
-	     (a (flabs arg))
-	     (value
-	      (cond
-	       ((fl<=? 0.0 a 0.25) (%sinpi a))
-	       ((fl<=? 0.25 a 0.50) (%cospi (fl- 0.50 a)))
-	       ((fl<=? 0.50 a 0.75) (%cospi (fl- a 0.50)))
-	       (else (%sinpi (fl- 1.00 a))))))
-	;; Further reductions from [-1, 1] to [0, 0.25]:
-	(flcopysign value arg))))
+      (let-values (((ipart fpart) (flinteger-fraction fl)))
+	(cond
+	  ((and (flzero? fpart)
+		(flsign-negative? ipart))
+	   -0.0)
+	  ((and (flzero? fpart)
+		(flsign-positive? ipart))
+	   0.0)
+	  (else
+	   (let* ((arg (fold-arguments fl))
+		  (a (flabs arg))
+		  (value
+		   (cond
+		    ((fl<=? 0.0 a 0.25) (%sinpi a))
+		    ((fl<=? 0.25 a 0.50) (%cospi (fl- 0.50 a)))
+		    ((fl<=? 0.50 a 0.75) (%cospi (fl- a 0.50)))
+		    (else (%sinpi (fl- 1.00 a))))))
+	     ;; Further reductions from [-1, 1] to [0, 0.25]:
+	     (flcopysign value arg)))))))
 
 (define (flcospi fl)
   (if (not (flfinite? fl))
@@ -285,15 +294,15 @@ Sollya output:
 		(fl=? fpart -0.5))
 	   +inf.0)
 	  (else
-	   (let ((arg (cond
-		       ((fl>? fpart 0.5)
-			(fl- fpart 1.0))
-		       ((fl<? fpart -0.5)
-			(flabs fpart))
-		       (else fpart)))
-		 (a (flabs arg))
-		 (value
-		  (cond
-		   ((fl<=? 0.0 a 0.25) (%tanpi a))
-		   (else (fl/ (%tanpi (fl- 0.50 a)))))))
+	   (let* ((arg (cond
+			((fl>? fpart 0.5)
+			 (fl- fpart 1.0))
+			((fl<? fpart -0.5)
+			 (flabs fpart))
+			(else fpart)))
+		  (a (flabs arg))
+		  (value
+		   (cond
+		    ((fl<=? 0.0 a 0.25) (%tanpi a))
+		    (else (fl/ (%tanpi (fl- 0.50 a)))))))
 	     (flcopysign value arg)))))))

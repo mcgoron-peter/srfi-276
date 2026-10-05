@@ -252,6 +252,26 @@
 (test-fltan)
 (test-fltan-odd-property)
 
+(load "lib/srfi/276.trigpi")
+(test-flsinpi)
+(test-flsinpi-odd)
+(test-flsinpi-integer-property)
+
+(test-flcospi)
+(test-flcospi-even)
+(test-flcospi-half-integer)
+
+(test-fltanpi)
+(test-fltanpi-odd)
+(test-fltanpi-positive-even-integers)
+(test-fltanpi-negative-odd-integers)
+(test-fltanpi-on-positive-odd-integers)
+(test-fltanpi-on-negative-even-integers)
+(test-fltanpi-on-positive-even-integer+0.5)
+(test-fltanpi-on-negative-odd-integer-0.5)
+(test-fltanpi-on-positive-odd-integer+0.5)
+(test-fltanpi-on-negative-even-integer-0.5)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")
