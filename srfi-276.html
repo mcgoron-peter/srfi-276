@@ -2324,12 +2324,15 @@ operation exception.</li>
 
 <p>
   Compute the arcsine of the argument.
-  When given a zero, return that zero. When given a value whose absolute
-  value is greater than 1, return a NaN and raise the invalidOperation
-  floating point exception.
+  The function <code>flasinpi</code> is defined as asin(<var>fl</var>)/π and has
+  the same special cases. These functions should be odd.
 </p>
 
-<p>The function <code>flasinpi</code> is defined as asin(<var>fl</var>)/π.</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(asin ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(asin x)</code></td><td>|<var>x</var>| &gt; 1.0</td><td>invalidOperation</td><td>NaN</td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2339,23 +2342,26 @@ operation exception.</li>
 
 <p>
   Compute the arccosine of the argument.
-  When given a zero, positive one. When given a value whose absolute
-  value is greater than 1, return a NaN and raise the invalidOperation
-  floating point exception.
+  The function <code>flacospi</code> is defined as acos(<var>fl</var>)/π and has the
+  same special cases.
 </p>
-<p>
-  The function <code>flacospi</code> is defined as acos(<var>fl</var>)/π.
-</p>
+
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(acos +1.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(acos x)</code></td><td>|<var>x</var>| &gt; 1.0</td><td>invalidOperation</td><td>NaN</td></tr>
+</table>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flatan" id="flatan">flatan</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
-<code class="signature">(<a href="#flatanpi" id="flatanpi">flatanpi</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>1</sub></var>)</code><br>
+<code class="signature">(<a href="#flatan" id="flatan">flatan</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(<a href="#flatanpi" id="flatanpi">flatanpi</a> [<var>fl<sub>1</sub></var>] <var>fl<sub>2</sub></var>)</code><br>
 </div>
 
 <p>
   When given one argument, compute the arctan of the argument. At
-  infinity, return the closest approximation to ±π/2.
+  infinity, return the closest approximation to ±π/2. These functions
+  should be odd.
 </p>
 
 <p>

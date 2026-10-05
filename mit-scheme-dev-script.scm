@@ -272,6 +272,25 @@
 (test-fltanpi-on-positive-odd-integer+0.5)
 (test-fltanpi-on-negative-even-integer-0.5)
 
+(load "tests/flinverse-trig.scm")
+(test-flasin)
+(test-flasin-is-odd)
+(test-flasin-inversion)
+
+(test-flacos)
+(test-flacos-inversion)
+
+(test-flatan)
+(test-flatan-odd)
+(test-flatan-zero-y)
+(test-flatan-first-quadrant)
+(test-flatan-positive-y-zero-x)
+(test-flatan-positive-y-negative-x)
+(test-flatan-zero-y-negative-x)
+(test-flatan-negative-y-negative-x)
+(test-flatan-negative-y-zero-x)
+(test-flatan-negative-y-positive-x)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")

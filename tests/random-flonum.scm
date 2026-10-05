@@ -81,7 +81,6 @@
   (gcons*
    1e-30 0.1 0.5
    (fladjacent 1.0 -inf.0)
-   (fladjacent 1.0 +inf.0)
    (gremove
     flzero?
     (gmap (lambda (fl)
