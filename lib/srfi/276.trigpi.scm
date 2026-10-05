@@ -19,9 +19,18 @@
  |#
 
 (define-syntax even-polynomial
+  ;; Note: this assumes some basic constant propagation and inlining ability
+  ;; to be useful.
   (syntax-rules ()
-    ((_ x^2 C) C)
-    ((_ x^2 C1 C2 ...) (fl+ C1 (fl* x^2 (even-polynomial x^2 C2 ...))))))
+    ((_ "loop" fma x^2 C) C)
+    ((_ "loop" fma x^2 C1 C2 ...)
+     (fma x^2 (even-polynomial "loop" fma x^2 C2 ...) C1))
+    ((_ x^2 C ...)
+     (let ((fma (if fl-fast-fl+*
+		    fl+*
+		    (lambda (x y z)
+		      (fl+ (fl* x y) z)))))
+       (even-polynomial "loop" fma x^2 C ...)))))
 
 (define (%sinpi fl)
   #|
@@ -241,18 +250,50 @@ Sollya output:
       ;; Fold arguments into [-0.5, 0.5].
       ;; [0.5, 1.5] -> [-0.5, 0.5]
       ;; [-1.5, -0.5] -> [-0.5, 0.5]
-      (let*-values (((ipart fpart) (flinteger-fraction fl))
-		    ((arg)
-		     (cond
+      (let-values (((ipart fpart) (flinteger-fraction fl)))
+	(cond
+	  ((and (flpositive? ipart)
+		(fleven? ipart)
+		(flzero? fpart))
+	   +0.0)
+	  ((and (flnegative? ipart)
+		(flodd? ipart)
+		(flzero? fpart))
+	   +0.0)
+	  ((and (flpositive? ipart)
+		(flodd? ipart)
+		(flzero? fpart))
+	   -0.0)
+	  ((and (flnegative? ipart)
+		(fleven? ipart)
+		(flzero? fpart))
+	   -0.0)
+	  ((and (flpositive? ipart)
+		(fleven? ipart)
+		(fl=? fpart 0.5))
+	   +inf.0)
+	  ((and (flpositive? ipart)
+		(flodd? ipart)
+		(fl=? fpart 0.5))
+	   -inf.0)
+	  ((and (flnegative? ipart)
+		(fleven? ipart)
+		(fl=? fpart -0.5))
+	   -inf.0)
+	  ((and (flnegative? ipart)
+		(flodd? ipart)
+		(fl=? fpart -0.5))
+	   +inf.0)
+	  (else
+	   (let ((arg (cond
 		       ((fl>? fpart 0.5)
 			(fl- fpart 1.0))
 		       ((fl<? fpart -0.5)
 			(flabs fpart))
 		       (else fpart)))
-		    ((a) (flabs arg))
-		    ;;; FIXME: Inversion here can lose precision.
-		    ((value)
-		     (cond
-		      ((fl<=? 0.0 a 0.25) (%tanpi a))
-		      (else (fl/ (%tanpi (fl- 0.50 a)))))))
-	(flcopysign value arg))))
+		 (a (flabs arg))
+		 (value
+		  (cond
+		   ((fl<=? 0.0 a 0.25) (%tanpi a))
+		   (else (fl/ (%tanpi (fl- 0.50 a)))))))
+	     (flcopysign value arg)))))))

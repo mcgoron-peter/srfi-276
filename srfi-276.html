@@ -375,6 +375,20 @@ SPDX-License-Identifier: MIT
   default rounding mode.
 </p>
 
+<p>
+  If a procedure <var>f</var> is <dfn>odd</dfn>, then for each non-NaN
+  flonum <var>fl</var> that the procedure will return a non-NaN flonum
+  for, then <code>(fl=? (<var>f</var> <var>fl</var>) (fl- (<var>f</var> (fl- <var>fl</var>))))</code>
+  returns true always.
+</p>
+
+<p>
+  If a procedure <var>f</var> is <dfn>even</dfn>, then for each non-NaN
+  flonum <var>fl</var> that the procedure will return a non-NaN flonum
+  for, then <code>(fl=? (<var>f</var> <var>fl</var>) (<var>f</var> (fl- <var>fl</var>)))</code>
+  returns true always.
+</p>
+
 <h2 id="precise"><a href="#precise">&para;</a> Precise representation of flonums</h2>
 
 <p>
@@ -2196,6 +2210,12 @@ operation exception.</li>
 </table>
 
 <h3 id="trigonometric"><a href="#trigonometric">&para;</a> Trigonometric functions</h3>
+
+<p>
+  All procedures in this section return a NaN when given an infinite
+  argument.
+</p>
+
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#flsin" id="flsin">flsin</a> <var>fl</var>)</code><br>
@@ -2209,47 +2229,42 @@ operation exception.</li>
 </p>
 
 <p>
-  When an infinity is passed to any of these functions, NaN is returned and
-  the invalidOperation floating point exception is raised.
+  The procedures <code>flsin</code> and <code>fltan</code> should be
+  odd and <code>flcos</code> should be even.
 </p>
 
-<p>
-  When sin or tan are given zero, return that zero.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flsin ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(fltan ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+</table>
 
 <div class="feature" id="flsinpi">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#sinpi" id="sinpi">flsinpi</a> <var>fl</var>)</code><br>
 </div>
 
-<p>Return sin(π<var>fl</var>).</p>
+<p>Return sin(π<var>fl</var>). This procedure should be odd.</p>
 
-<p>When given a zero, return that zero. When given a positive integer,
-   return positive zero. When given a negative integer, return negative
-   zero.
-</p>
-
-<p>
-  When an infinity is passed to this function, NaN is returned and
-  the invalidOperation floating point exception is raised.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flsinpi ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(flsinpi n)</code></td><td><var>n</var> &gt; 0, <var>n</var> integer</td><td></td><td><code>+0.0</code></td></tr>
+<tr><td><code>(flsinpi n)</code></td><td><var>n</var> &lt; 0, <var>n</var> integer</td><td></td><td><code>-0.0</code></td></tr>
+</table>
 
 <div class="feature" id="flcospi">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#cospi" id="cospi">flcospi</a> <var>fl</var>)</code><br>
 </div>
 
-<p>Return cos(π<var>fl</var>).</p>
+<p>Return cos(π<var>fl</var>). This procedure should be even.</p>
 
-<p>
-  Let <var>fl</var> = <var>n</var> + ½, where <var>n</var> is an
-  integer. Then this function returns positive zero.
-</p>
-
-<p>
-  When an infinity is passed to this function, NaN is returned and
-  the invalidOperation floating point exception is raised.
-</p>
+<table>
+<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
+<tr><td><code>(flcospi ±0.0)</code></td><td></td><td></td><td><code>±0.0</code></td></tr>
+<tr><td><code>(flcospi x)</code></td><td><var>x</var> = <var>n</var> + ½, <var>n</var> integer</td><td></td><td><code>+0.0</code></td></tr>
+</table>
 
 <div class="feature" id="fltanpi">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2257,7 +2272,7 @@ operation exception.</li>
 </div>
 
 <p>
-  Return the value of tan(π<var>fl</var>). The following special cases apply:
+  Return the value of tan(π<var>fl</var>). This procedure should be odd.
 </p>
 
 <table>
@@ -2275,17 +2290,27 @@ operation exception.</li>
 <tr><td><code>(fltanpi <var>n</var>)</code></td>
     <td><var>n</var> is positive and odd, or negative and even</td>
     <td></td>
-    <td><code>+0.0</code></td>
+    <td><code>-0.0</code></td>
 </tr>
 <tr><td><code>(fltanpi <var>x</var>)</code></td>
-    <td><var>x</var> = <var>n</var> + 1/2 for even <var>n</var></td>
+    <td><var>x</var> = <var>n</var> + ½ for even and positive <var>n</var></td>
     <td>divideByZero</td>
     <td><code>+inf.0</code></td>
 </tr>
 <tr><td><code>(fltanpi <var>x</var>)</code></td>
-    <td><var>x</var> = <var>n</var> + 1/2 for odd <var>n</var></td>
+    <td><var>x</var> = <var>n</var> - ½ for odd and negative <var>n</var></td>
     <td>divideByZero</td>
     <td><code>+inf.0</code></td>
+</tr>
+<tr><td><code>(fltanpi <var>x</var>)</code></td>
+    <td><var>x</var> = <var>n</var> + ½ for odd and positive <var>n</var></td>
+    <td>divideByZero</td>
+    <td><code>-inf.0</code></td>
+</tr>
+<tr><td><code>(fltanpi <var>x</var>)</code></td>
+    <td><var>x</var> = <var>n</var> - ½ for even and negative <var>n</var></td>
+    <td>divideByZero</td>
+    <td><code>-inf.0</code></td>
 </tr>
 </table>
 

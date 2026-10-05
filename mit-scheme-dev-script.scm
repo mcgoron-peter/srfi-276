@@ -244,6 +244,14 @@
 (load "tests/flsqrt.scm")
 (test-flsqrt)
 
+(load "tests/fltrig.scm")
+(test-flsin)
+(test-flsin-odd-property)
+(test-flcos)
+(test-flcos-even-property)
+(test-fltan)
+(test-fltan-odd-property)
+
 ;;;; Property tests
 
 (load "tests/properties.scm")

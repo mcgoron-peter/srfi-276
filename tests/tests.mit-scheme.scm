@@ -180,6 +180,13 @@
 			 expr
 			 (+ expected (abs error)))))))
 
+(define-syntax test-many-approximate
+  (syntax-rules ()
+    ((_ function error (expect input) ...)
+     (begin
+       (test-approximate expect (function input) error)
+       ...))))
+
 (define default-property-tests (make-parameter 30))
 
 (define (test-property tester generators)
