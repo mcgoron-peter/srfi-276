@@ -2689,20 +2689,17 @@ operation exception.</li>
 </p>
 </div>
 
-<h3 id="implementation-query"><a href="#implementation-query">&para;</a>
-  Implementation query</h3>
-
-
-<div class="feature" id="features">
-<span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flfeatures" id="flfeatures">flfeatures</a>)</code>
-</div>
+<h3 id="cond-expand-features"><a href="#cond-expand-features">&para;</a>
+  Features</h3>
 
 <p>
-  Returns a list containing information about the floating-point
-  operations in this library. The following symbols have defined
-  meanings. An implementation may add other features, which should
-  be symbols.
+  The following features are added to the list of features that
+  may appear in <code>(features)</code> and may be treated as true
+  by <code>cond-expand</code>. When the features are not prefixed by
+  anything, they refer to operations in the base library,
+  <code>(srfi 276)</code>. If they are prefixed by the name of a library,
+  for example <code>binary32:</code>, then they refer to the operations in
+  that library, for example <code>(srfi 276 binary32)</code>.
 </p>
 
 <dl>
@@ -2720,11 +2717,11 @@ operation exception.</li>
     appear.</dd>
 <dt><code>non-stop</code></dt>
 <dd>Arithmetic is non-stop (see above).</dd>
-<dt><code>fast-fma</code></dt>
+<dt><code>fast-fl+*</code></dt>
 <dd>The function <code>(fl+* x y z)</code> is at least as fast as or faster
     than <code>(fl+ (fl* x y) z)</code>. (Fused multiply-add must be rounded
     correctly when IEEE 754 compliance mode is on, regardless of
-    whether <code>fast-fma</code> is available.)</dd>
+    whether <code>fast-fl+*</code> is available.)</dd>
 <dt><code>⟨name⟩-correctly-rounded</code> where ⟨name⟩ is a procedure from the
     library</dt>
 <dd>The function ⟨name⟩ is always correctly rounded.
@@ -2740,13 +2737,10 @@ operation exception.</li>
   this SRFI does not provide a portable way to manipulate this mode.
 </p>
 <p>
-  This should not be confused with the
-  <a href="https://standards.scheme.org/r7rs-html5/index.html#features">
-  <code>features</code></a>
-  procedure in the <span class="report-name">R<sup>7</sup>RS</span>.
-  This is a run-time procedure that reports on the run-time environment,
-  and the flags may change over the runtime of the program.
-  These flags are not accessible through <code>cond-expand</code>.
+  Some of these features may be enabled or disabled at run time. In that
+  case, the feature may show up in <code>(features)</code>, but it might
+  not be treated as true in <code>cond-expand</code> evaluated at
+  expansion time.
 </p>
 </div>
 
