@@ -68,6 +68,7 @@
 
 (load "tests/flnormalized-fraction-exponent.scm")
 (test-flnormalized-fraction-exponent)
+(flnormalized-fraction-exponent-and-make-flonum-are-inverses)
 (load "tests/make-flonum.scm")
 (test-make-flonum)
 
@@ -343,7 +344,4 @@
 
 ;;; FIXME: No tests for bessel functions yet
 
-;;;; Property tests
 
-(load "tests/properties.scm")
-(flnormalized-fraction-exponent-and-make-flonum-are-inverses)
