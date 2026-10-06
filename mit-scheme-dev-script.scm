@@ -332,6 +332,17 @@
 (test-flatanh-nan)
 (test-flatanh-odd)
 
+(load "tests/special-functions.scm")
+(test-flerf)
+(test-flerf-odd)
+(test-flerfc)
+(test-flgamma)
+(test-flgamma-on-negative-integers)
+(test-flloggamma)
+(test-flloggamma-on-negative-integers)
+
+;;; FIXME: No tests for bessel functions yet
+
 ;;;; Property tests
 
 (load "tests/properties.scm")

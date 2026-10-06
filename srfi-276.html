@@ -2524,26 +2524,26 @@ operation exception.</li>
   <msubsup>
     <mo> &int; </mo>
     <mn> 0 </mn>
-    <mn> 1 </mn>
+    <mi> x </mi>
   </msubsup>
   <mrow>
     <msup>
       <mi> e </mi>
       <mrow>
         <mo>&minus;</mo>
-        <msup><mi>x</mi><mn>2</mn></msup>
+        <msup><mi>t</mi><mn>2</mn></msup>
       </mrow>
     </msup>
     <mo> &InvisibleTimes; </mo>
     <mrow>
       <mo> d </mo>
-      <mi> x </mi>
+      <mi> t </mi>
     </mrow>
   </mrow>
 </mrow>
 </math>
 
-<p>The following special cases apply:</p>
+<p>This function should be odd. The following special cases apply:</p>
 
 <table>
 <tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
@@ -2566,6 +2566,10 @@ operation exception.</li>
    The following special cases apply:</p>
 <table>
 <tr><th>Operation</th><th>Side conditions</th><th>Return</th></tr>
+<tr><td><code>(flerfc 0.0)</code></td>
+    <td></td>
+    <td><code>+1.0</code></td>
+</tr>
 <tr><td><code>(flerfc -inf.0)</code></td>
     <td></td>
     <td><code>+2.0</code></td>
@@ -2631,7 +2635,7 @@ operation exception.</li>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a id="fllog-gamma" href="#fllog-gamma">fllog-gamma</a> <var>fl</var>)</code>
+<code class="signature">(<a id="flloggamma" href="#flloggamma">flloggamma</a> <var>fl</var>)</code>
 </div>
 
 <p>Returns two values: log<sub>e</sub>|Γ(<var>fl</var>)|
@@ -2640,32 +2644,37 @@ operation exception.</li>
 
 <table>
 <tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
-<tr><td><code>(fllog-gamma 1.0)</code></td>
+<tr><td><code>(flloggamma 1.0)</code></td>
     <td></td>
     <td></td>
-    <td><code>0.0</code></td>
+    <td><code>0.0 1.0</code></td>
 </tr>
-<tr><td><code>(fllog-gamma 2.0)</code></td>
+<tr><td><code>(flloggamma 2.0)</code></td>
     <td></td>
     <td></td>
-    <td><code>0.0</code></td>
+    <td><code>0.0 1.0</code></td>
 </tr>
-<tr><td><code>(fllog-gamma <var>x</var>)</code></td>
+<tr><td><code>(flloggamma <var>x</var>)</code></td>
     <td><var>x</var> is a negative integer or 0</td>
     <td>invalidOperation</td>
     <td>NaN</td>
 </tr>
-<tr><td><code>(fllog-gamma ±inf.0)</code></td>
+<tr><td><code>(flloggamma ±inf.0)</code></td>
     <td></td>
     <td></td>
-    <td><code>+inf.0</code></td>
+    <td><code>+inf.0 1.0</code></td>
 </tr>
 </table>
 
+<p>
+  When the function returns a NaN, the sign is unspecified, but must be
+  either &minus;1.0 or 1.0.
+</p>
+
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a id="flfirst-bessel" href="#flfirst-bessel">flfirst-bessel</a> <var>fl</var> <var>n</var>)</code><br>
-<code class="signature">(<a id="flsecond-bessel" href="#flsecond-bessel">flsecond-bessel</a> <var>fl</var> <var>n</var>)</code>
+<code class="signature">(<a id="flfirst-bessel" href="#flfirst-bessel">flfirst-bessel</a> <var>n</var> <var>fl</var>)</code><br>
+<code class="signature">(<a id="flsecond-bessel" href="#flsecond-bessel">flsecond-bessel</a> <var>n</var> <var>fl</var>)</code>
 </div>
 
 <p>
@@ -2673,29 +2682,12 @@ operation exception.</li>
   respectively.
 </p>
 
-<table>
-<tr><th>Operation</th><th>Side conditions</th><th>Exceptions</th><th>Return</th></tr>
-<tr><td><code>(flfirst-bessel +inf.0 <var>n</var>)</code></td>
-    <td></td>
-    <td>invalidOperation</td>
-    <td>NaN</td>
-</tr>
-<tr><td><code>(flsecond-bessel +inf.0 <var>n</var>)</code></td>
-    <td></td>
-    <td>invalidOperation</td>
-    <td>NaN</td>
-</tr>
-<tr><td><code>(flsecond-bessel <var>x</var> <var>n</var>)</code></td>
-    <td><var>x</var> is zero</td>
-    <td>divideByZero</td>
-    <td><code>-inf.0</code></td>
-</tr>
-<tr><td><code>(flsecond-bessel <var>x</var> <var>n</var>)</code></td>
-    <td><var>x</var> is negative</td>
-    <td>invalidOperation</td>
-    <td>NaN</td>
-</tr>
-</table>
+<div class="boxed">
+<p>
+  <span class="boxed-tag">Note</span>: There are no required special cases
+  for the Bessel functions. This may change in a later standard.
+</p>
+</div>
 
 <h3 id="implementation-query"><a href="#implementation-query">&para;</a>
   Implementation query</h3>
