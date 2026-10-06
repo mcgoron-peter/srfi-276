@@ -2752,17 +2752,25 @@ operation exception.</li>
 <code class="signature">(<a href="#bytevector-flonum-ref">bytevector-flonum-ref</a>
                          <var>bv</var>
                          <var>k</var>
-                         [<var>endianness</var>])</code>
+                         <var>endianness</var>)</code><br>
+<code class="signature">(<a href="#bytevector-flonum-native-ref">bytevector-flonum-native-ref</a>
+                         <var>bv</var>
+                         <var>k</var>)</code>
 </div>
 <p>It is an error if <var>k</var> to <var>k</var> +
    <a href="#flbyte-width"><code>flbyte-width</code></a>
    are not valid indices of <var>bv</var>.
-   If <var>endianness</var> is not supplied, it is an error if
+   For <code>bytevector-flonum-native-ref</code>, it is an error if
    <var>k</var> is not a multiple of <code>flbyte-width</code>.
 </p>
 
 <p>Read the bytes in <var>bv</var> at <var>k</var> as a flonum of this
    type, with the <var>endianness</var>.
+</p>
+
+<p>The procedure <code>bytevector-flonum-native-ref</code> is equivalent
+   to
+   <code>(bytevector-flonum-ref <var>bv</var> <var>k</var> (native-endianness))</code>.
 </p>
 
 <p>
@@ -2799,18 +2807,27 @@ operation exception.</li>
                          <var>bv</var>
                          <var>k</var>
                          <var>fl</var>
-                         [<var>endianness</var>])</code>
+                         <var>endianness</var>)</code><br>
+<code class="signature">(<a href="#bytevector-flonum-native-set">bytevector-flonum-native-set!</a>
+                         <var>bv</var>
+                         <var>k</var>
+                         <var>fl</var>)</code>
 </div>
 <p>It is an error if <var>k</var> to <var>k</var> +
    <a href="#flbyte-width"><code>byte-width</code></a>
    are not valid indices of <var>bv</var>.
-   If <var>endianness</var> is not supplied, it is an error if
+   For <code>bytevector-flonum-native-set!</code>, it is an error if
    <var>k</var> is not a multiple of <code>byte-width</code>.
 </p>
 
 <p>
-  Write <var>fl</var> to <var>bv</var> at <var>k</var> with
-  <var>endianness</var>.
+  The <code>bytevector-flonum-set!</code> procedure writes <var>fl</var>
+  to <var>bv</var> at <var>k</var> with <var>endianness</var>.
+</p>
+
+<p>
+  The <code>bytevector-flonum-native-set!</code> has the same effect as
+  <code>(bytevector-flonum-set! <var>bv</var> <var>k</var> <var>fl</var> (native-endianness))</code>.
 </p>
 
 <p>
