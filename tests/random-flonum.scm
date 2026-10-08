@@ -10,13 +10,8 @@
     (bytevector-u8-set! bv i (random-integer 256))))
 
 (define (make-random-flonum-generator)
-  (let ((fixed '(0.0 -0.0 1.0 -1.0 +inf.0 -inf.0 +nan.0 -nan.0)))
-    (lambda ()
-      (if (null? fixed)
-	  (random-flonum)
-	  (let ((x (car fixed)))
-	    (set! fixed (cdr fixed))
-	    x)))))
+  (gcons* 0.0 -0.0 1.0 -1.0 +inf.0 -inf.0 +nan.0 -nan.0
+          random-flonum))
 
 (define (flquantum x)
   (flmax (fl- (fladjacent x +inf.0) x)

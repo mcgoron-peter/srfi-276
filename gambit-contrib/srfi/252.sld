@@ -329,43 +329,66 @@
 
     ;; Runner
 
-    (define (property-test-runner)
-      ;; Implementation specific.
-      ;; Some implementations do not support extended test runners.
-      (let ((runner (test-runner-simple)))
-        ;; (test-runner-on-test-end! runner property-test-runner-on-test-end)
-        ;; (test-runner-on-group-end! runner property-test-runner-on-group-end)
-        runner))
+    (cond-expand
+      (gambit (define (property-test-runner) #f))
+      (else
+       (define (property-test-runner)
+         ;; Implementation specific.
+         ;; Some implementations do not support extended test runners.
+         (let ((runner (test-runner-simple)))
+           ;; (test-runner-on-test-end! runner property-test-runner-on-test-end)
+           ;; (test-runner-on-group-end! runner property-test-runner-on-group-end)
+           runner))))
 
     ;; Test procedures
 
-    (define (prop-test property generators runs)
-      (for-each
-       (lambda (n)
-         (test-assert
-             (apply property
-                    (let ((args (map (lambda (gen) (gen)) generators))
-                          (runner (test-runner-current)))
-                      (test-result-set! runner 'property-test-arguments args)
-                      (test-result-set! runner 'property-test-iteration
-                                        (+ n 1))
-                      (test-result-set! runner 'property-test-iterations runs)
-                      args))))
-       (iota runs)))
+    (cond-expand
+      (gambit
+        (define (prop-test property generator runs)
+          (let ((get-args
+                 (lambda () (map (lambda (gen) (gen)) generator))))
+            (do ((i 0 (+ i 1))
+                 (args (get-args) (get-args)))
+                ((= i runs))
+              (test-assert (apply property args))))))
+      (else
+       (define (prop-test property generators runs)
+         (for-each
+          (lambda (n)
+            (test-assert
+                (apply property
+                       (let ((args (map (lambda (gen) (gen)) generators))
+                             (runner (test-runner-current)))
+                         (test-result-set! runner 'property-test-arguments args)
+                         (test-result-set! runner 'property-test-iteration
+                                           (+ n 1))
+                         (test-result-set! runner 'property-test-iterations runs)
+                         args))))
+          (iota runs)))))
 
-    (define (prop-test-error type property generators runs)
-      (for-each
-       (lambda (n)
-         (test-error
-          type
-          (apply property
-                 (let ((args (map (lambda (gen) (gen)) generators))
-                       (runner (test-runner-current)))
-                   (test-result-set! runner 'property-test-arguments args)
-                   (test-result-set! runner 'property-test-iteration (+ n 1))
-                   (test-result-set! runner 'property-test-iterations runs)
-                   args))))
-       (iota runs)))
+    (cond-expand
+      (gambit
+        (define (prop-test-error property generator runs)
+          (let ((get-args
+                 (lambda () (map (lambda (gen) (gen)) generator))))
+            (do ((i 0 (+ i 1))
+                 (args (get-args) (get-args)))
+                ((= i runs))
+              (test-error (apply property args))))))
+      (else
+        (define (prop-test-error type property generators runs)
+          (for-each
+           (lambda (n)
+             (test-error
+              type
+              (apply property
+                     (let ((args (map (lambda (gen) (gen)) generators))
+                           (runner (test-runner-current)))
+                       (test-result-set! runner 'property-test-arguments args)
+                       (test-result-set! runner 'property-test-iteration (+ n 1))
+                       (test-result-set! runner 'property-test-iterations runs)
+                       args))))
+           (iota runs)))))
 
     (define test-property-error
       (case-lambda

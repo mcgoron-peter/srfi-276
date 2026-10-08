@@ -3,7 +3,7 @@
 
 include config.makefile
 
-test: gambit-lib/srfi/276.o1 gambit-contrib/srfi/252.o1 gambit-contrib/srfi/158.sld
+test: gambit-lib/srfi/276.o1 gambit-contrib/srfi/252.o1
 	gsi gambit-lib/ gambit-contrib/ tests/run.scm
 
 gambit-lib/srfi/276.o1: gambit-lib/srfi/276.sld \
@@ -20,18 +20,12 @@ gambit-lib/srfi/276.o1: gambit-lib/srfi/276.sld \
                         lib/srfi/276.inverse-trigpi.scm
 	${GSC} -module-ref 'srfi/276' -o gambit-lib/srfi/276.o1 gambit-lib/srfi/276.sld
 
-gambit-contrib/srfi/158.o1: gambit-contrib/srfi/158.sld \
-                            gambit-contrib/srfi/srfi-158-impl.scm
-	${GSC} -module-ref 'srfi/158' -o gambit-contrib/srfi/158.o1 gambit-contrib/srfi/158.sld
-
 gambit-contrib/srfi/194.o1: gambit-contrib/srfi/194.sld \
                             gambit-contrib/srfi/194-impl.scm \
                             gambit-contrib/srfi/zipf-zri.scm \
-                            gambit-contrib/srfi/sphere.scm \
-                            gambit-contrib/srfi/158.o1
+                            gambit-contrib/srfi/sphere.scm
 	${GSC} -module-ref 'srfi/194' -o gambit-contrib/srfi/194.o1 gambit-contrib/  gambit-contrib/srfi/194.sld
 
 gambit-contrib/srfi/252.o1: gambit-contrib/srfi/252.sld \
-                            gambit-contrib/srfi/158.o1 \
                             gambit-contrib/srfi/194.o1
 	${GSC} -module-ref 'srfi/252' -o gambit-contrib/srfi/252.o1 gambit-contrib/ gambit-contrib/srfi/252.sld

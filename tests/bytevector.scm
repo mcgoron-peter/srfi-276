@@ -64,7 +64,32 @@
     (test-equal (flonum->bytevector -inf.0)
 		#u8(#xFF #xF0 0 0 0 0 0 0))))
 
+(define (test-bytevector-flonum-native-reverse)
+  (test-group "bytevector-flonum-native-set! and \
+               bytevector-flonum-native-ref are inverses"
+    (test-property
+     (lambda (len flonum)
+       (let ((bv (make-bytevector (* len fl-byte-width)))
+             (i (* fl-byte-width (random-integer len))))
+         (bytevector-flonum-native-set! bv i flonum)
+         (eqv? (bytevector-flonum-native-ref bv i) flonum)))
+     (list (lambda () (+ 1 (random-integer 20)))
+           (make-random-flonum-generator)))))
 
-
-
-
+(define (test-bytevector-flonum-reverse)
+  (test-group "bytevector-flonum-set! and \
+               bytevector-flonum-ref are inverses"
+    (test-property
+     (lambda (len flonum endianness)
+       (let* ((bytes (* len fl-byte-width))
+              (bv (make-bytevector bytes))
+              (i (random-integer (- bytes fl-byte-width))))
+         (bytevector-flonum-set! bv i flonum endianness)
+         (eqv? (bytevector-flonum-ref bv i endianness)
+               flonum)))
+     (list (lambda () (+ 1 (random-integer 100)))
+           (make-random-flonum-generator)
+           (gmap (lambda (bool)
+                   (if bool 'little 'big))
+                 (boolean-generator))
+           ))))

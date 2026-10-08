@@ -1,7 +1,8 @@
 (define-library (srfi 276)
   (import (except gambit let-values let*-values))
   ;;; Constants
-  (export fl-radix fl-precision fl-maximum-exponent fl-minimum-normalized-exponent
+  (export fl-radix fl-precision fl-maximum-exponent
+          fl-minimum-exponent fl-minimum-normalized-exponent
           fl-greatest fl-least fl-least-normal fl-epsilon fl-byte-width)
   (begin
     ;; This is a hack to get around a bug in Gambit
@@ -56,9 +57,9 @@
     (define fl-greatest
       ((c-lambda () double "___return(DBL_MAX);")))
     (define fl-least
-      ((c-lambda () double "___return(DBL_MIN);")))
-    (define fl-least-normal
       ((c-lambda () double "___return(DBL_TRUE_MIN);")))
+    (define fl-least-normal
+      ((c-lambda () double "___return(DBL_MIN);")))
     (define fl-epsilon
       ((c-lambda () double "___return(DBL_EPSILON);")))
     (define fl-fast-fl+*

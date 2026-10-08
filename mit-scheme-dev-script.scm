@@ -48,6 +48,8 @@
 (load "tests/bytevector.scm")
 (test-binary64-bytevector-on-basic-numbers)
 (test-binary64-bytevector-flonum-ref)
+(test-bytevector-flonum-native-reverse)
+(test-bytevector-flonum-reverse)
 
 (load "lib/srfi/276.flonum.scm")
 (load "tests/flonum.scm")
