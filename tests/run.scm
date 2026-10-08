@@ -26,3 +26,18 @@
 (test-bytevector-flonum-native-reverse)
 (test-bytevector-flonum-reverse)
 
+(include "flonum.scm")
+(test-flonum)
+(test-flonum-property)
+
+(include "fladjacent.scm")
+(test-fladjacent)
+
+(include "flcopysign.scm")
+(test-flcopysign)
+
+(include "flinteger-fraction.scm")
+(test-flinteger-fraction)
+
+(include "flexponent.scm")
+(test-flexponent)
