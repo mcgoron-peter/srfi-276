@@ -1,5 +1,6 @@
 (define-library (srfi 276)
-  (import (except gambit let-values let*-values))
+  (import (except gambit let-values let*-values fltruncate)
+          (rename (only gambit fltruncate) (fltruncate %fltruncate)))
   ;;; Constants
   (export fl-radix fl-precision fl-maximum-exponent
           fl-minimum-exponent fl-minimum-normalized-exponent
@@ -100,7 +101,7 @@
           fl-sin-1 fl-cos-1)
   (include "../../lib/srfi/276.constants.scm")
   ;;; Constructors
-  (export flonum fladjacent
+  (export flonum fladjacent flcopysign
           (rename flscalbn make-flonum))
   (begin
     (define make-flonum flscalbn)
@@ -134,8 +135,11 @@ ___return(exp);")))
         ((flzero? fl) (values fl fl))
         ((flinfinite? fl) (values fl (flcopysign 0.0 fl)))
         ((flnan? fl) (values fl fl))
-        (else (let ((ipart (fltruncate fl)))
-                (values ipart (fl- fl ipart))))))
+        (else
+          ;; Work around a bug in some libc(?)s
+          (let ((ipart (fltruncate fl)))
+            (values (flcopysign ipart fl)
+                    (flcopysign (fl- fl ipart) fl))))))
     (define flexponent (c-lambda (double) double "logb"))
     (define flinteger-exponent
       (c-lambda (double) int "ilogb"))
@@ -197,9 +201,14 @@ ___return(exp);")))
      (define (flsgn x)
        (flcopysign 1.0 x)))
    ;;; Integer rounding
-   (export flfloor flceiling fltruncate flround flround-away)
+   (export flfloor flceiling
+           fltruncate
+           flround flround-away)
    ;; roundeven is in C11, but not C99.
    (begin
+     (define (fltruncate fl)
+       ;; Work around a bug in musl(?)
+       (flcopysign (%fltruncate fl) fl))
      (define flround-away
        (c-lambda (double) double "round")))
    ;;; Integer division
