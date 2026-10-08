@@ -42,7 +42,7 @@
   (flexpt 10.0 fl))
 
 (define (generate-exp-1 flexpB base)
-  (let* ((coeffs (create-exponential-coefficients 2 20))
+  (let* ((coeffs (create-exponential-coefficients base 20))
 	 ;; replace 1.0 with 0.0
 	 (coeffs (cons 0.0 (cdr coeffs))))
     (lambda (fl)
