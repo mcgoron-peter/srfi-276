@@ -204,7 +204,7 @@
   (define (nan-protected y)
     (if (flfinite? y) y 0.0))
   (check-flonum! 'flfirst-bessel x)
-  (cond #;(c-functions-are-available
+  (cond (c-functions-are-available
          (jn n x))
 
         ((< n 0)
@@ -261,7 +261,7 @@
 
 (define (flsecond-bessel n x)
   (check-flonum! 'flsecond-bessel x)
-  (cond #;(c-functions-are-available
+  (cond (c-functions-are-available
          (yn n x))
 
         ((< n 0)

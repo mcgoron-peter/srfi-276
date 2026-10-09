@@ -291,6 +291,10 @@ ___return(q);"))
            make-fllog-base)
    (include "../../lib/srfi/276.fllog.scm")
    (begin
+     (define fllog2
+       (c-lambda (double) double "log2"))
+     (define fllog10
+       (c-lambda (double) double "log10"))
      (define (make-fllog-base x)
        (lambda (y)
          (fl/ (fllog y) (fllog x)))))
@@ -323,6 +327,22 @@ ___return(q);"))
      (define flgamma
        (c-lambda (double) double "tgamma")))
    ;; Use Will Clinger's flloggamma and bessel functions
+   (begin
+     (define c-functions-are-available
+       ((c-lambda () bool "\
+#if _SVID_SOURCE || _BSD_SOURCE || _XOPEN_SOURCE
+  ___return(1);
+#else
+  ___return(0);
+#endif")))
+     (define jn
+       (if c-functions-are-available
+           (c-lambda (int double) double "jn")
+           (lambda args (error "unavailable" args))))
+     (define yn
+       (if c-functions-are-available
+           (c-lambda (int double) double "yn")
+           (lambda args (error "unavailable" args)))))
    (include "144.special.scm")
    ;;; Serialization
    (export bytevector-flonum-ref
