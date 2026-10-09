@@ -106,7 +106,7 @@
           fl-sin-1 fl-cos-1)
   (include "../../lib/srfi/276.constants.scm")
   ;;; Constructors
-  (export flonum fladjacent flcopysign
+  (export flonum flonum? fladjacent flcopysign
           (rename flscalbn make-flonum))
   (begin
     (define make-flonum flscalbn)

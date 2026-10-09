@@ -12,16 +12,6 @@
      (pair? (memq obj '(little big)))))
   (else))
 
-(cond-expand
-  ((not (library (srfi 160 u8)))
-   (define (u8vector-reverse-copy! to at from)
-     (do ((i (- (bytevector-length from) 1)
-	     (- i 1))
-	  (at at (+ at 1)))
-	 ((negative? i))
-       (bytevector-u8-set! to at (bytevector-u8-ref from i)))))
-  (else))
-
 (define (normalized-sign-significand-exponent fl)
   ;; Returns
   ;; 1. The sign bit as a boolean.
@@ -201,7 +191,10 @@
       ((fx=? i 8) fl)))
 
 (define (finite-set! bv sign bits exponent k endianness)
-  (let ((scratch (bits->bytevector bits)))
+  (let ((scratch (bits->bytevector bits))
+        (exponent (if (< (length bits) (fx- fl-precision 1))
+                      0
+                      exponent)))
     (bytevector-u8-set! scratch
                         0
                         (fxior (fxarithmetic-shift-left

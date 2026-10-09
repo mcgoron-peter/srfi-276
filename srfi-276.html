@@ -3328,38 +3328,45 @@ should round-trip NaNs.</p>
 <h2 id="implementation"><a href="#implementation">&para;</a> Implementation</h2>
 
 <p>
-  An implementation should use the floating-point operations available in hardware
-  as much as possible.
-  Most implementations only have one floating-point type (binary64), and those
-  implementations can copy most of their
-  <a href="https://srfi.schemers.org/srfi-144/">SRFI 144</a>
-  implementation to <code>(srfi 276 binary64)</code> with minor renamings.
+  Two implementations are provided in the SRFI repository: one is an
+  implementation that builds on an implementation’s SRFI 144, and another
+  is a Gambit implementation. The Gambit implementation can be compiled
+  using the Makefile, and the resulting library is in the <code>gambit-lib</code>
+  directory. These only implement the required parts of
+  this SRFI: an MIT-Scheme implementation of the exception, environment,
+  and rounding-mode interface will be provided later.
 </p>
 
 <p>
-  The simplest way to implement the inspection portion of this SRFI is an FFI to C’s
-  <a href="https://en.cppreference.com/c/numeric/fenv"><code>fenv.h</code></a>.
-  Checking the FTZ/DAZ mode (for example, on Intel CPUs) requires intrinsics to
-  check the MXCSR register.
+  An implementation should use the floating-point operations available
+  in hardware as much as possible.  Most implementations only have one
+  floating-point type (binary64), and can make <code>(srfi 276)</code>
+  and <code>(srfi 276 binary64)</code> the same thing.
 </p>
 
 <p>
-  Although it is possible to implement
-  <a href="#bytevector-flonum-ref"><code>bytevector-flonum-ref</code></a>
-  and
+  The simplest way to implement the inspection
+  portion of this SRFI is an FFI to C’s <a
+  href="https://en.cppreference.com/c/numeric/fenv"><code>fenv.h</code></a>.
+  Checking the FTZ/DAZ mode (for example, on Intel CPUs) requires
+  intrinsics to check the MXCSR register.
+</p>
+
+<p>
+  The portable implementation of
+   <a
+  href="#bytevector-flonum-ref"><code>bytevector-flonum-ref</code></a> and
   <a href="#bytevector-flonum-set"><code>bytevector-flonum-set!</code></a>
-  in terms of <code><a href="#flnormalized-fraction-exponent">flnormalized-fraction-exponent</a></code> and
-  <code><a href="#make-flonum">make-flonum</a></code>, it is much easier to manipulate the byte
-  representation of the flonum directly.
+  is written in terms of <code><a
+  href="#flnormalized-fraction-exponent">flnormalized-fraction-exponent</a></code>
+  and <code><a href="#make-flonum">make-flonum</a></code>. It is much
+  easier to manipulate the byte representation of the flonum directly,
+  and it is also much faster. This is the approach taken in the Gambit
+  implementation.
 </p>
 
 <p>
-  A sample implementation will be provided that wraps MIT Scheme’s
-  floating-point environment API.
-</p>
-
-<p>
-  Implementations that implement SRFI 276 are encouraged to also export
+  Implementations that implement SRFI 276 should also export
   SRFI 144 as a compatability library.
 </p>
 
