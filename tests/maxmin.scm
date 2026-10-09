@@ -22,7 +22,7 @@
      (lambda (list-of-flonums)
        (fl=? (apply flmax list-of-flonums)
 	     (apply flmax-filter-nans list-of-flonums)))
-     (list (list-generator-of (make-random-finite-flonum-generator)))))))
+     (list (list-generator-of (make-random-ordered-flonum-generator)))))))
 
 (define (test-flmin)
   (test-group "flmin"

@@ -1,6 +1,8 @@
 (define-library (srfi 276)
-  (import (except gambit let-values let*-values fltruncate)
-          (rename (only gambit fltruncate) (fltruncate %fltruncate)))
+  (import (except gambit let-values let*-values fltruncate fl+*)
+          (rename (only gambit fltruncate fl+*)
+                  (fltruncate %fltruncate)
+                  (fl+* %fl+*)))
   ;;; Constants
   (export fl-radix fl-precision fl-maximum-exponent
           fl-minimum-exponent fl-minimum-normalized-exponent
@@ -186,6 +188,32 @@ ___return(exp);")))
            flabsdiff flposdiff flsgn)
    (include "../../lib/srfi/276.maxmin.scm")
    (begin
+     (define fl+*
+       ;; This works around a bug in musl. This should be removed when
+       ;; it gets fixed.
+       (if fl-fast-fl+*
+           %fl+*
+             (lambda (x y z)
+               (let ((res (%fl+* x y z)))
+                 (if (flzero? res)
+                     (let ((b1 (flsign-negative? x))
+                           (b2 (flsign-negative? y))
+                           (b3 (flsign-negative? z)))
+#| Special cases:
+    0.0    ; (0.0 0.0 0.0)
+    0.0    ; (0.0 0.0 -0.0)
+    0.0    ; (0.0 -0.0 0.0)
+    -0.0   ; (0.0 -0.0 -0.0)
+    0.0    ; (-0.0 0.0 0.0)
+    -0.0   ; (-0.0 0.0 -0.0)
+    0.0    ; (-0.0 -0.0 0.0)
+    0.0    ; (-0.0 -0.0 -0.0)
+|#
+                       (cond
+                         ((and (not b1) b2 b3) -0.0)
+                         ((and b1 (not b2) b3) -0.0)
+                         (else 0.0)))
+                       res)))))
      (define (flabsdiff x y)
        (flabs (fl- x y)))
      (define flposdiff

@@ -81,3 +81,75 @@
 (test-property-nans)
 (test-flnormal?)
 (test-flsubnormal?)
+
+(include "maxmin.scm")
+(test-flmax)
+(test-flmax-filter-nans)
+(test-flmin)
+(test-flmin-filter-nans)
+(test-flmax-abs)
+(test-flmax-abs-filter-nans)
+(test-flmin-abs)
+(test-flmin-abs-filter-nans)
+
+(include "arith.scm")
+(test-fl+)
+(test-fl-)
+(test-fl*)
+(test-fl/)
+
+(include "fma.scm")
+(test-fl+*)
+
+(include "abs.scm")
+(test-flabs)
+(test-flabs-sign-positive)
+
+(include "flabsdiff.scm")
+(test-flabsdiff)
+(test-flabsdiff-defining-property)
+
+(include "flposdiff.scm")
+(test-flposdiff)
+(test-flabsdiff-defining-property)
+
+(include "flsgn.scm")
+(test-flsgn-defining-property)
+
+(include "flnumerator-and-fldenominator.scm")
+(test-flnumerator)
+(test-fldenominator)
+(test-flnumerator-and-fldenominator-property)
+
+(include "flfloor.scm")
+(test-flfloor)
+(test-flfloor-is-integer)
+(test-flfloor-not-larger)
+
+(include "flceiling.scm")
+(test-flceiling)
+(test-flceiling-is-integer)
+(test-flceiling-not-smaller)
+
+(include "fltruncate.scm")
+(test-fltruncate)
+(test-fltruncate-is-integer)
+(test-fltruncate-closer-to-zero)
+
+(include "flround.scm")
+(test-flround)
+(test-flround-is-integer)
+(test-flround-property)
+
+(load "lib/srfi/276.round-away.scm")
+(include "flround-away.scm")
+(test-flround-away)
+(test-flround-away-is-integer)
+(test-flround-away-property)
+
+(include "fltruncate-quotient.scm")
+(test-fltruncate-quotient-for-infinite-denominator)
+(test-fltruncate-quotient-finite-sign)
+
+(include "test-flremquo.scm")
+(test-flremquo)

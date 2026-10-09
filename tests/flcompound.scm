@@ -21,35 +21,35 @@
 		    (gcons*
 		     (fladjacent -1.0 -inf.0)
 		     (make-random-ordered-flonum-generator)))
-	   (make-random-integer-generator)))))
+	   (make-random-integer-generator 0 #e1e6)))))
 
 (define (test-flcompound-minus-1-to-negative)
   (test-group "flcompound -1.0 negative"
     (test-property
      (lambda (n)
        (fl=? (flcompound -1.0 n) +inf.0))
-     (list (gfilter negative? (make-random-integer-generator))))))
+     (list (gfilter negative? (make-random-integer-generator 0 #e1e6))))))
 
 (define (test-flcompound-minus-1-to-positive)
   (test-group "flcompound -1.0 positive"
     (test-property
      (lambda (n)
        (eqv? (flcompound -1.0 n) +0.0))
-     (list (gfilter positive? (make-random-integer-generator))))))
+     (list (gfilter positive? (make-random-integer-generator 0 #e1e6))))))
 
 (define (test-flcompound-infinite-to-positive)
   (test-group "flcompound +inf.0 positive"
     (test-property
      (lambda (n)
        (eqv? (flcompound +inf.0 n) +inf.0))
-     (list (gfilter positive? (make-random-integer-generator))))))
+     (list (gfilter positive? (make-random-integer-generator 0 #e1e6))))))
 
 (define (test-flcompound-infinite-to-negative)
   (test-group "flcompund +inf.0 negative"
     (test-property
      (lambda (n)
        (eqv? (flcompound +inf.0 n) +0.0))
-     (list (gfilter negative? (make-random-integer-generator))))))
+     (list (gfilter negative? (make-random-integer-generator 0 #e1e6))))))
 
 (define (test-flcompound-nan)
   (define (prop z)
