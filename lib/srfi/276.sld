@@ -21,9 +21,9 @@
           fl-greatest fl-least fl-least-normal fl-epsilon fl-byte-width)
   (export fl-e fl-1/e fl-e^2 fl-e^pi/4
           fl-log2-e fl-log10-e
-          fl-log-2 fl-1/log-2
+          fl-log-2
           fl-log-3 fl-log-pi
-          fl-log-10 fl-1/log-10
+          fl-log-10
           fl-pi fl-1/pi
           fl-2pi fl-pi/2
           fl-2/pi fl-pi/4
@@ -35,7 +35,8 @@
           fl-4thrt-2 fl-1/sqrt-2
           fl-phi fl-log-phi
           fl-1/log-phi fl-euler fl-e^euler
-          fl-sin-1 fl-cos-1)
+          fl-sin-1 fl-cos-1
+          fl-fast-fl+*)
   (export flonum flonum? fladjacent flcopysign make-flonum)
   (export flinteger-fraction flexponent flinteger-exponent
           fl-integer-exponent-zero fl-integer-exponent-nan

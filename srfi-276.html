@@ -692,11 +692,9 @@ flonums.</p>
    <code>fl-log2-e</code>,
    <code>fl-log10-e</code>,
    <code>fl-log-2</code>,
-   <code>fl-1/log-2</code>,
    <code>fl-log-3</code>,
    <code>fl-log-pi</code>,
    <code>fl-log-10</code>,
-   <code>fl-1/log-10</code>,
    <code>fl-pi</code>,
    <code>fl-1/pi</code>,
    <code>fl-2pi</code>,
@@ -737,6 +735,17 @@ flonums.</p>
   Radix of the floating point representation. For binary representations
   such as binary64, this is 2. The variable <var>b</var> is set to this
   value throughout this SRFI.
+</p>
+
+<div class="feature" id="fl-fast-fma">
+<span class="category">(srfi 276 ⟨library⟩)<br>value</span>
+<code class="signature"><a href="#fl-fast-fma">fl-fast-fl+*</a></code>
+</div>
+
+<p>
+  Bound to <code>#t</code> if <code>(fl+* x y z)</code> executes about
+  as fast as, or faster than, <code>(fl+ (fl* x y) z)</code>; bound to
+  <code>#f</code> otherwise.
 </p>
 
 <div class="feature" id="fl-precision">
@@ -1773,6 +1782,8 @@ operation exception.</li>
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
 <code class="signature">(<a href="#fltruncate-quotient" id="fltruncate-quotient">fltruncate-quotient</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(flquotient <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(flremainder <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
 <code class="signature">(<a href="#fltruncate-remainder" id="fltruncate-remainder">fltruncate-remainder</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
 </div>
 
@@ -1787,12 +1798,11 @@ operation exception.</li>
   is always correctly rounded.
 </p>
 
-<div class="boxed">
 <p>
-  <span class="boxed-tag">Rationale:</span>
-  These procedures are renamed from
-  <code>flquotient</code> and <code>flremainder</code> in SRFI 144.
-</p></div>
+  <code>flquotient</code> is a synonym for <code>fltruncate-quotient</code>,
+  and
+  <code>flremainder</code> is a synonym for <code>fltruncate-remainder</code>.
+</p>
 
 <div class="feature">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
@@ -2896,6 +2906,118 @@ should round-trip NaNs.</p>
   <code>number-&gt;string</code> is already polymorphic.
 </p>
 </div>
+
+<h3 id="deprecated-identifiers"><a href="#deprecated-identifiers">&para;</a>
+    Deprecated identifiers</h3>
+
+<p>
+  These identifiers are specified for backwards compatibility with
+  other specificiations. They should not be used in portable code.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">fl-e-2</code>
+</div>
+
+<p>Equivalent to <code>fl-e^2</code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">fl-e-pi/4</code>
+</div>
+
+<p>Equivalent to <code>fl-e^pi/4</code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">fl-pi-squared</code>
+</div>
+
+<p>Equivalent to <code>fl-pi-squared</code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">fl-e-euler</code>
+</div>
+
+<p>Equivalent to <code>fl-e^euler</code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">fl-1/log-10</code>
+</div>
+
+<p>Equivalent to <code>fl-log10-e</code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">fl-1/log-2</code>
+</div>
+
+<p>Equivalent to <code>fl-log2-e</code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">(flsignbit <var>fl</var>)</code>
+</div>
+
+<p>
+  Equivalent to
+</p>
+
+<pre
+>(define (flsignbit fl)
+  (if (flsign-negative? fl)
+      1
+      0))</pre>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">(flnormalized? <var>fl</var>)</code>
+</div>
+
+<p>
+  Equivalent to <code><a href="#flnormalp">flnormal?</a></code>.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">(fldenormalized? <var>fl</var>)</code>
+</div>
+
+<p>
+  Equivalent to <code><a href="#flsubnormalp">flsubnormal?</a></code>.
+</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">(fllog1+ <var>fl</var>)</code>
+</div>
+
+<p>Equivalent to <code><a href="#fllogp1">fllog+1</a></code>.</p>
+
+<div class="feature">
+<span class="category">(srfi 276 ⟨library⟩ deprecated)<br>value</span>
+<code class="signature">(fixnum-&gt;flonum <var>fx</var>)</code><br>
+<code class="signature">(real-&gt;flonum <var>x</var>)</code>
+</div>
+
+<p>
+  Convert the specified type into a flonum. These procedures are allowed
+  to be equivalent to
+  <code><a href="#flonum">flonum</a></code>.
+</p>
+
+<div class="boxed">
+<p><span class="boxed-tag">Note</span>:
+  Equivalents to <span class="report-name">R<sup>6</sup>RS</span>’s
+  <code>fldiv-and-mod</code> (and others) are not supplied. These
+  operations are not rounded correctly on most implementations, and
+  there are many different types of results (flonum approximation,
+  <code><a href="#flremquo">flremquo</a></code> style, a bignum) one
+  may wish to obtain from a division operation.
+</p></div>
 
 <h2 id="rounding-mode-library"><a href="#rounding-mode-library">&para;</a>
     Rounding mode libraries</h2>

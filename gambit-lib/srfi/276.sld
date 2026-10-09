@@ -5,7 +5,7 @@
                   (fldenominator %fldenominator)
                   (fl+* %fl+*)))
   ;;; Constants
-  (export fl-radix fl-precision fl-maximum-exponent
+  (export fl-radix fl-precision fl-maximum-exponent fl-fast-fl+*
           fl-minimum-exponent fl-minimum-normalized-exponent
           fl-greatest fl-least fl-least-normal fl-epsilon fl-byte-width)
   (begin
