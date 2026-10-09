@@ -3,7 +3,10 @@
 (define skipping? #f)
 
 (test-begin "SRFI 276")
-(test-skip (lambda ignored skipping?))
+(cond-expand
+  ((not gambit)
+   (test-skip (lambda ignored skipping?)))
+  (else))
 
 (include "tests.srfi-64.scm")
 (include "random-flonum.scm")
