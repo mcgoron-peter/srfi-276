@@ -174,12 +174,12 @@ Output:
 	((fl<=? a (fl/ 39.0 16.0))
 	 (let ((v
 		(fl+ atanpi-1.5
-		     (%atanpi (fl/ (fl- fl 1.5)
+		     (%atanpi (fl/ (fl- a 1.5)
 				   (fl+ 1.0 (fl* 1.5 a)))))))
 	   (flcopysign v fl)))
 	(else
 	 (let ((v
-		(fl+ 0.5 (%atanpi (fl- (fl/ fl))))))
+		(fl+ 0.5 (%atanpi (fl- (fl/ a))))))
 	   (flcopysign v fl))))))))
 
 (define flatanpi
