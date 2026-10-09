@@ -1,7 +1,8 @@
 (define-library (srfi 276)
-  (import (except gambit let-values let*-values fltruncate fl+*)
-          (rename (only gambit fltruncate fl+*)
+  (import (rename (except gambit let-values let*-values)
                   (fltruncate %fltruncate)
+                  (flnumerator %flnumerator)
+                  (fldenominator %fldenominator)
                   (fl+* %fl+*)))
   ;;; Constants
   (export fl-radix fl-precision fl-maximum-exponent
@@ -185,7 +186,8 @@ ___return(exp);")))
            flmax-abs flmin-abs
            flmax-abs-filter-nans flmin-abs-filter-nans
            fl+ fl- fl* fl/ fl+* flabs
-           flabsdiff flposdiff flsgn)
+           flabsdiff flposdiff flsgn
+           flnumerator fldenominator)
    (include "../../lib/srfi/276.maxmin.scm")
    (begin
      (define fl+*
@@ -219,7 +221,17 @@ ___return(exp);")))
      (define flposdiff
        (c-lambda (double double) double "fdim"))
      (define (flsgn x)
-       (flcopysign 1.0 x)))
+       (flcopysign 1.0 x))
+     (define (flnumerator x)
+       (cond
+         ((flinfinite? x) x)
+         ((flnan? x) x)
+         (else (%flnumerator x))))
+     (define (fldenominator x)
+       (cond
+         ((flinfinite? x) 1.0)
+         ((flnan? x) x)
+         (else (%fldenominator x)))))
    ;;; Integer rounding
    (export flfloor flceiling
            fltruncate

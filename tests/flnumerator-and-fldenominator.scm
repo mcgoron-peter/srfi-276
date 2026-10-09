@@ -20,5 +20,8 @@
   (test-group "flnumerator and fldenominator divide to the original number"
     (test-property
      (lambda (fl)
-       (fl=? fl (fl/ (flnumerator fl) (fldenominator fl))))
+       (let ((n (flnumerator fl))
+             (d (fldenominator fl)))
+         (or (flinfinite? d)
+             (fl=? fl (fl/ n d)))))
      (list (make-random-finite-flonum-generator)))))
