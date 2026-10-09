@@ -48,6 +48,8 @@
              body0 body1 ...)))))
 
     (c-declare "#include <float.h>")
+    (c-declare "#include <fenv.h>")
+    (c-declare "#pragma STDC FENV_ACCESS ON")
     (define fl-radix
       ((c-lambda () int "___return(FLT_RADIX);")))
     (define fl-precision
@@ -250,7 +252,26 @@ ___return(exp);")))
            flremquo
            flround-quotient
            flround-remainder)
+   (include "276.fltruncate-remainder.scm")
    (begin
+     (define flquotient
+       (c-lambda (double double) double "\
+int rounding_mode = fegetround();
+double result = ___arg1/___arg2;
+if (!isinf(result)) {
+  fesetround(FE_TOWARDZERO);
+  result = ___arg1/___arg2;
+  fesetround(rounding_mode);
+}
+  ___return(copysign(trunc(result), result));"))
+     (define (flremquo x y)
+       (let* ((v (make-f64vector 1))
+              (remquo (c-lambda (double double scheme-object) int "\
+int q;
+___F64VECTORSET(___arg3, ___FIX(0), remquo(___arg1, ___arg2, &q));
+___return(q);"))
+              (q (remquo x y v)))
+         (values (f64vector-ref v 0) q)))
      (define (flround-quotient x y)
        (flround-away (fl/ x y)))
      (define flround-remainder
