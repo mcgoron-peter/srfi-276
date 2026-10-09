@@ -39,7 +39,14 @@
     (test-values (flloggamma 1.0) '(0.0 1.0))
     (test-values (flloggamma 2.0) '(0.0 1.0))
     (test-values (flloggamma +inf.0) '(+inf.0 1.0))
-    (test-values (flloggamma -inf.0) '(+inf.0 1.0))))
+    (call-with-values (lambda () (flloggamma +nan.0))
+      (lambda (f e)
+        (test-predicate (flnan? f))
+        (test-values (flabs e) '(1.0))))
+    (call-with-values (lambda () (flloggamma -inf.0))
+      (lambda (f e)
+        (test-assert (fl=? f +inf.0))
+        (test-assert (fl=? (flabs e) 1.0))))))
 
 (define (test-flloggamma-on-negative-integers)
   (test-group "flloggamma on negative integers"

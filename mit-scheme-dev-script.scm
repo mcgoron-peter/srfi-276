@@ -232,6 +232,13 @@
 
 (load "lib/srfi/276.compound.scm")
 (load "tests/flcompound.scm")
+(test-flcompound-to-zero)
+(test-flcompound-below-zero)
+(test-flcompound-minus-1-to-negative)
+(test-flcompound-minus-1-to-positive)
+(test-flcompound-infinite-to-positive)
+(test-flcompound-infinite-to-negative)
+(test-flcompound-nan)
 
 (load "tests/flhypot.scm")
 (test-flhypot)
@@ -255,7 +262,8 @@
 (test-fltan)
 (test-fltan-odd-property)
 
-(load "lib/srfi/276.trigpi")
+(load "lib/srfi/276.trigpi.scm")
+(load "tests/fltrigpi.scm")
 (test-flsinpi)
 (test-flsinpi-odd)
 (test-flsinpi-integer-property)

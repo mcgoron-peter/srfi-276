@@ -84,7 +84,7 @@
 	   (fl=? (flexpt zero fl) +inf.0)))
 	(predicate?
 	 (lambda (x)
-	   (and (not (flodd? x))
+	   (and (or (not (flinteger? x)) (not (flodd? x)))
 		(flnegative? x)))))
     (test-group "(flexpt zero negative-even) returns positive infinity"
       (test-property
