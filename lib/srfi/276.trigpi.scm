@@ -253,7 +253,6 @@ Sollya output:
 	      5.3632723139170360565185546875e9)))))
 
 (define (fltanpi fl)
-  ;; TODO: Add correct IEEE 754 handling, which is somewhat complex.
   (if (not (flfinite? fl))
       +nan.0
       ;; Fold arguments into [-0.5, 0.5].
@@ -298,7 +297,7 @@ Sollya output:
 			((fl>? fpart 0.5)
 			 (fl- fpart 1.0))
 			((fl<? fpart -0.5)
-			 (flabs fpart))
+			 (fl+ fpart 1.0))
 			(else fpart)))
 		  (a (flabs arg))
 		  (value
