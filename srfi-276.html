@@ -1174,11 +1174,12 @@ flonums.</p>
 
 <div class="feature" id="flneq">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>
-<code class="signature">(<a href="#flneq" id="flonum-neq">fl!=?</a> <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code><br>
+<code class="signature">(<a href="#flneq" id="flonum-neq">fl!=?</a> <var>fl</var> …)</code><br>
 </div>
 
 <p>
-  This predicate returns <code>#t</code> when the two values are not equal.
+  This predicate returns <code>#t</code> if there exist two values in the list
+  that are not equal.
   When passed a signaling NaN, this procedure raises the invalidOperation
   floating-point exception. When given NaN values, this procedure returns
   <code>#f</code>.
@@ -1190,6 +1191,13 @@ flonums.</p>
   is not the same as
   <code>(fl!=? <var>fl<sub>1</sub></var> <var>fl<sub>2</sub></var>)</code>.
 </div>
+
+<pre
+><code class="example-code">(fl!=?)</code> ⇒ #f</code>
+<code class="example-code">(fl!=? 1.0)</code> ⇒ #f</code>
+<code class="example-code">(fl!=? 1.0 2.0)</code> ⇒ #t</code>
+<code class="example-code">(fl!=? 1.0 1.0)</code> ⇒ #f</code>
+<code class="example-code">(fl!=? +nan.0 +nan.0)</code> ⇒ #f</code></pre>
 
 <div class="feature" id="flonum-total-comp">
 <span class="category">(srfi 276 ⟨library⟩)<br>procedure</span>

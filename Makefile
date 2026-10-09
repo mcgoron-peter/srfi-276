@@ -9,6 +9,7 @@ test: gambit-lib/srfi/276.o1 gambit-contrib/srfi/252.o1
 gambit-lib/srfi/276.o1: gambit-lib/srfi/276.sld \
                         gambit-lib/srfi/144.special.scm \
                         lib/srfi/276.utils.scm \
+                        lib/srfi/276.fl-not-equal.scm \
                         lib/srfi/276.constants.scm \
                         lib/srfi/276.total.scm \
                         lib/srfi/276.maxmin.scm \

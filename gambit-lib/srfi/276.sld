@@ -167,16 +167,8 @@ ___return(exp);")))
            flnan?
            flnormal? flsubnormal?)
    (include "../../lib/srfi/276.total.scm")
+   (include "../../lib/srfi/276.fl-not-equal.scm")
    (begin
-     (define fl!=?
-       (case-lambda
-         (() #f)
-         ((x) #f)
-         ((x y . rest)
-          (let loop ((x x) (y y) (rest rest))
-            (and (fl=? x y)
-                 (or (null? rest))
-                 (loop y (car rest) (cdr rest)))))))
      (define flunordered?
        (c-lambda (double double) bool "___return(isunordered(___arg1, ___arg2));"))
      (define flordered?

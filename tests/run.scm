@@ -41,3 +41,43 @@
 
 (include "flexponent.scm")
 (test-flexponent)
+
+(include "flnormalized-fraction-exponent.scm")
+(test-flnormalized-fraction-exponent)
+(flnormalized-fraction-exponent-and-make-flonum-are-inverses)
+
+(include "order.scm")
+(test-flonum-order)
+(test-negative-infinity-less-than-all-ordered)
+(test-fl-greatest-is-greater-than-all-finite)
+(test-positive-infinity-is-greater-than-all-ordered)
+(test-trichotomy-of-order)
+(test-weak-order)
+
+(include "total-order.scm")
+(test-fl<?-implies-fltotal<?)
+(test-eqv?-implies-fltotal=?)
+(test-trichotomy-of-total-order)
+(test-weak-total-order)
+(test-nans-are-ordered-beyond-finite-values)
+(test-total-order-special-cases)
+
+(include "flunordered.scm")
+(test-nans-are-unordered)
+(test-non-nans-are-ordered)
+
+(include "fl-not-equal.scm")
+(test-fl!=?)
+
+(include "subtype-predicates.scm")
+(test-flinteger?)
+(test-flzero?)
+(test-flpositive?)
+(test-flnegative?)
+(test-flodd?)
+(test-fleven?)
+(test-flfinite?)
+(test-flinfinite?)
+(test-property-nans)
+(test-flnormal?)
+(test-flsubnormal?)
