@@ -459,6 +459,9 @@ between this SRFI and other standards</a></li>
   </li>
 <li>if <var>exception</var> is not a floating point exception
     (see <code><a href="#flexception-namep">flexception-name?</a></code>)</li>
+<li>if <var>exception-or-list</var> is not a floating point exception
+    (see <code><a href="#flexception-namep">flexception-name?</a></code>)
+    or a list of floating point exceptions.</li>
 </ul>
 
 <p>
@@ -3147,7 +3150,7 @@ should round-trip NaNs.</p>
 <h2 id="exception-libraries"><a href="#exception-libraries"></a>
   Floating-point exception library</h2>
 <div class="feature" id="flexception-namep">
-<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<span class="category">(srfi 276 exception)<br>procedure</span>
 <code class="signature">(<a href="#flexception-namep">flexception-name?</a> <var>obj</var>)</code>
 </div>
 
@@ -3175,14 +3178,14 @@ should round-trip NaNs.</p>
 <p>An implementation may add more exceptions, which should be symbols.</p>
 
 <div class="feature" id="current-flexceptions">
-<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<span class="category">(srfi 276 exception)<br>procedure</span>
 <code class="signature">(<a href="#current-flexceptions">current-flexceptions</a>)</code>
 </div>
 
 <p>Returns an immutable list of the current raised exceptions.</p>
 
 <div class="feature" id="possible-flexceptions">
-<span class="category">(srfi 276 exceptions)<br>procedure</span>
+<span class="category">(srfi 276 exception)<br>procedure</span>
 <code class="signature">(<a href="#possible-flexceptions">possible-flexceptions</a>)</code>
 </div>
 
@@ -3190,44 +3193,30 @@ should round-trip NaNs.</p>
    raised.</p>
 
 <div class="feature" id="flexception-raisedp">
-<span class="category">(srfi 276 exceptions)<br>procedure</span>
-<code class="signature">(<a href="#flexception-raisedp">flexception-raised?</a> <var>exception</var>)</code>
+<span class="category">(srfi 276 exception)<br>procedure</span>
+<code class="signature">(<a href="#flexceptions-raisedp">flexceptions-raised?</a> <var>exception-or-list</var> …)</code>
 </div>
 
-<p>Returns <code>#t</code> if <var>exception</var> was raised in the
+<p>Returns <code>#t</code> if each exception was raised in the
    current exception environment.
 </p>
 
 <div class="feature" id="raise-flexceptions">
 <span class="category">(srfi 276 exceptions)<br>procedure</span>
-<code class="signature">(<a href="#raise-flexception" id="raise-flexception">raise-flexceptions!</a> <var>exception</var> …)</code>
+<code class="signature">(<a href="#raise-flexceptions" id="raise-flexceptions">raise-flexceptions!</a> <var>exception-or-list</var> …)</code>
 </div>
 
 <p>
-  Raise each <var>exception</var>.
+  Raise each exception.
 </p>
 
 <div class="feature" id="lower-flexceptions">
 <span class="category">(srfi 276 exceptions)<br>procedure</span>
-<code class="signature">(<a href="#lower-flexception" id="lower-flexception">lower-flexceptions!</a> <var>exception</var> …)</code>
+<code class="signature">(<a href="#lower-flexceptions" id="lower-flexceptions">lower-flexceptions!</a> <var>exception-or-list</var> …)</code>
 </div>
 
 <p>
-  Lower each <var>exception</var>.
-</p>
-
-<div class="feature" id="with-flexceptions">
-<span class="category">(srfi 276 exceptions)<br>syntax</span>
-<code class="signature">(<a href="#with-flexceptions">with-flexceptions</a>
-<var>exception-list</var> <var>body<sub>1</sub></var> <var>body<sub>2</sub></var> …)</code>
-</div>
-
-<p>
-  Evaluate <var>exception-list</var> to a list of exceptions. The body is
-  evaluated in an environment that starts out with the exceptions that
-  were in the list of exceptions. Raising and lowering exceptions affects
-  the exceptions in the dynamic extent, and not the exceptions anywhere
-  else.
+  Lower each exception.
 </p>
 
 <h2 id="implications"><a href="#implications"></a>Implications of IEEE arithmetic for optimizers</h2>
