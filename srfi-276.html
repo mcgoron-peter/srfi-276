@@ -381,6 +381,20 @@ between this SRFI and other standards</a></li>
 </p>
 
 <p>
+  If an implementation does support the floating point exception library,
+  then it must implement the exceptions as specified in the description
+  of each procedure and in this paragraph. Procedures should raise
+  the <code>inexact</code> exception when a procedure returns a result
+  that is rounded from the infinitely precise value.  Procedures must
+  raise the <code>overflow</code> exception if they detect that the
+  mathematically exact result is larger in magnitude than the largest
+  finite flonum. Procedures must raise the <code>underflow</code>
+  exception if the implementation detects that the returned number lies
+  strictly between ±<var>b</var><sup>e<sub>min</sub></sup>. Whether or
+  not this is detected before or after rounding is implementation defined.
+</p>
+
+<p>
   When an operation is <dfn>implementation defined</dfn>, then the
   implementation should document what choice or procedure they use for
   that behavior. For example, the implementation should document the
@@ -1512,7 +1526,8 @@ flonums.</p>
 <li>If any argument is a NaN, NaN is returned.</li>
 <li>Infinity added to a finite number returns that infinity.</li>
 <li>Two infinities of the same sign return an infinity of the same sign.</li>
-<li>Two infinities of opposite signs return a NaN.</li>
+<li>Two infinities of opposite signs return a NaN and raise the
+    invalidOperation exception.</li>
 <li>Let <var>fl</var> be a zero. Then <code>(fl+ <var>fl</var> <var>fl</var>)</code>
     returns <var>fl</var>.</li>
 <li>Let <var>fl<sub>1</sub></var> and <var>fl<sub>2</sub></var> be
@@ -1520,6 +1535,10 @@ flonums.</p>
     returned zero is negative in roundTowardsNegative mode, and positive
     in all other rounding modes.</li>
 </ol>
+
+<p>
+  This procedure associates to the left.
+</p>
 
 <p>
   The following examples assume that the rounding mode is not
@@ -1549,9 +1568,11 @@ flonums.</p>
   implementation-defined.
 </p>
 <p>
-  When two or more arguments are given, calculates the difference of those
-  arguments. The result is equivalent to <code>(fl+ <var>fl<sub>1</sub></var>
-(fl- <var>fl<sub>2</sub></var>) &hellip;)</code>.
+  When two or more arguments are given, calculates the difference of
+  those arguments, associating to the left. The special cases of
+  <code>fl-</code> are the special cases of
+  <code>fl+</code> with the second argument’s
+  sign flipped.
 </p>
 
 <div class="feature">
