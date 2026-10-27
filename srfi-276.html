@@ -205,7 +205,6 @@ SPDX-License-Identifier: MIT
     Rounding mode libraries</a></li>
   <li><a href="#exception-libraries">
   Floating-point exception library</a></li>
-  <li><a href="#environment">Floating point environment library</a></li>
   <li><a href="#implications">Implications of IEEE arithmetic for optimizers</a></li>
   <li><a href="#examples">Examples</a></li>
   <li><a href="#considerations">Considerations for inexact number vectors</a></li>
@@ -372,7 +371,7 @@ between this SRFI and other standards</a></li>
 </p>
 
 <p>
-  If an implementation does not support the floating point environment
+  If an implementation does not support the floating point exception
   library, then it does not need to implement the exception behavior as
   described in the library section. Additionally, an implementation may
   support other exception handling modes, such as raising a Scheme
@@ -460,8 +459,6 @@ between this SRFI and other standards</a></li>
   </li>
 <li>if <var>exception</var> is not a floating point exception
     (see <code><a href="#flexception-namep">flexception-name?</a></code>)</li>
-<li>if <var>flenvironment</var> is not a floating point environment
-    (see <code><a href="#flenvironmentp">flenvironment?</a></code>)</li>
 </ul>
 
 <p>
@@ -546,8 +543,6 @@ between this SRFI and other standards</a></li>
 <dd>Operation on the global rounding mode.</dd>
 <dt><code>(srfi 276 exceptions)</code></dt>
 <dd>Operation regarding floating-point exceptions.</dd>
-<dt><code>(srfi 276 environment)</code></dt>
-<dd>Operation on the floating point environment.</dd>
 </dl>
 
 <p>
@@ -3235,120 +3230,6 @@ should round-trip NaNs.</p>
   else.
 </p>
 
-<h2 id="environment"><a href="#environment"></a>Floating point environment library</h2>
-
-<p>
-  An implementation may add more objects to the floating
-  point environment.  For example, it may add a toggle to
-  signal Scheme exceptions when a floating-point exception
-  is raised. However, it must preserve the property that <a
-  href="#flenvironmenteqp"><code>flenvironment=?</code></a> decides the
-  equivalence of environments.
-</p>
-
-<div class="feature" id="current-flenvironment">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#current-flenvironment">current-flenvironment</a>)</code>
-</div>
-
-<p>Returns the current floating point environment. The floating point
-   environment encompasses all modifications possible at runtime.
-</p>
-
-<div class="feature" id="flenvironmentp">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#flenvironmentp">flenvironment?</a> <var>obj</var>)</code>
-</div>
-
-<p>
-  Returns <code>#t</code> if <var>obj</var> is an environment, and
-  <code>#f</code> otherwise.
-</p>
-
-<div class="feature" id="flenvironmenteqp">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#flenvironmenteqp">flenvironment=?</a>
-<var>flenvironment<sub>1</sub></var>
-<var>flenvironment<sub>2</sub></var>
-<var>flenvironment<sub>3</sub></var> …)</code>
-</div>
-
-<p>
-  Returns <code>#t</code> if all <var>flenvironment</var>s are equal.
-  Two environments are equal if, barring Scheme exceptions being signalled,
-  two procedures in this SRFI given the same arguments would return the
-  same results.
-</p>
-
-<div class="feature" id="flenvironment-rounding-mode">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#flenvironment-rounding-mode">flenvironment-rounding-mode</a>
-<var>flenvironment</var>)</code>
-</div>
-
-<p>
-  Returns the rounding mode in the <var>flenvironment</var>.
-</p>
-
-<div class="feature" id="flenvironment-raised-exceptions">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#flenvironment-raised-exceptions">flenvironment-raised-exceptions</a>
-<var>flenvironment</var>)</code>
-</div>
-
-<p>
-  Returns an immutable list of raised exceptions in the <var>flenvironment</var>.
-</p>
-
-<div class="feature" id="make-flenvironment">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#make-flenvironment">make-flenvironment</a>
-<var>rounding-mode</var> <var>exception-list</var>)</code>
-</div>
-
-<p>It is an error if <var>exception-list</var> is not a list of
-   exception names.</p>
-
-<p>
-  Constructs an environment with the <var>rounding-mode</var>, and with
-  the exceptions in <var>exception-list</var> raised.
-</p>
-
-<div class="feature" id="default-flenvironment">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#default-flenvironment">default-flenvironment</a>)</code>
-</div>
-
-<p>
-  Return the default environment. At runtime this is an implementation-specified
-  environment, and it may be modified by
-  <a href="#with-flenvironment"><code>with-flenvironment</code></a>.
-</p>
-
-<div class="feature" id="restore-flenvironment">
-<span class="category">(srfi 276 environment)<br>procedure</span>
-<code class="signature">(<a href="#restore-flenvironment">restore-flenvironment!</a>
-<var>flenvironment</var>)</code>
-</div>
-
-<p>
-  Set <var>flenvironment</var> as the current floating-point environment.
-</p>
-
-<div class="feature" id="with-flenvironment">
-<span class="category">(srfi 276 environment)<br>syntax</span>
-<code class="signature">(<a href="#with-flenvironment">with-flenvironment</a>
-<var>flenvironment</var> <var>body<sub>1</sub></var> <var>body<sub>2</sub></var> …)</code>
-</div>
-
-<p>
-  Evaluate <var>flenvironment</var> to a floating point environment. When
-  the dynamic extent of the body is first entered, the floating point
-  environment is <var>flenvironment</var>. In addition, throughout the
-  extent of the floating-point environment, the default environment is
-  <var>flenvironment</var>.
-</p>
-
 <h2 id="implications"><a href="#implications"></a>Implications of IEEE arithmetic for optimizers</h2>
 
 <p>
@@ -3466,7 +3347,7 @@ should round-trip NaNs.</p>
   is a Gambit implementation. The Gambit implementation can be compiled
   using the Makefile, and the resulting library is in the <code>gambit-lib</code>
   directory. These only implement the required parts of
-  this SRFI: an MIT-Scheme implementation of the exception, environment,
+  this SRFI: an MIT-Scheme implementation of the exception
   and rounding-mode interface will be provided later.
 </p>
 
