@@ -62,7 +62,9 @@
 (define (test-flacosh-below-one)
   (test-group "flacosh below one is NaN"
     (test-property
-     (lambda (fl) (flnan? (flacosh fl)))
+     (lambda (fl)
+       (true-and-raises 'invalid-operation
+         (flnan? (flacosh fl))))
      (list random-real))))
 
 (define (test-flatanh)

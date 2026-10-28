@@ -9,6 +9,21 @@
      (list (make-random-finite-flonum-generator)
 	   (boolean-generator)))))
 
+(define (test-fltruncate-remainder-special-cases)
+  (test-group "fltruncate-quotient special cases"
+    (test-assert "(fltruncate-remainder x 0.0)"
+      (true-and-raises 'invalid-operation
+        (flnan? (fltruncate-quotient 2.0 0.0))))
+    (test-assert "(fltruncate-remainder x -0.0)"
+      (true-and-raises 'invalid-operation
+        (flnan? (fltruncate-quotient 2.0 -0.0))))
+    (test-assert "(fltruncate-remainder +inf.0 y)"
+      (true-and-raises 'invalid-operation
+        (flnan? (fltruncate-quotient +inf.0 2.0))))
+    (test-assert "(fltruncate-remainder -inf.0 y)"
+      (true-and-raises 'invalid-operation
+        (flnan? (fltruncate-quotient -inf.0 2.0))))))
+
 (define (test-fltruncate-quotient-finite-sign)
   (test-group "fltruncate-quotient gives correct sign given numerator and denominator"
     (test-property

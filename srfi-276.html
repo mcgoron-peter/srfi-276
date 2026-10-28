@@ -1594,7 +1594,8 @@ flonums.</p>
 <ol>
 <li>If any argument is a NaN, NaN is returned.</li>
 <li>Infinity times a finite number returns an infinity.</li>
-<li>Infinity times a zero returns a NaN.</li>
+<li>Infinity times a zero returns a NaN and raises the invalidOperation
+    exception. </li>
 </ol>
 
 <p>
@@ -1625,11 +1626,11 @@ flonums.</p>
 <li>Infinity divided by a finite number returns an infinity with the
     appropriate sign.</li>
 <li>A finite number divided by zero will return an appropriately signed
-    infinity and raises the invalid operation exception.</li>
-<li>Zero divided by zero returns a NaN and signals the invalid
-operation exception.</li>
-<li>Infinity divided by infinity returns a NaN and signals the invalid
-operation exception.</li>
+    infinity and raises the divideByZero exception.</li>
+<li>Zero divided by zero returns a NaN and signals the invalidOperation
+exception.</li>
+<li>Infinity divided by infinity returns a NaN and signals the
+invalidOperation exception.</li>
 </ol>
 
 <p>

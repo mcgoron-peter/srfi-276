@@ -20,6 +20,9 @@
 
 ;;;; NOTE: This test suite assumes round toward nearest behavior.
 
+(load "mit-scheme-lib/srfi/276/exception.sld")
+,(import (srfi 276 exception))
+
 (load "tests/tests.mit-scheme.scm")
 (load "tests/random-flonum.scm")
 (load "lib/srfi/276.utils.scm")

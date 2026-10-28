@@ -1,6 +1,8 @@
 (define (flrsqrt fl)
   (cond
-    ((flzero? fl) (flcopysign +inf.0 fl))
+    ((flzero? fl)
+     (maybe-raise-flexceptions! 'divide-by-zero)
+     (flcopysign +inf.0 fl))
     ((fl=? fl +inf.0) 0.0)
     ((flnegative? fl) +nan.0)
     (else

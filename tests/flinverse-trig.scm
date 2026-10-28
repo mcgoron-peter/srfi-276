@@ -2,7 +2,9 @@
   (test-group "flasin"
     (test-values (flasin 0.0) '(0.0))
     (test-values (flasin -0.0) '(-0.0))
-    (test-predicate (flnan? (flasin 1.1)))))
+    (test-assert "(flasin 1.1)"
+      (true-and-raises 'invalid-operation
+        (flnan? (flasin 1.1))))))
 
 (define (test-flasin-is-odd)
   (test-group "flasin is odd"
@@ -22,7 +24,9 @@
 (define (test-flacos)
   (test-group "flacos"
     (test-values (flacos 1.0) '(0.0))
-    (test-predicate (flnan? (flacos (fladjacent 1.0 +inf.0))))))
+    (test-assert "(flacos x>1.0)"
+      (true-and-raises 'invalid-operation
+        (flnan? (flacos (fladjacent 1.0 +inf.0)))))))
 
 (define (test-flacos-inversion)
   (test-group "flacos is inverse to flcos"

@@ -15,7 +15,8 @@
   (test-group "flcompound below zero"
     (test-property
      (lambda (fl n)
-       (flnan? (flcompound fl n)))
+       (true-and-raises 'invalid-operation
+         (flnan? (flcompound fl n))))
      (list (gfilter (lambda (x)
 		      (fl<? x -1.0))
 		    (gcons*
@@ -27,7 +28,8 @@
   (test-group "flcompound -1.0 negative"
     (test-property
      (lambda (n)
-       (fl=? (flcompound -1.0 n) +inf.0))
+       (true-and-raises 'divide-by-zero
+         (fl=? (flcompound -1.0 n) +inf.0)))
      (list (gfilter negative? (make-random-integer-generator #e-1e6 #e1e6))))))
 
 (define (test-flcompound-minus-1-to-positive)
