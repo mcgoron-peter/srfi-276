@@ -8,6 +8,7 @@
                   (fl- srfi-144:fl-)
                   (fl/ srfi-144:fl/)
                   (fl* srfi-144:fl*)
+                  (flremainder srfi-144:flremainder)
                   (flonum srfi-144:flonum)
                   (flsign-bit srfi-144:flsign-bit)
                   (flinteger-exponent srfi-144:flinteger-exponent)))
@@ -15,14 +16,12 @@
     (mit (begin
            (define fllog+1 fllog1+)
            (define fltruncate-quotient flquotient)
-           (define fltruncate-remainder flremainder)
            (define flnormal? flnormalized?)
            (define flsubnormal? fldenormalized?)))
     (else
      (import (rename (srfi 144)
                      (fllog1+ fllog+1)
                      (flquotient fltruncate-quotient)
-                     (flremainder fltruncate-remainder)
                      (flnormalized? flnormal?)
                      (fldenormalized? flsubnormal?)))))
 
@@ -200,6 +199,7 @@
   (include "276.maxmin.scm")
   (include "276.round-away.scm")
   (include "276.round-quotient-and-remainder.scm")
+  (include "276.fltruncate-remainder.scm")
   (include "276.exp.scm")
   (include "276.fllog.scm")
   (include "276.cbrt.scm")

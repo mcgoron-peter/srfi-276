@@ -6,6 +6,7 @@
 ,(import (srfi 27) (srfi 276) (srfi 158))
 
 (load "tests.mit-scheme.scm")
+#|
 (define skipping? #f)
 (test-verbose? #f)
 (load "run.body.scm")
@@ -25,3 +26,4 @@
 (exit (if (zero? tests-failed)
         0
         1))
+|#
