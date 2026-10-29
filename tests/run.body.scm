@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (cond-expand
   ((library (srfi 276 exception))
    (define-syntax true-and-raises

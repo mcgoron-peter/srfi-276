@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 ;;;; NOTE: SRFI 26 specific.
 ;;;;
 ;;;; FIXME: Many of these generators are definitely not uniform.

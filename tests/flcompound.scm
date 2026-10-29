@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-flcompound-to-zero)
   (test-group "flcompound to zero"
     (test-property

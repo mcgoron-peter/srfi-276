@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-fltruncate-quotient-for-infinite-denominator)
   (test-group "fltruncate-quotient returns signed zero for infinite denominator"
     (test-property

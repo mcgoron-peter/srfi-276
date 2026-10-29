@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
  ;;;; See 276.trigpi.scm for comments on where constants come from.
 
 (define (%asinpi fl)

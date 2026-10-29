@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-flerf)
   (test-group "flerf"
     (test-values (flerf 0.0) '(0.0))

@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define-library (srfi 276)
   (import (rename (except gambit let-values let*-values)
                   (fltruncate %fltruncate)

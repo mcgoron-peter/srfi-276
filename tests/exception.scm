@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-flexception-name)
   (test-group "flexception-name?"
     (test-assert (flexception-name? 'invalid-operation))

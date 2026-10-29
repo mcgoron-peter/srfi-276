@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-flabsdiff)
   (test-group "flabsdiff"
     (test-assert "(flabsdiff +inf.0 +inf.0)"

@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 ;;; Stef Graillat. Accurate Floating Point Product and
 ;;; Exponentiation. IEEE Transactions on Computers, 2009, 58 (7),
 ;;; pp.994-1000. ⟨10.1109/TC.2008.215⟩. ⟨hal-00164607⟩

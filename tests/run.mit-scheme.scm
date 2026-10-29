@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 ;; Enable exception handling
 (flo:clear-exceptions! (flo:supported-exceptions))
 (load "../mit-scheme-lib/srfi/276/exception.sld")

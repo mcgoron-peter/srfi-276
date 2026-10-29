@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (import (scheme base) (srfi 27) (srfi 276) (srfi 64) (srfi 194) (srfi 252) (srfi 158))
 
 (test-begin "SRFI 276")

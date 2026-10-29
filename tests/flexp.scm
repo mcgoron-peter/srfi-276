@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-flexp)
   (test-group "flexp"
     (test-values (flexp 0.0) '(1.0))

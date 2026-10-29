@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-set-rounding-mode)
   (test-group "round-towards-zero"
     (set-rounding-mode! 'round-towards-zero)

@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-rounding-mode)
   (test-group "rounding mode"
     (test-assert (rounding-mode? (current-rounding-mode)))

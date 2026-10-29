@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-fllog-like fllog name)
   (test-group name
     (test-values (fllog +inf.0) '(+inf.0))

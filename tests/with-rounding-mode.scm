@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 ;;;; FIXME: Needs a lot more tests.
 
 (define (test-with-rounding-mode)

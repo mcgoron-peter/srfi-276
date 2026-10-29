@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: GPL-2.0-or-later
 ;;;; This is a SRFI 64 shim for MIT-Scheme.
 
 (define tests-passed 0)

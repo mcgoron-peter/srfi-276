@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 #| The kernel for sin and cos are calculated using a minimax approximation.
 
    The calculations were done with Sollya:

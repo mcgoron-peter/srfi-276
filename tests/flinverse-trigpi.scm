@@ -1,3 +1,5 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+; SPDX-License-Identifier: MIT
 (define (test-flasinpi)
   (test-group "flasinpi"
     (test-values (flasinpi 0.0) '(0.0))
