@@ -1,3 +1,6 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+;
+; SPDX-License-Identifier: GPL-2.0-or-later
 (define-library (srfi 276 exception)
   (import (scheme base)
           (only (mit legacy runtime)

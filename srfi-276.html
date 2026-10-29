@@ -3053,6 +3053,12 @@ should round-trip NaNs.</p>
 <h2 id="rounding-mode-library"><a href="#rounding-mode-library"></a>
     Rounding mode libraries</h2>
 
+<p>
+  If the implementation allows one to change the rounding mode, it
+  must support <code>round-to-nearest/ties-to-even</code>, and should
+  support the other modes.
+</p>
+
 <div class="feature" id="current-rounding-mode">
 <span class="category">(srfi 276 rounding-mode)<br>procedure</span>
 <code class="signature">(<a href="#current-rounding-mode">current-rounding-mode</a>)</code>
@@ -3087,13 +3093,11 @@ should round-trip NaNs.</p>
     in magnitude than the infinitely precise value. (IEEE 754
     roundTowardsZero)</dd>
 </dl>
-<div class="boxed">
+
 <p>
-  <span class="boxed-tag">Note</span>:
   The rounding mode is independent of the behavior of the
   integer rounding functions and the integer division functions.
 </p>
-</div>
 
 <div class="feature" id="rounding-modep">
 <span class="category">(srfi 276 rounding-mode)<br>procedure</span>

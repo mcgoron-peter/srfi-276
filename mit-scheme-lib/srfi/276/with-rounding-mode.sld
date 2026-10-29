@@ -1,3 +1,6 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+;
+; SPDX-License-Identifier: GPL-2.0-or-later
 (define-library (srfi 276 with-rounding-mode)
   (import (scheme base)
           (only (mit legacy runtime)
@@ -16,5 +19,5 @@
                        (round-towards-negative . downward)
                        (round-towards-positive . upward)))
                => cdr)
-              (else %mode))
+              (else %mode)))
             (lambda () body ...)))))))

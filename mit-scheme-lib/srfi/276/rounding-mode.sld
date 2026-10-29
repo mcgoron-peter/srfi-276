@@ -1,3 +1,6 @@
+; SPDX-FileCopyrightText: 2026 Peter McGoron
+;
+; SPDX-License-Identifier: GPL-2.0-or-later
 (define-library (srfi 276 rounding-mode)
   (import (scheme base)
           (only (mit legacy runtime)
@@ -14,8 +17,8 @@
         (else => values)))
     (define (rounding-mode? obj)
       (pair?
-       (memq (append '(round-to-nearest/ties-to-even
-                       round-towards-zero
-                       round-towards-negative
-                       round-towards-positive)
-                     (flo:rounding-modes)))))))
+       (memq obj (append '(round-to-nearest/ties-to-even
+                           round-towards-zero
+                           round-towards-negative
+                           round-towards-positive)
+                         (flo:rounding-modes)))))))

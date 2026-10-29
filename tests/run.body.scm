@@ -336,3 +336,27 @@
 
 ;;; FIXME: No tests for bessel functions yet
 
+(cond-expand
+  ((library (srfi 276 exception))
+   (include "exception.scm")
+   (test-flexception-name)
+   (test-flexception-behavior))
+  (else))
+
+(cond-expand
+  ((library (srfi 276 rounding-mode))
+   (include "rounding-mode.scm")
+   (test-rounding-mode))
+  (else))
+
+(cond-expand
+  ((library (srfi 276 with-rounding-mode))
+   (include "with-rounding-mode.scm")
+   (test-with-rounding-mode))
+  (else))
+
+(cond-expand
+  ((library (srfi 276 set-rounding-mode))
+   (include "set-rounding-mode.scm")
+   (test-set-rounding-mode))
+  (else))
