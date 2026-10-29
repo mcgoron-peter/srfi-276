@@ -6,7 +6,7 @@
         (fl=? (flrsqrt 0.0) +inf.0)))
     (test-assert "(flrsqrt -0.0)"
       (true-and-raises 'divide-by-zero
-        (fl=? (flrsqrt -0.0) +inf.0)))
+        (fl=? (flrsqrt -0.0) -inf.0)))
     (test-values (flrsqrt +inf.0) '(0.0))
     (test-assert "(flrsqrt negative)"
       (true-and-raises 'invalid-operation
