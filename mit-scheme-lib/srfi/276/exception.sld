@@ -6,7 +6,8 @@
                 flo:test-exceptions
                 flo:supported-exceptions
                 flo:raise-exceptions!
-                flo:clear-exceptions!))
+                flo:clear-exceptions!)
+          (only (srfi 1) delete-duplicates))
   (export flexception-name?
           current-flexceptions
           possible-flexceptions
@@ -35,13 +36,14 @@
         (flo:supported-exceptions))))
 
     (define (possible-flexceptions)
-      (append '(invalid-operation
-                divide-by-zero
-                overflow
-                underflow
-                inexact)
-              (flo:exceptions->names
-               (flo:supported-exceptions))))
+      (delete-duplicates
+        (append '(invalid-operation
+                  divide-by-zero
+                  overflow
+                  underflow
+                  inexact-result)
+                (flo:exceptions->names
+                 (flo:supported-exceptions)))))
 
     (define (process-list exceptions)
       (append-map (lambda (x)
@@ -51,8 +53,10 @@
        exceptions))
 
     (define (flexceptions-raised? . exceptions)
-      (flo:test-exceptions
-       (flo:names->exceptions (process-list exceptions))))
+      (not
+       (zero?
+        (flo:test-exceptions
+         (flo:names->exceptions (process-list exceptions))))))
 
     (define (raise-flexceptions! . exceptions)
       (flo:raise-exceptions!
