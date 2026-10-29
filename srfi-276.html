@@ -3193,7 +3193,7 @@ should round-trip NaNs.</p>
 <dt><code>underflow</code></dt>
 <dd>Raised if an operation returned an operation that was non-zero, lower
     in magnitude than the smallest normal flonum.</dd>
-<dt><code>inexact</code></dt>
+<dt><code>inexact-result</code></dt>
 <dd>Raised if an operation returned a rounded result that is different
     from the exact result.</dd>
 </dl>
@@ -3359,8 +3359,15 @@ should round-trip NaNs.</p>
   is a Gambit implementation. The Gambit implementation can be compiled
   using the Makefile, and the resulting library is in the <code>gambit-lib</code>
   directory. These only implement the required parts of
-  this SRFI: an MIT-Scheme implementation of the exception
-  and rounding-mode interface will be provided later.
+  this SRFI. 
+</p>
+
+<p>
+  An MIT-Scheme implementation of the exception and rounding-mode
+  interface is also provided. To run the MIT-Scheme implementation and
+  the test suite, SRFI 144, 158, and 194 must loaded.  Then one can
+  load the <code>.sld</code> files under <code>mit-scheme-lib/</code>
+  and <code>lib/</code>.
 </p>
 
 <p>
@@ -3394,6 +3401,14 @@ should round-trip NaNs.</p>
 <p>
   Implementations that implement SRFI 276 should also export
   SRFI 144 as a compatability library.
+</p>
+
+<p>
+  To run the test suite on MIT-Scheme, load
+  <code>run.mit-scheme.scm</code> with <code>tests</code> as your
+  working directory. Otherwise, to run the test suite on <span
+  class="report-name">R<sup>7</sup>RS</span> implementations, run
+  <code>run.scm</code>.
 </p>
 
 <h2 id="acknowledgements"><a href="#acknowledgements"></a>Acknowledgements</h2>
