@@ -91,15 +91,15 @@
     (test-assert "(fltanpi 0.5)"
       (true-and-raises 'divide-by-zero
         (fl=? (fltanpi 0.5) +inf.0)))
-    (test-assert "(fltanpi 0.5)"
+    (test-assert "(fltanpi -0.5)"
       (true-and-raises 'divide-by-zero
         (fl=? (fltanpi -0.5) -inf.0)))
-    (test-assert "(fltanpi 0.5)"
+    (test-assert "(fltanpi 1.5)"
       (true-and-raises 'divide-by-zero
-        (fl=? (fltanpi 1.5) +inf.0)))
-    (test-assert "(fltanpi 0.5)"
+        (fl=? (fltanpi 1.5) -inf.0)))
+    (test-assert "(fltanpi -1.5)"
       (true-and-raises 'divide-by-zero
-        (fl=? (fltanpi -1.5) -inf.0)))))
+        (fl=? (fltanpi -1.5) +inf.0)))))
 
 (define (test-fltanpi-odd)
   (test-group "fltanpi is odd"
